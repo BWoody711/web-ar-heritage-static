@@ -86,24 +86,26 @@
         getBuildings(bbox)
           .then((buildings) => {
             for (let x = 0; x < buildings.features.length; x++) {
-              const entity = document.createElement("a-box");
-              entity.setAttribute("material", {
-                color: "red",
-              });
-              let point = turf.toWgs84(
+              const entity = document.createElement("a-entity");
+              const point = turf.toWgs84(
                 turf.point(buildings.features[x].geometry.coordinates)
               );
-              let latitude = point.geometry.coordinates[1];
-              let longitude = point.geometry.coordinates[0];
-              entity.setAttribute("gps-new-entity-place", {
-                latitude: latitude,
-                longitude: longitude,
-              });
+              entity.setAttribute(
+                "gps-new-entity-place",
+                `latitude: ${point.geometry.coordinates[1]}
+                longitude: ${point.geometry.coordinates[0]}`
+              );
+              entity.setAttribute("look-at", "[gps-new-camera]");
               entity.setAttribute("scale", {
                 x: 20,
                 y: 20,
                 z: 20,
               });
+              const pin = document.createElement("a-box");
+              pin.setAttribute("material", {
+                color: "red",
+              });
+              entity.appendChild(pin);
               alert(entity.outerHTML.toString());
               document.querySelector("a-scene").appendChild(entity);
             }
