@@ -85,7 +85,7 @@
       function parseBuildings(bbox) {
         getBuildings(bbox)
           .then((data) => {
-            alert(data);
+            alert(JSON.stringify(data));
           })
           .catch((err) => {
             console.log(err);
