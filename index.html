@@ -85,12 +85,11 @@
       function parseBuildings(bbox) {
         getBuildings(bbox)
           .then((buildings) => {
-            let scene;
-            console.log(buildings);
+            alert(buildings.features.length);
             for (let x = 0; x < buildings.features.length; x++) {
               AFRAME.registerComponent("cursor-listener", {
                 init: function () {
-                  scene = document.querySelector("a-scene");
+                  let scene = document.querySelector("a-scene");
                   let entity = document.createElement("a-entity");
                   let point = turf.toWgs84(
                     turf.point(buildings.features[x].coordinates)
