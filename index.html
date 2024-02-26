@@ -100,7 +100,7 @@
                 `latitude: ${latitude}; longitude: ${longitude}`
               );
               entity.setAttribute("scale", "20 20 20");
-              alert(entity.innerHTML);
+              alert(entity.outerHTML.toString());
               scene.appendChild(entity);
             }
           })
