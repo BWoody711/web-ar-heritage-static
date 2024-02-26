@@ -64,10 +64,29 @@
 
       let gps = turf.point([-1, -1]);
 
+      let buildings = []
+
+      async function getBuildings(bbox) {
+        const bbox_string = bbox.geometry.coordinates[0][0][0].toString() + "," + bbox.geometry.coordinates[0][0][1].toString() + "," + bbox.geometry.coordinates[0][1][0].toString() + "," + bbox.geometry.coordinates[0][2][1].toString()
+        const res = await fetch('https://atlas.digitalhistory.ca/api/buildings/?bbox=' + bbox_string)
+        const data = await res.json()
+        return data
+      }
+
+      function parseBuildings(bbox) {
+        getBuildings(bbox).then(data => {
+          console.log(data)
+        }).catch(err => {
+          console.log(err)
+        })
+      }
+
       function createGeofence() {
         alert("Updating geofence...");
-        geofence_buffer = turf.buffer(gps, 400, { units: "meters" });
-        return geofence_buffer;
+        const geo_buffer = turf.toMercator(turf.bboxPolygon(turf.bbox(turf.buffer(gps, 400, { units: "meters" }))));
+        const building_bbox = turf.toMercator(turf.bboxPolygon(turf.bbox(turf.buffer(gps, 500, { units: "meters" }))));
+        parseBuildings(building_bbox)
+        return geo_buffer
       }
 
       function checkGeofence(position) {
@@ -77,9 +96,9 @@
             position.coords.longitude,
             position.coords.latitude,
           ]);
-          var in_geofence = turf.booleanPointInPolygon(gps, geofence_buffer);
+          var in_geofence = turf.booleanPointInPolygon(gps, turf.toWgs84(geofence_buffer));
           if (!in_geofence) {
-            createGeofence();
+            geofence_buffer = createGeofence();
           }
         }
       }
@@ -97,9 +116,9 @@
 
       const geofenceChecker = setInterval(() => {
         geofenceUpdate();
-      }, 15000);
+      }, 5000);
 
-      window.onload = setInterval(geofenceUpdate, 3000);
+      window.onload = geofenceUpdate();
     </script>
     <div>
       <a-scene
