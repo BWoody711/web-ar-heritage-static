@@ -90,11 +90,14 @@
               const point = turf.toWgs84(
                 turf.point(buildings.features[x].geometry.coordinates)
               );
-              entity.setAttribute(
-                "gps-new-entity-place",
-                `latitude: ${point.geometry.coordinates[1]}
-                longitude: ${point.geometry.coordinates[0]}`
-              );
+              console.log({
+                latitude: point.geometry.coordinates[1],
+                longitude: point.geometry.coordinates[0],
+              });
+              entity.setAttribute("gps-new-entity-place", {
+                latitude: point.geometry.coordinates[1],
+                longitude: point.geometry.coordinates[0],
+              });
               entity.setAttribute("look-at", "[gps-new-camera]");
               entity.setAttribute("scale", {
                 x: 20,
@@ -106,7 +109,6 @@
                 color: "red",
               });
               entity.appendChild(pin);
-              //Remove this later
               alert(entity.outerHTML.toString());
               document.querySelector("a-scene").appendChild(entity);
             }
