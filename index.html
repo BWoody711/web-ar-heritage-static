@@ -87,19 +87,24 @@
           .then((buildings) => {
             let scene = document.querySelector("a-scene");
             for (let x = 0; x < buildings.features.length; x++) {
-              const entity = document.createElement("a-entity");
-              entity.setAttribute("material", "color: red");
-              entity.setAttribute("geometry", "primitive: box");
+              const entity = document.createElement("a-box");
+              entity.setAttribute("material", {
+                color: "red",
+              });
               let point = turf.toWgs84(
                 turf.point(buildings.features[x].geometry.coordinates)
               );
               let latitude = point.geometry.coordinates[1];
               let longitude = point.geometry.coordinates[0];
-              entity.setAttribute(
-                "gps-new-entity-place",
-                `latitude: ${latitude}; longitude: ${longitude}`
-              );
-              entity.setAttribute("scale", "20 20 20");
+              entity.setAttribute("gps-new-entity-place", {
+                latitude: latitude,
+                longitude: longitude,
+              });
+              entity.setAttribute("scale", {
+                x: 20,
+                y: 20,
+                z: 20,
+              });
               alert(entity.outerHTML.toString());
               scene.appendChild(entity);
             }
