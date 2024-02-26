@@ -85,25 +85,22 @@
       function parseBuildings(bbox) {
         getBuildings(bbox)
           .then((buildings) => {
-            alert(buildings.features.length);
             let scene = document.querySelector("a-scene");
             for (let x = 0; x < buildings.features.length; x++) {
               const entity = document.createElement("a-entity");
               entity.setAttribute("material", "color: red");
               entity.setAttribute("geometry", "primitive: box");
-              alert(JSON.stringify(buildings.features[x].geometry.coordinates));
               let point = turf.toWgs84(
                 turf.point(buildings.features[x].geometry.coordinates)
               );
               let latitude = point.geometry.coordinates[1];
               let longitude = point.geometry.coordinates[0];
-              alert(point, latitude, longitude);
               entity.setAttribute(
                 "gps-new-entity-place",
                 `latitude: ${latitude}; longitude: ${longitude}`
               );
               entity.setAttribute("scale", "20 20 20");
-              alert(entity);
+              alert(JSON.stringify(entity));
               scene.appendChild(entity);
             }
           })
