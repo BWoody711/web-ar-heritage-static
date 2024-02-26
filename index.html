@@ -91,9 +91,9 @@
               const entity = document.createElement("a-entity");
               entity.setAttribute("material", "color: red");
               entity.setAttribute("geometry", "primitive: box");
-              alert(JSON.stringify(buildings.features));
+              alert(JSON.stringify(buildings.features[x].geometry.coordinates));
               let point = turf.toWgs84(
-                turf.point(buildings.features[x].coordinates)
+                turf.point(buildings.features[x].geometry.coordinates)
               );
               let latitude = point.geometry.coordinates[1];
               let longitude = point.geometry.coordinates[0];
