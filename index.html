@@ -84,8 +84,31 @@
 
       function parseBuildings(bbox) {
         getBuildings(bbox)
-          .then((data) => {
-            alert(JSON.stringify(data));
+          .then((buildings) => {
+            let scene;
+            console.log(buildings);
+            for (let x = 0; x < buildings.features.length; x++) {
+              AFRAME.registerComponent("cursor-listener", {
+                init: function () {
+                  scene = document.querySelector("a-scene");
+                  let entity = document.createElement("a-entity");
+                  let point = turf.toWgs84(
+                    turf.point(buildings.features[x].coordinates)
+                  );
+                  let latitude = point.geometry.coordinates[1];
+                  let longitude = point.geometry.coordinates[0];
+                  entity.setAttribute("material", "color: red");
+                  entity.setAttribute("geometry", "primitive: box");
+                  entity.setAttribute(
+                    "gps-new-entity-place",
+                    `latitude: ${latitude}; longitude: ${longitude}`
+                  );
+                  entity.setAttribute("scale", "20 20 20");
+                  alert(entity);
+                  scene.appendChild(entity);
+                },
+              });
+            }
           })
           .catch((err) => {
             console.log(err);
@@ -115,6 +138,7 @@
             position.coords.longitude,
             position.coords.latitude,
           ]);
+          console.log(gps);
           var in_geofence = turf.booleanPointInPolygon(
             gps,
             turf.toWgs84(geofence_buffer)
