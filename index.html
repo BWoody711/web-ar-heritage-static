@@ -64,29 +64,48 @@
 
       let gps = turf.point([-1, -1]);
 
-      let buildings = []
+      let buildings = [];
 
       async function getBuildings(bbox) {
-        const bbox_string = bbox.geometry.coordinates[0][0][0].toString() + "," + bbox.geometry.coordinates[0][0][1].toString() + "," + bbox.geometry.coordinates[0][1][0].toString() + "," + bbox.geometry.coordinates[0][2][1].toString()
-        const res = await fetch('https://atlas.digitalhistory.ca/api/buildings/?bbox=' + bbox_string)
-        const data = await res.json()
-        return data
+        const bbox_string =
+          bbox.geometry.coordinates[0][0][0].toString() +
+          "," +
+          bbox.geometry.coordinates[0][0][1].toString() +
+          "," +
+          bbox.geometry.coordinates[0][1][0].toString() +
+          "," +
+          bbox.geometry.coordinates[0][2][1].toString();
+        const res = await fetch(
+          "https://atlas.digitalhistory.ca/api/buildings/?bbox=" + bbox_string
+        );
+        const data = await res.json();
+        return data;
       }
 
       function parseBuildings(bbox) {
-        getBuildings(bbox).then(data => {
-          console.log(data)
-        }).catch(err => {
-          console.log(err)
-        })
+        getBuildings(bbox)
+          .then((data) => {
+            alert(data);
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
 
       function createGeofence() {
         alert("Updating geofence...");
-        const geo_buffer = turf.toMercator(turf.bboxPolygon(turf.bbox(turf.buffer(gps, 400, { units: "meters" }))));
-        const building_bbox = turf.toMercator(turf.bboxPolygon(turf.bbox(turf.buffer(gps, 500, { units: "meters" }))));
-        parseBuildings(building_bbox)
-        return geo_buffer
+        const geo_buffer = turf.toMercator(
+          turf.bboxPolygon(
+            turf.bbox(turf.buffer(gps, 400, { units: "meters" }))
+          )
+        );
+        const building_bbox = turf.toMercator(
+          turf.bboxPolygon(
+            turf.bbox(turf.buffer(gps, 500, { units: "meters" }))
+          )
+        );
+        parseBuildings(building_bbox);
+        return geo_buffer;
       }
 
       function checkGeofence(position) {
@@ -96,7 +115,10 @@
             position.coords.longitude,
             position.coords.latitude,
           ]);
-          var in_geofence = turf.booleanPointInPolygon(gps, turf.toWgs84(geofence_buffer));
+          var in_geofence = turf.booleanPointInPolygon(
+            gps,
+            turf.toWgs84(geofence_buffer)
+          );
           if (!in_geofence) {
             geofence_buffer = createGeofence();
           }
