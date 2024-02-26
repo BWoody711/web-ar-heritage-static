@@ -99,7 +99,7 @@
         geofenceUpdate();
       }, 15000);
 
-      window.onload = geofenceUpdate;
+      window.onload = setInterval(geofenceUpdate, 3000);
     </script>
     <div>
       <a-scene
