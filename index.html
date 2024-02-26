@@ -91,11 +91,13 @@
               const entity = document.createElement("a-entity");
               entity.setAttribute("material", "color: red");
               entity.setAttribute("geometry", "primitive: box");
+              alert(buildings.features[x].coordinates);
               let point = turf.toWgs84(
                 turf.point(buildings.features[x].coordinates)
               );
               let latitude = point.geometry.coordinates[1];
               let longitude = point.geometry.coordinates[0];
+              alert(point, latitude, longitude);
               entity.setAttribute(
                 "gps-new-entity-place",
                 `latitude: ${latitude}; longitude: ${longitude}`
