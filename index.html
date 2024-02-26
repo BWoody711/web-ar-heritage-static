@@ -86,27 +86,23 @@
         getBuildings(bbox)
           .then((buildings) => {
             alert(buildings.features.length);
+            let scene = document.querySelector("a-scene");
             for (let x = 0; x < buildings.features.length; x++) {
-              AFRAME.registerComponent("cursor-listener", {
-                init: function () {
-                  let scene = document.querySelector("a-scene");
-                  let entity = document.createElement("a-entity");
-                  let point = turf.toWgs84(
-                    turf.point(buildings.features[x].coordinates)
-                  );
-                  let latitude = point.geometry.coordinates[1];
-                  let longitude = point.geometry.coordinates[0];
-                  entity.setAttribute("material", "color: red");
-                  entity.setAttribute("geometry", "primitive: box");
-                  entity.setAttribute(
-                    "gps-new-entity-place",
-                    `latitude: ${latitude}; longitude: ${longitude}`
-                  );
-                  entity.setAttribute("scale", "20 20 20");
-                  alert(entity);
-                  scene.appendChild(entity);
-                },
-              });
+              const entity = document.createElement("a-entity");
+              entity.setAttribute("material", "color: red");
+              entity.setAttribute("geometry", "primitive: box");
+              let point = turf.toWgs84(
+                turf.point(buildings.features[x].coordinates)
+              );
+              let latitude = point.geometry.coordinates[1];
+              let longitude = point.geometry.coordinates[0];
+              entity.setAttribute(
+                "gps-new-entity-place",
+                `latitude: ${latitude}; longitude: ${longitude}`
+              );
+              entity.setAttribute("scale", "20 20 20");
+              alert(entity);
+              scene.appendChild(entity);
             }
           })
           .catch((err) => {
@@ -115,7 +111,7 @@
       }
 
       function createGeofence() {
-        alert("Updating geofence...");
+        console.log("Updating geofence...");
         const geo_buffer = turf.toMercator(
           turf.bboxPolygon(
             turf.bbox(turf.buffer(gps, 400, { units: "meters" }))
