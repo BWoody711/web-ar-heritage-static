@@ -91,7 +91,7 @@
               const entity = document.createElement("a-entity");
               entity.setAttribute("material", "color: red");
               entity.setAttribute("geometry", "primitive: box");
-              alert(buildings.features);
+              alert(JSON.stringify(buildings.features));
               let point = turf.toWgs84(
                 turf.point(buildings.features[x].coordinates)
               );
