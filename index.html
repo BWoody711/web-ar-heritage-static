@@ -87,12 +87,17 @@
         return data;
       }
 
+      let ids = [];
+
       function parseBuildings(bbox) {
         getBuildings(bbox)
           .then((buildings) => {
+            alert(ids);
             let scene = document.querySelector("a-scene");
             // Create workflow for removing old elements from the scene
             for (let x = 0; x < buildings.features.length; x++) {
+              const id = buildings.features[x].properties.id;
+              ids.append(id);
               const entity = document.createElement("a-cylinder");
               const point = turf.toWgs84(
                 turf.point(buildings.features[x].geometry.coordinates)
@@ -111,9 +116,14 @@
               //   y: 5,
               //   z: 5,
               // });
+              entity.setAttribute("id", id);
               entity.setAttribute("radius", 5);
               entity.setAttribute("height", 0.2);
-              entity.setAttribute("rotation", "0 90 0");
+              entity.setAttribute("rotation", {
+                x: 270,
+                y: 0,
+                z: 0,
+              });
               entity.setAttribute("color", "white");
               entity.addEventListener("markerFound", () => {
                 alert("Clicked!!");
