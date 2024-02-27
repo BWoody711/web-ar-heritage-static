@@ -115,8 +115,8 @@
               entity.setAttribute("height", 0.2);
               entity.setAttribute("rotation", "0 0 90");
               entity.setAttribute("color", "white");
-              entity.addEventListener("markerFound", (e) => {
-                alert(e);
+              entity.addEventListener("markerFound", () => {
+                alert("Clicked!!");
               });
               // alert(entity.outerHTML.toString());
               scene.appendChild(entity);
