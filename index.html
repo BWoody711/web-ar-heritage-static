@@ -92,7 +92,7 @@
       function parseBuildings(bbox) {
         getBuildings(bbox)
           .then((buildings) => {
-            alert(ids);
+            alert(JSON.stringify(ids));
             let scene = document.querySelector("a-scene");
             // Create workflow for removing old elements from the scene
             for (let x = 0; x < buildings.features.length; x++) {
@@ -110,7 +110,7 @@
                 latitude: point.geometry.coordinates[1],
                 longitude: point.geometry.coordinates[0],
               });
-              entity.setAttribute("look-at", "[gps-new-camera]");
+              // entity.setAttribute("look-at", "[gps-new-camera]");
               // entity.setAttribute("scale", {
               //   x: 5,
               //   y: 5,
