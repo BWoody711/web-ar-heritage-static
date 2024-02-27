@@ -130,9 +130,25 @@
                 z: 0,
               });
               entity.setAttribute("color", "white");
-              // entity.addEventListener("markerFound", () => {
-              //   alert("Clicked!!");
-              // });
+              let check;
+              entity.addEventListener("markerFound", () => {
+                let markerPosition = entity.object3D.position;
+                let cameraPosition =
+                  document.querySelector("[camera]").object3D.position;
+                let distance = cameraPosition.distanceTo(markerPosition);
+                check = setInterval(() => {
+                  cameraPosition = camera.object3D.position;
+                  markerPosition = marker.object3D.position;
+                  distance = cameraPosition.distanceTo(markerPosition);
+                  if (distance < 50) {
+                    entity.setAttribute("color", "blue");
+                    alert(entity.id);
+                  }
+                }, 1000);
+              });
+              entity.addEventListener("markerLost", () => {
+                clearInterval(check);
+              });
               // alert(entity.outerHTML.toString());
               scene.appendChild(entity);
             }
