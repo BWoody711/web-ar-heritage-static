@@ -184,10 +184,11 @@
         arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: true"
         renderer="antialias: true; alpha: true"
       >
+        <!-- Reduce max distance to 50 later -->
         <a-camera
           look-controls-enabled="false"
           arjs-device-orientation-controls="smoothingFactor: 0.1"
-          gps-new-camera="gpsMinDistance: 5; maxDistance: 50; positionMinAccuracy: 10; alert: true"
+          gps-new-camera="gpsMinDistance: 5; maxDistance: 200; positionMinAccuracy: 10; alert: true"
         ></a-camera>
         <!-- <a-entity
           material="color: red"
