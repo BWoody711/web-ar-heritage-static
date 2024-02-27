@@ -87,34 +87,31 @@
         return data;
       }
 
-      let ids = [];
+      let objects = [];
 
       function parseBuildings(bbox) {
         getBuildings(bbox)
           .then((buildings) => {
             let scene = document.querySelector("a-scene");
-            if (ids.length > 0) {
-              alert(JSON.stringify(ids));
-              for (let y = 0; y < ids.length; y++) {
-                document.getElementById(ids[y]).outerHTML = "";
+            if (objects.length > 0) {
+              alert(JSON.stringify(objects));
+              for (let y = 0; y < objects.length; y++) {
+                document.getElementById(objects[y].id).outerHTML = "";
               }
-              ids = [];
+              objects = [];
             }
             for (let x = 0; x < buildings.features.length; x++) {
               const id = buildings.features[x].properties.id;
-              ids.push(id);
+
               const entity = document.createElement("a-cylinder");
               const point = turf.toWgs84(
                 turf.point(buildings.features[x].geometry.coordinates)
               );
-              console.log({
-                latitude: point.geometry.coordinates[1],
-                longitude: point.geometry.coordinates[0],
-              });
               entity.setAttribute("gps-new-entity-place", {
                 latitude: point.geometry.coordinates[1],
                 longitude: point.geometry.coordinates[0],
               });
+              objects.push({ id: id });
               // entity.setAttribute("look-at", "[gps-new-camera]");
               // entity.setAttribute("scale", {
               //   x: 5,
@@ -130,25 +127,24 @@
                 z: 0,
               });
               entity.setAttribute("color", "white");
-              let check;
-              entity.addEventListener("markerFound", () => {
-                let markerPosition = entity.object3D.position;
-                let cameraPosition =
-                  document.querySelector("[camera]").object3D.position;
-                let distance = cameraPosition.distanceTo(markerPosition);
-                check = setInterval(() => {
-                  cameraPosition = camera.object3D.position;
-                  markerPosition = marker.object3D.position;
-                  distance = cameraPosition.distanceTo(markerPosition);
-                  if (distance < 50) {
-                    entity.setAttribute("color", "blue");
-                    alert(entity.id);
-                  }
-                }, 1000);
-              });
-              entity.addEventListener("markerLost", () => {
-                clearInterval(check);
-              });
+              // entity.addEventListener("markerFound", () => {
+              //   let markerPosition = entity.object3D.position;
+              //   let cameraPosition =
+              //     document.querySelector("[camera]").object3D.position;
+              //   let distance = cameraPosition.distanceTo(markerPosition);
+              //   check = setInterval(() => {
+              //     cameraPosition = camera.object3D.position;
+              //     markerPosition = marker.object3D.position;
+              //     distance = cameraPosition.distanceTo(markerPosition);
+              //     if (distance < 50) {
+              //       entity.setAttribute("color", "blue");
+              //       alert(entity.id);
+              //     }
+              //   }, 1000);
+              // });
+              // entity.addEventListener("markerLost", () => {
+              //   clearInterval(check);
+              // });
               // alert(entity.outerHTML.toString());
               scene.appendChild(entity);
             }
@@ -207,6 +203,24 @@
         geofenceUpdate();
       }, 10000);
 
+      function onCameraMove() {
+        const cameraPosition =
+          document.querySelector("[camera]").object3D.position;
+        let entity;
+        let distance;
+        for (let x = 0; x < objects.length; x++) {
+          entity = document.getElementById(objects[y].id);
+          distance = cameraPosition.distanceTo(entity);
+          //Fix this so that it only ever picks one icon
+          if (distance < 25) {
+            alert(objects[y].id);
+            entity.setAttribute("color", "blue");
+          } else {
+            entity.setAttribute("color", "white");
+          }
+        }
+      }
+
       window.onload = geofenceUpdate();
     </script>
     <div>
@@ -220,6 +234,7 @@
           look-controls-enabled="false"
           arjs-device-orientation-controls="smoothingFactor: 0.1"
           gps-new-camera="gpsMinDistance: 5; maxDistance: 200; positionMinAccuracy: 10; alert: true"
+          gps-camera-update-position="onCameraMove()"
         ></a-camera>
         <!-- <a-entity
           material="color: red"
