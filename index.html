@@ -97,7 +97,7 @@
             // Create workflow for removing old elements from the scene
             for (let x = 0; x < buildings.features.length; x++) {
               const id = buildings.features[x].properties.id;
-              ids.append(id);
+              ids.push(id);
               const entity = document.createElement("a-cylinder");
               const point = turf.toWgs84(
                 turf.point(buildings.features[x].geometry.coordinates)
