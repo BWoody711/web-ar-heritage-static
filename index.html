@@ -92,9 +92,14 @@
       function parseBuildings(bbox) {
         getBuildings(bbox)
           .then((buildings) => {
-            alert(JSON.stringify(ids));
             let scene = document.querySelector("a-scene");
-            // Create workflow for removing old elements from the scene
+            if (ids.length > 0) {
+              alert(JSON.stringify(ids));
+              for (let y = 0; y < ids.length; y++) {
+                document.getElementById(ids[y]).outerHTML = "";
+              }
+              ids = [];
+            }
             for (let x = 0; x < buildings.features.length; x++) {
               const id = buildings.features[x].properties.id;
               ids.push(id);
@@ -117,7 +122,7 @@
               //   z: 5,
               // });
               entity.setAttribute("id", id);
-              entity.setAttribute("radius", 5);
+              entity.setAttribute("radius", 1);
               entity.setAttribute("height", 0.2);
               entity.setAttribute("rotation", {
                 x: 270,
@@ -125,9 +130,9 @@
                 z: 0,
               });
               entity.setAttribute("color", "white");
-              entity.addEventListener("markerFound", () => {
-                alert("Clicked!!");
-              });
+              // entity.addEventListener("markerFound", () => {
+              //   alert("Clicked!!");
+              // });
               // alert(entity.outerHTML.toString());
               scene.appendChild(entity);
             }
