@@ -90,8 +90,11 @@
       function parseBuildings(bbox) {
         getBuildings(bbox)
           .then((buildings) => {
+            let scene = document.querySelector("a-scene");
+            scene.innerHTML =
+              '<a-camera look-controls-enabled="false" arjs-device-orientation-controls="smoothingFactor: 0.1" gps-new-camera="gpsMinDistance: 5; maxDistance: 50; positionMinAccuracy: 10; alert: true"></a-camera>';
             for (let x = 0; x < buildings.features.length; x++) {
-              const entity = document.createElement("a-entity");
+              const entity = document.createElement("a-cylinder");
               const point = turf.toWgs84(
                 turf.point(buildings.features[x].geometry.coordinates)
               );
@@ -105,17 +108,18 @@
               });
               entity.setAttribute("look-at", "[gps-new-camera]");
               entity.setAttribute("scale", {
-                x: 20,
-                y: 20,
-                z: 20,
+                x: 5,
+                y: 5,
+                z: 5,
               });
-              const pin = document.createElement("a-box");
-              pin.setAttribute("material", {
-                color: "red",
+              entity.setAttribute("radius", 5);
+              entity.setAttribute("height", 5);
+              entity.setAttribute("color", "white");
+              entity.addEventListener("markerFound", (e) => {
+                alert(e);
               });
-              entity.appendChild(pin);
-              alert(entity.outerHTML.toString());
-              document.querySelector("a-scene").appendChild(entity);
+              // alert(entity.outerHTML.toString());
+              scene.querySelector("a-scene").appendChild(entity);
             }
           })
           .catch((err) => {
@@ -127,12 +131,12 @@
         console.log("Updating geofence...");
         const geo_buffer = turf.toMercator(
           turf.bboxPolygon(
-            turf.bbox(turf.buffer(gps, 400, { units: "meters" }))
+            turf.bbox(turf.buffer(gps, 200, { units: "meters" }))
           )
         );
         const building_bbox = turf.toMercator(
           turf.bboxPolygon(
-            turf.bbox(turf.buffer(gps, 500, { units: "meters" }))
+            turf.bbox(turf.buffer(gps, 300, { units: "meters" }))
           )
         );
         parseBuildings(building_bbox);
@@ -170,7 +174,7 @@
 
       const geofenceChecker = setInterval(() => {
         geofenceUpdate();
-      }, 5000);
+      }, 10000);
 
       window.onload = geofenceUpdate();
     </script>
@@ -180,7 +184,11 @@
         arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: true"
         renderer="antialias: true; alpha: true"
       >
-        <a-camera gps-new-camera="gpsMinDistance: 5"></a-camera>
+        <a-camera
+          look-controls-enabled="false"
+          arjs-device-orientation-controls="smoothingFactor: 0.1"
+          gps-new-camera="gpsMinDistance: 5; maxDistance: 50; positionMinAccuracy: 10; alert: true"
+        ></a-camera>
         <!-- <a-entity
           material="color: red"
           geometry="primitive: box"
