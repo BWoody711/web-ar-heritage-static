@@ -226,7 +226,7 @@
           `https://atlas.digitalhistory.ca/api/building/${id}/`
         );
         const building = await res.json();
-        console.log(building);
+        alert(JSON.stringify(building));
       }
 
       window.onload = () => {
