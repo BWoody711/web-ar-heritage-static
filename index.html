@@ -225,7 +225,7 @@
         geofenceUpdate();
         let testEntityAdded = false;
 
-        let camera = document.querySelector("[camera]");
+        let camera = document.querySelector("[gps-new-camera]");
         camera.addEventListener("gps-camera-update-position", () => {
           if (!testEntityAdded) {
             alert(e.detail.position.toString());
