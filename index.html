@@ -74,6 +74,7 @@
       .desc-div {
         position: absolute;
         top: 15%;
+        width: 100%;
       }
       #arch-description {
         visibility: hidden;
@@ -132,7 +133,6 @@
       //Building Profile Menu
       function resetBuildingProfile(id) {
         const button_id = id.split("-")[0];
-        alert(button_id);
         const buttons = ["hist", "arch", "story"];
         for (let x = 0; x < buttons.length; x++) {
           document.getElementById(
