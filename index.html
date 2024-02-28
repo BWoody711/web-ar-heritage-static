@@ -221,6 +221,14 @@
       //   // }
       // }
 
+      async function fetchBuildingInfo(id) {
+        const res = await fetch(
+          `https://atlas.digitalhistory.ca/api/building/${id}/`
+        );
+        const building = await res.json();
+        console.log(building);
+      }
+
       window.onload = () => {
         geofenceUpdate();
         let testEntityAdded = false;
@@ -228,7 +236,31 @@
         let camera = document.querySelector("a-camera");
         camera.addEventListener("gps-camera-update-position", (e) => {
           if (!testEntityAdded) {
+            //lon, lat
             alert(JSON.stringify(e.detail.position));
+            let buildings = document.getElementsByTagName("a-cylinder");
+            let distance;
+            let id = 0;
+            //Reduce this distance threshold to at most 50
+            let minDistance = 500;
+            for (let x = 0; x < buildings.length; x++) {
+              distance = camera.object3D.position.distanceTo(
+                buildings[x].object3D.position
+              );
+              if (distance < minDistance) {
+                minDistance = distance;
+                id = buildings[x].id;
+              }
+            }
+            if (id > 0) {
+              if (document.getElementById(id).getAttribute("color") != "blue") {
+                document
+                  .querySelectorAll('[color="blue"]')[0]
+                  .setAttribute("color", "white");
+                document.getElementById(id).setAttribute("color", "blue");
+                fetchBuildingInfo(id);
+              }
+            }
           }
           testEntityAdded = true;
         });
