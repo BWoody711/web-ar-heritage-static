@@ -232,12 +232,16 @@
       window.onload = () => {
         geofenceUpdate();
 
-        let camera = document.querySelector("[gps-new-camera]");
+        const camera = document.querySelector("[gps-new-camera]");
+
         camera.addEventListener("gps-camera-update-position", (e) => {
           //lon, lat
-          alert(JSON.stringify(e.detail.position));
-          const buildings = document.getElementsByTagName("a-cylinder");
-          alert(JSON.stringify(buildings));
+          setTimeout((e) => {
+            alert(JSON.stringify(e.detail.position));
+            const buildings = document.getElementsByTagName("a-cylinder");
+            alert(JSON.stringify(buildings));
+          }, 1000);
+
           // let distance = 999999999;
           // let id = 0;
           // //Reduce this distance threshold to at most 50
