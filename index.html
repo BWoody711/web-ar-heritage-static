@@ -116,11 +116,10 @@
         const button = document.getElementById("desc-button");
         if (button.style.backgroundColor === "aqua") {
           button.style.backgroundColor = "white";
-          description.style.visibility = "hidden";
+          description.style.display = "none";
         } else {
           button.style.backgroundColor = "aqua";
-          description.style.visibility = "visible";
-        }
+          description.style.display = "grid";
       }
 
       //Handle image buttons
