@@ -120,8 +120,8 @@
       }
 
       //Building Profile Menu
-      function resetBuildingProfile(e) {
-        const button_id = e.target.id.split("-")[0];
+      function resetBuildingProfile(id) {
+        const button_id = id.split("-")[0];
         alert(button_id);
         const buttons = ["hist", "arch", "story"];
         for (let x = 0; x < buttons.length; x++) {
@@ -354,21 +354,21 @@
           <button
             class="thumbButton"
             id="hist-button"
-            onclick="resetBuildingProfile(e)"
+            onclick="resetBuildingProfile(this.id)"
           >
             History
           </button>
           <button
             class="thumbButton"
             id="arch-button"
-            onclick="resetBuildingProfile(e)"
+            onclick="resetBuildingProfile(this.id)"
           >
             Architecture
           </button>
           <button
             class="thumbButton"
             id="story-button"
-            onclick="resetBuildingProfile(e)"
+            onclick="resetBuildingProfile(this.id)"
           >
             Stories
           </button>
