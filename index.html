@@ -238,30 +238,30 @@
           // alert(JSON.stringify(e.detail.position));
           let buildings = document.getElementsByTagName("a-cylinder");
           alert(JSON.stringify(buildings));
-          let distance = 999999999;
-          let id = 0;
-          //Reduce this distance threshold to at most 50
-          let minDistance = 500;
-          for (let x = 0; x < buildings.length; x++) {
-            alert(camera.object3D.position);
-            alert(buildings[x].object3D.position);
-            distance = camera.object3D.position.distanceTo(
-              buildings[x].object3D.position
-            );
-            if (distance < minDistance) {
-              minDistance = distance;
-              id = buildings[x].id;
-            }
-          }
-          if (id > 0) {
-            if (document.getElementById(id).getAttribute("color") != "blue") {
-              document
-                .querySelectorAll('[color="blue"]')[0]
-                .setAttribute("color", "white");
-              document.getElementById(id).setAttribute("color", "blue");
-              fetchBuildingInfo(id);
-            }
-          }
+          // let distance = 999999999;
+          // let id = 0;
+          // //Reduce this distance threshold to at most 50
+          // let minDistance = 500;
+          // for (let x = 0; x < buildings.length; x++) {
+          //   alert(camera.object3D.position);
+          //   alert(buildings[x].object3D.position);
+          //   distance = camera.object3D.position.distanceTo(
+          //     buildings[x].object3D.position
+          //   );
+          //   if (distance < minDistance) {
+          //     minDistance = distance;
+          //     id = buildings[x].id;
+          //   }
+          // }
+          // if (id > 0) {
+          //   if (document.getElementById(id).getAttribute("color") != "blue") {
+          //     document
+          //       .querySelectorAll('[color="blue"]')[0]
+          //       .setAttribute("color", "white");
+          //     document.getElementById(id).setAttribute("color", "blue");
+          //     fetchBuildingInfo(id);
+          //   }
+          // }
         });
       };
     </script>
