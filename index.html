@@ -247,21 +247,22 @@
             distance = camera.object3D.position.distanceTo(
               building_markers[x].object3D.position
             );
-            alert(distance);
             if (distance < minDistance) {
               minDistance = distance;
               id = building_markers[x].id;
             }
           }
-          // if (id > 0) {
-          //   if (document.getElementById(id).getAttribute("color") != "blue") {
-          //     document
-          //       .querySelectorAll('[color="blue"]').item(0)
-          //       .setAttribute("color", "white");
-          //     document.getElementById(id).setAttribute("color", "blue");
-          //     fetchBuildingInfo(id);
-          //   }
-          // }
+          if (id > 0) {
+            alert(id);
+            if (document.getElementById(id).getAttribute("color") != "blue") {
+              document
+                .querySelectorAll('[color="blue"]')
+                .item(0)
+                .setAttribute("color", "white");
+              document.getElementById(id).setAttribute("color", "blue");
+              // fetchBuildingInfo(id);
+            }
+          }
         });
       }, 1000);
     </script>
