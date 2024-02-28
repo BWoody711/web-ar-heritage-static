@@ -46,7 +46,6 @@
         z-index: 3;
       }
       a-scene {
-        /* height: 100%; */
         z-index: 2;
       }
     </style>
@@ -113,11 +112,6 @@
               });
               objects.push({ id: id });
               // entity.setAttribute("look-at", "[gps-new-camera]");
-              // entity.setAttribute("scale", {
-              //   x: 5,
-              //   y: 5,
-              //   z: 5,
-              // });
               entity.setAttribute("id", id);
               entity.setAttribute("radius", 1);
               entity.setAttribute("height", 0.2);
@@ -127,25 +121,6 @@
                 z: 0,
               });
               entity.setAttribute("color", "white");
-              // entity.addEventListener("markerFound", () => {
-              //   let markerPosition = entity.object3D.position;
-              //   let cameraPosition =
-              //     document.querySelector("[camera]").object3D.position;
-              //   let distance = cameraPosition.distanceTo(markerPosition);
-              //   check = setInterval(() => {
-              //     cameraPosition = camera.object3D.position;
-              //     markerPosition = marker.object3D.position;
-              //     distance = cameraPosition.distanceTo(markerPosition);
-              //     if (distance < 50) {
-              //       entity.setAttribute("color", "blue");
-              //       alert(entity.id);
-              //     }
-              //   }, 1000);
-              // });
-              // entity.addEventListener("markerLost", () => {
-              //   clearInterval(check);
-              // });
-              // alert(entity.outerHTML.toString());
               scene.appendChild(entity);
             }
           })
@@ -203,24 +178,6 @@
         geofenceUpdate();
       }, 10000);
 
-      // function onCameraMove(e) {
-      //   // const cameraPosition =
-      //   //   document.querySelector("[camera]").object3D.position;
-      //   // let entity;
-      //   // let distance;
-      //   // for (let x = 0; x < objects.length; x++) {
-      //   //   entity = document.getElementById(objects[y].id);
-      //   //   distance = cameraPosition.distanceTo(entity);
-      //   //   //Fix this so that it only ever picks one icon
-      //   //   if (distance < 25) {
-      //   //     alert(objects[y].id);
-      //   //     entity.setAttribute("color", "blue");
-      //   //   } else {
-      //   //     entity.setAttribute("color", "white");
-      //   //   }
-      //   // }
-      // }
-
       async function fetchBuildingInfo(id) {
         const res = await fetch(
           `https://atlas.digitalhistory.ca/api/building/${id}/`
@@ -253,13 +210,13 @@
             }
           }
           if (id > 0) {
-            alert(document.getElementById(id).getAttribute("color"));
             if (document.getElementById(id).getAttribute("color") !== "blue") {
-              document
-                .querySelectorAll('[color="blue"]')
-                .item(0)
-                .setAttribute("color", "white");
+              // document
+              //   .querySelectorAll('[color="blue"]')
+              //   .item(0)
+              //   .setAttribute("color", "white");
               document.getElementById(id).setAttribute("color", "blue");
+              alert("Ping!");
               // fetchBuildingInfo(id);
             }
           }
@@ -278,13 +235,6 @@
           arjs-device-orientation-controls="smoothingFactor: 0.1"
           gps-new-camera="gpsMinDistance: 1; maxDistance: 200; positionMinAccuracy: 100; alert: true"
         ></a-camera>
-        <!-- <a-entity
-          material="color: red"
-          geometry="primitive: box"
-          gps-new-entity-place="latitude: 43.462716; longitude: -80.542271"
-          scale="15 15 15"
-          position="0 20 0"
-        ></a-entity> -->
       </a-scene>
       <div class="thumbMenu">
         <button class="thumbButton">Description</button>
