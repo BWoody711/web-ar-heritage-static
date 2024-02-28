@@ -237,25 +237,24 @@
         camera.addEventListener("gps-camera-update-position", (e) => {
           //lon, lat
           // alert(JSON.stringify(e.detail.position));
-          const building_markers = document.getElementsByTagName("a-cylinder");
-          alert(building_markers);
-          // alert(JSON.stringify(Array.from(building_markers)));
-
-          // let distance = 999999999;
-          // let id = 0;
-          // //Reduce this distance threshold to at most 50
-          // let minDistance = 500;
-          // for (let x = 0; x < buildings.length; x++) {
-          //   alert(camera.object3D.position);
-          //   alert(buildings[x].object3D.position);
-          //   distance = camera.object3D.position.distanceTo(
-          //     buildings[x].object3D.position
-          //   );
-          //   if (distance < minDistance) {
-          //     minDistance = distance;
-          //     id = buildings[x].id;
-          //   }
-          // }
+          const building_markers = Array.from(
+            document.getElementsByTagName("a-cylinder")
+          );
+          // alert(Array.from(building_markers));
+          let distance = 999999999;
+          let id = 0;
+          //Reduce this distance threshold to at most 50
+          let minDistance = 500;
+          for (let x = 0; x < buildings.length; x++) {
+            alert(camera.object3D.position, buildings[x].object3D.position);
+            // distance = camera.object3D.position.distanceTo(
+            //   buildings[x].object3D.position
+            // );
+            // if (distance < minDistance) {
+            //   minDistance = distance;
+            //   id = buildings[x].id;
+            // }
+          }
           // if (id > 0) {
           //   if (document.getElementById(id).getAttribute("color") != "blue") {
           //     document
@@ -274,7 +273,7 @@
         arjs="sourceType: webcam; videoTexture: true; debugUIEnabled: true"
         renderer="antialias: true; alpha: true"
       >
-        <!-- Reduce max distance to 50 later -->
+        <!-- Reduce max distance to 50 later, GPSmindistance up to 10 minimum -->
         <a-camera
           look-controls-enabled="false"
           arjs-device-orientation-controls="smoothingFactor: 0.1"
