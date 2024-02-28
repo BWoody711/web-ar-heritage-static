@@ -100,13 +100,13 @@
       //Description button
       function showDescriptions() {
         const description = document.getElementById("description");
-        if (description.style.backgroundColor === "aqua") {
-          document.getElementById("desc-button").style.backgroundColor =
-            "white";
-          description.style.zIndex = "1";
+        const button = document.getElementById("desc-button");
+        if (button.style.backgroundColor === "aqua") {
+          button.style.backgroundColor = "white";
+          description.style.visibility = "hidden";
         } else {
-          document.getElementById("desc-button").style.backgroundColor = "aqua";
-          description.style.zIndex = "4";
+          button.style.backgroundColor = "aqua";
+          description.style.visibility = "visible";
         }
       }
 
@@ -120,6 +120,7 @@
       //Building Profile Menu
       function resetBuildingProfile(e) {
         const button_id = e.target.id.split("-")[0];
+        alert(button_id);
         const buttons = ["hist", "arch", "story"];
         for (let x = 0; x < buttons.length; x++) {
           document.getElementById(
