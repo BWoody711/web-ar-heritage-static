@@ -228,8 +228,7 @@
         let camera = document.querySelector("a-camera");
         camera.addEventListener("gps-camera-update-position", (e) => {
           if (!testEntityAdded) {
-            alert(JSON.stringify(e));
-            alert(e.detail.position.toString());
+            alert(JSON.stringify(e.detail.position));
           }
           testEntityAdded = true;
         });
