@@ -274,7 +274,16 @@
         const building = await res.json();
         //Set text popup above the building
         //Populate lower menus
-        alert(JSON.stringify(building));
+        document
+          .getElementById("hist-description-text")
+          .setHTML(building.historical_description);
+        document
+          .getElementById("building-name")
+          .setHTML(building.name + ": Building Profile");
+        document
+          .getElementById("arch-description-text")
+          .setHTML(building.architectural_description);
+        // alert(JSON.stringify(building));
       }
 
       window.onload = setTimeout(() => {
@@ -343,7 +352,7 @@
         <button class="thumbButton" onclick="backToMap()">Back to Map</button>
       </div>
       <div id="description">
-        <h3>{building_name}: Building Profile</h3>
+        <h3 id="building-name">{building_name}: Building Profile</h3>
         <div class="description-box">
           <div id="hist-description">
             <h5>Historical Description</h5>
