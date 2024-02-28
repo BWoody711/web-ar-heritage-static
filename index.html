@@ -66,13 +66,13 @@
         display: "flex";
       }
       #hist-description {
-        visibility: true;
+        visibility: visible;
       }
       #arch-description {
-        visibility: false;
+        visibility: hidden;
       }
       #story-description {
-        visibility: false;
+        visibility: hidden;
       }
       .profile-menu {
         width: 75%;
@@ -100,10 +100,11 @@
       function showDescriptions() {
         const description = document.getElementById("description");
         if (description.style.backgroundColor === "aqua") {
-          description.style.backgroundColor = "white";
+          document.getElementById("desc-button").style.backgroundColor =
+            "white";
           description.style.zIndex = "1";
         } else {
-          description.style.backgroundColor = "aqua";
+          document.getElementById("desc-button").style.backgroundColor = "aqua";
           description.style.zIndex = "4";
         }
       }
@@ -125,7 +126,7 @@
           ).style.backgroundColor = buttons[x] === button_id ? "aqua" : "white";
           document.getElementById(
             buttons[x] + "-description"
-          ).style.visibility = buttons[x] === button_id ? true : false;
+          ).style.visibility = buttons[x] === button_id ? "visible" : "hidden";
         }
       }
 
