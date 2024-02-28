@@ -232,7 +232,7 @@
       window.onload = () => {
         geofenceUpdate();
 
-        let camera = document.querySelector("a-camera");
+        let camera = document.querySelector("[gps-new-camera]");
         camera.addEventListener("gps-camera-update-position", (e) => {
           //lon, lat
           alert(JSON.stringify(e.detail.position));
