@@ -222,10 +222,11 @@
       // }
 
       window.onload = () => {
+        alert("Fired!");
         geofenceUpdate();
         let testEntityAdded = false;
 
-        let camera = document.querySelector("[gps-new-camera]");
+        let camera = document.querySelector("a-camera");
         camera.addEventListener("gps-camera-update-position", () => {
           if (!testEntityAdded) {
             alert(e.detail.position.toString());
