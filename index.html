@@ -222,13 +222,15 @@
         // }
       }
 
-      window.onload = () => {
+      function initialize() {
         geofenceUpdate();
         let camera = document.querySelector("[camera]");
         camera.addEventListener("gps-camera-update-position", () => {
           onCameraMove();
         });
-      };
+      }
+
+      window.onload = initialize();
     </script>
     <div>
       <a-scene
