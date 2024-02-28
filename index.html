@@ -253,8 +253,8 @@
             }
           }
           if (id > 0) {
-            alert(id);
-            if (document.getElementById(id).getAttribute("color") != "blue") {
+            alert(document.getElementById(id).getAttribute("color"));
+            if (document.getElementById(id).getAttribute("color") !== "blue") {
               document
                 .querySelectorAll('[color="blue"]')
                 .item(0)
