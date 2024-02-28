@@ -203,34 +203,36 @@
         geofenceUpdate();
       }, 10000);
 
-      function onCameraMove() {
-        alert("Camera moved!");
-        // const cameraPosition =
-        //   document.querySelector("[camera]").object3D.position;
-        // let entity;
-        // let distance;
-        // for (let x = 0; x < objects.length; x++) {
-        //   entity = document.getElementById(objects[y].id);
-        //   distance = cameraPosition.distanceTo(entity);
-        //   //Fix this so that it only ever picks one icon
-        //   if (distance < 25) {
-        //     alert(objects[y].id);
-        //     entity.setAttribute("color", "blue");
-        //   } else {
-        //     entity.setAttribute("color", "white");
-        //   }
-        // }
-      }
+      // function onCameraMove(e) {
+      //   // const cameraPosition =
+      //   //   document.querySelector("[camera]").object3D.position;
+      //   // let entity;
+      //   // let distance;
+      //   // for (let x = 0; x < objects.length; x++) {
+      //   //   entity = document.getElementById(objects[y].id);
+      //   //   distance = cameraPosition.distanceTo(entity);
+      //   //   //Fix this so that it only ever picks one icon
+      //   //   if (distance < 25) {
+      //   //     alert(objects[y].id);
+      //   //     entity.setAttribute("color", "blue");
+      //   //   } else {
+      //   //     entity.setAttribute("color", "white");
+      //   //   }
+      //   // }
+      // }
 
-      function initialize() {
+      window.onload = () => {
         geofenceUpdate();
+        let testEntityAdded = false;
+
         let camera = document.querySelector("[camera]");
         camera.addEventListener("gps-camera-update-position", () => {
-          onCameraMove();
+          if (!testEntityAdded) {
+            alert(e.detail.position.toString());
+          }
+          testEntityAdded = true;
         });
-      }
-
-      window.onload = initialize();
+      };
     </script>
     <div>
       <a-scene
