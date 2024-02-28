@@ -274,15 +274,12 @@
         const building = await res.json();
         //Set text popup above the building
         //Populate lower menus
-        document
-          .getElementById("hist-description-text")
-          .setHTML(building.historical_description);
-        document
-          .getElementById("building-name")
-          .setHTML(building.name + ": Building Profile");
-        document
-          .getElementById("arch-description-text")
-          .setHTML(building.architectural_description);
+        document.getElementById("hist-description-text").innerHTML =
+          building.historical_description;
+        document.getElementById("building-name").innerHTML =
+          building.name + ": Building Profile";
+        document.getElementById("arch-description-text").innerHTML =
+          building.architectural_description;
         // alert(JSON.stringify(building));
       }
 
