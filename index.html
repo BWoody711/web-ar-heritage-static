@@ -236,7 +236,7 @@
         camera.addEventListener("gps-camera-update-position", (e) => {
           //lon, lat
           alert(JSON.stringify(e.detail.position));
-          let buildings = document.getElementsByTagName("a-cylinder");
+          const buildings = document.getElementsByTagName("a-cylinder");
           alert(JSON.stringify(buildings));
           // let distance = 999999999;
           // let id = 0;
