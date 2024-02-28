@@ -58,7 +58,7 @@
         width: 100%;
         display: grid;
         grid-template-columns: auto;
-        grid-template-rows: 15% auto 30%;
+        grid-template-rows: 15% auto 25%;
         z-index: 4;
         background-color: white;
         visibility: hidden;
@@ -73,7 +73,7 @@
       } */
       .desc-div {
         position: absolute;
-        top: 0;
+        top: 15%;
       }
       #arch-description {
         visibility: hidden;
@@ -81,9 +81,14 @@
       #story-description {
         visibility: hidden;
       }
+      .audio-grid {
+        display: grid;
+        grid-template-columns: 80% 20%;
+      }
       .profile-menu {
         width: 75%;
         margin-right: 12.5%;
+        margin-left: 12.5%;
         /* align-items: center; */
         display: grid;
         grid-template-columns: auto auto auto;
@@ -342,14 +347,18 @@
           <div id="hist-description">
             <h5>Historical Description</h5>
             <div class="description-box" class="desc-div">
-              <p id="hist-description-text"></p>
-              <div>Audio</div>
+              <div class="audio-grid">
+                <p id="hist-description-text"></p>
+                <div>Audio</div>
+              </div>
             </div>
           </div>
           <div id="arch-description" class="desc-div">
             <h5>Architectural Description</h5>
-            <p id="arch-description-text"></p>
-            <div>Audio</div>
+            <div class="audio-grid">
+              <p id="arch-description-text"></p>
+              <div>Audio</div>
+            </div>
           </div>
           <div id="story-description" class="desc-div">
             <h5>Comments</h5>
