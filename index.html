@@ -211,13 +211,17 @@
           }
           if (id > 0) {
             if (document.getElementById(id).getAttribute("color") !== "blue") {
-              // document
-              //   .querySelectorAll('[color="blue"]')
-              //   .item(0)
-              //   .setAttribute("color", "white");
+              if (
+                Array.from(document.querySelectorAll('[color="blue"]')).length >
+                0
+              ) {
+                document
+                  .querySelectorAll('[color="blue"]')
+                  .item(0)
+                  .setAttribute("color", "white");
+              }
               document.getElementById(id).setAttribute("color", "blue");
-              alert("Ping!");
-              // fetchBuildingInfo(id);
+              fetchBuildingInfo(id);
             }
           }
         });
