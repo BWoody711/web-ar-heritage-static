@@ -244,13 +244,16 @@
           //Reduce this distance threshold to at most 50
           let minDistance = 500;
           for (let x = 0; x < Array.from(building_markers).length; x++) {
-            alert(camera.object3D.position, buildings[x].object3D.position);
+            alert(
+              camera.object3D.position,
+              building_markers[x].object3D.position
+            );
             // distance = camera.object3D.position.distanceTo(
-            //   buildings[x].object3D.position
+            //   building_markers[x].object3D.position
             // );
             // if (distance < minDistance) {
             //   minDistance = distance;
-            //   id = buildings[x].id;
+            //   id = building_markers[x].id;
             // }
           }
           // if (id > 0) {
@@ -263,7 +266,7 @@
           //   }
           // }
         });
-      }, 2000);
+      }, 1000);
     </script>
     <div>
       <a-scene
@@ -275,7 +278,7 @@
         <a-camera
           look-controls-enabled="false"
           arjs-device-orientation-controls="smoothingFactor: 0.1"
-          gps-new-camera="gpsMinDistance: 5; maxDistance: 200; positionMinAccuracy: 100; alert: true"
+          gps-new-camera="gpsMinDistance: 1; maxDistance: 200; positionMinAccuracy: 100; alert: true"
         ></a-camera>
         <!-- <a-entity
           material="color: red"
