@@ -222,14 +222,14 @@
       // }
 
       window.onload = () => {
-        alert("Fired!");
         geofenceUpdate();
         let testEntityAdded = false;
 
         let camera = document.querySelector("a-camera");
-        camera.addEventListener("gps-camera-update-position", () => {
+        camera.addEventListener("gps-camera-update-position", (e) => {
           if (!testEntityAdded) {
             alert(e.detail.position.toString());
+            console.log(e.detail.position.toString());
           }
           testEntityAdded = true;
         });
