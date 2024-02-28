@@ -222,7 +222,13 @@
         // }
       }
 
-      window.onload = geofenceUpdate();
+      window.onload = () => {
+        geofenceUpdate();
+        let camera = document.querySelector("[camera]");
+        camera.addEventListener("gps-camera-update-position", () => {
+          onCameraMove();
+        });
+      };
     </script>
     <div>
       <a-scene
@@ -235,7 +241,6 @@
           look-controls-enabled="false"
           arjs-device-orientation-controls="smoothingFactor: 0.1"
           gps-new-camera="gpsMinDistance: 5; maxDistance: 200; positionMinAccuracy: 10; alert: true"
-          gps-camera-update-position="onCameraMove()"
         ></a-camera>
         <!-- <a-entity
           material="color: red"
