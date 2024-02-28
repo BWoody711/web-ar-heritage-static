@@ -23,7 +23,7 @@
         height: 100vh;
         position: fixed;
         top: 0;
-        z-index: 1;
+        z-index: 2;
       }
       body {
         margin: 0;
@@ -36,24 +36,89 @@
         width: 100%;
         display: grid;
         grid-template-columns: auto auto auto;
-        z-index: 3;
+        z-index: 4;
       }
       .thumbButton {
         display: flex;
         justify-content: center;
         align-items: center;
         height: 100%;
-        z-index: 3;
+        z-index: 4;
+      }
+      #desc-button {
+        background-color: white;
       }
       a-scene {
-        z-index: 2;
+        z-index: 3;
+      }
+      #description {
+        position: absolute;
+        bottom: 10vh;
+        height: 30vh;
+        width: 100%;
+        display: grid;
+        grid-template-columns: auto;
+        grid-template-rows: 15% auto 20%;
+        z-index: 1;
+      }
+      .description-box {
+        display: "flex";
+      }
+      #hist-description {
+        visibility: true;
+        background-color: aqua;
+      }
+      #arch-description {
+        visibility: false;
+        background-color: white;
+      }
+      #stories {
+        visibility: false;
+        background-color: white;
+      }
+      .profile-menu {
+        width: 75%;
+        display: grid;
+        grid-template-columns: auto auto auto;
+        padding-bottom: 3;
+        padding-top: 3;
       }
     </style>
   </head>
   <body>
     <script>
+      //Button handlers
+      //Description button
+      function showDescriptions() {
+        const description = document.getElementById("description");
+        if (description.style.backgroundColor === "aqua") {
+          description.style.backgroundColor = "white";
+          description.style.zIndex = "1";
+        } else {
+          description.style.backgroundColor = "aqua";
+          description.style.zIndex = "4";
+        }
+      }
+
+      //Handle image buttons
+
+      //Back to map button
       function backToMap() {
         window.location.href = "https://atlas.digitalhistory.ca";
+      }
+
+      //Building Profile Menu
+      function resetBuildingProfile(e) {
+        const button_id = e.target.id.split("-")[0];
+        const buttons = ["hist", "arch", "story"];
+        for (let x = 0; x < buttons.length; x++) {
+          document.getElementById(
+            buttons[x] + "-button"
+          ).style.backgroundColor = buttons[x] === button_id ? "aqua" : "white";
+          document.getElementById(
+            buttons[x] + "-description"
+          ).style.visibility = buttons[x] === button_id ? true : false;
+        }
       }
 
       let geofence_buffer = turf.polygon([
@@ -183,6 +248,8 @@
           `https://atlas.digitalhistory.ca/api/building/${id}/`
         );
         const building = await res.json();
+        //Set text popup above the building
+        //Populate lower menus
         alert(JSON.stringify(building));
       }
 
@@ -241,9 +308,58 @@
         ></a-camera>
       </a-scene>
       <div class="thumbMenu">
-        <button class="thumbButton">Description</button>
-        <button class="thumbButton">Images</button>
+        <button
+          class="thumbButton"
+          id="desc-button"
+          onclick="showDescriptions()"
+        >
+          Description
+        </button>
+        <button class="thumbButton" id="image-button">Images</button>
         <button class="thumbButton" onclick="backToMap()">Back to Map</button>
+      </div>
+      <div id="description">
+        <h3>{building_name}: Building Profile</h3>
+        <div class="description-box">
+          <div id="hist-description">
+            <h5>Historical Description</h5>
+            <div class="description-box">
+              <p id="hist-description-text"></p>
+              <div>Audio</div>
+            </div>
+          </div>
+          <div id="arch-description">
+            <h5>Architectural Description</h5>
+            <p id="arch-description-text"></p>
+            <div>Audio</div>
+          </div>
+          <div id="story-description">
+            <h5>Comments</h5>
+          </div>
+        </div>
+        <div class="profile-menu">
+          <button
+            class="thumbButton"
+            id="hist-button"
+            onclick="resetBuildingProfile()"
+          >
+            History
+          </button>
+          <button
+            class="thumbButton"
+            id="arch-button"
+            onclick="resetBuildingProfile()"
+          >
+            Architecture
+          </button>
+          <button
+            class="thumbButton"
+            9d="story-button"
+            onclick="resetBuildingProfile()"
+          >
+            Stories
+          </button>
+        </div>
       </div>
     </div>
   </body>
