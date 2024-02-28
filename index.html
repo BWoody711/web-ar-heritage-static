@@ -243,7 +243,7 @@
           let id = 0;
           //Reduce this distance threshold to at most 50
           let minDistance = 500;
-          for (let x = 0; x < buildings.length; x++) {
+          for (let x = 0; x < Array.from(building_markers).length; x++) {
             alert(camera.object3D.position, buildings[x].object3D.position);
             // distance = camera.object3D.position.distanceTo(
             //   buildings[x].object3D.position
@@ -275,7 +275,7 @@
         <a-camera
           look-controls-enabled="false"
           arjs-device-orientation-controls="smoothingFactor: 0.1"
-          gps-new-camera="gpsMinDistance: 1; maxDistance: 200; positionMinAccuracy: 100; alert: true"
+          gps-new-camera="gpsMinDistance: 5; maxDistance: 200; positionMinAccuracy: 100; alert: true"
         ></a-camera>
         <!-- <a-entity
           material="color: red"
