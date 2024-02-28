@@ -229,18 +229,16 @@
         alert(JSON.stringify(building));
       }
 
-      window.onload = () => {
+      window.onload = setTimeout(() => {
         geofenceUpdate();
 
         const camera = document.querySelector("[gps-new-camera]");
 
         camera.addEventListener("gps-camera-update-position", (e) => {
           //lon, lat
-          setTimeout((e) => {
-            alert(JSON.stringify(e.detail.position));
-            const buildings = document.getElementsByTagName("a-cylinder");
-            alert(JSON.stringify(buildings));
-          }, 1000);
+          alert(JSON.stringify(e.detail.position));
+          const buildings = document.getElementsByTagName("a-cylinder");
+          alert(JSON.stringify(buildings));
 
           // let distance = 999999999;
           // let id = 0;
@@ -267,7 +265,7 @@
           //   }
           // }
         });
-      };
+      }, 2000);
     </script>
     <div>
       <a-scene
