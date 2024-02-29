@@ -402,18 +402,18 @@
                     building.items[y].type === "postcard"
                   ) {
                     children = image_box.getElementsByTagName("img").length;
-                    alert(building.items[y].files[0].image);
                     const img = document.createElement("img");
 
                     //Functionality for front and back side of postcards
                     img.setAttribute("src", building.items[y].files[0].image);
                     img.setAttribute("id", "image-" + y);
+                    img.setAttribute("maxWidth", "90vw");
+                    img.setOpacity(0.7);
                     img.style.zIndex = 4;
                     if (children > 0) {
                       img.style.visibility = "hidden";
                     } else {
                       img.style.visibility = "visible";
-                      alert(img.outerHTML);
                     }
                     image_box.appendChild(img);
                   }
