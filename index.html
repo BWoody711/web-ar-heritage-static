@@ -105,6 +105,27 @@
       #story-button {
         background-color: white;
       }
+      #images {
+        position: absolute;
+        bottom: 10vh;
+        height: 70vh;
+        width: 100%;
+        display: none;
+        grid-template-columns: auto;
+        grid-template-rows: 75% 25%;
+        z-index: 4;
+        margin: 5px;
+      }
+      #image-box {
+        width: 100%;
+        height: 100%;
+      }
+      #image-menu {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 30% 20% 30%;
+        column-gap: 10% 10%;
+      }
     </style>
   </head>
   <body>
@@ -120,11 +141,28 @@
         } else {
           button.style.backgroundColor = "aqua";
           description.style.display = "grid";
-          description.style.zIndex = 4;
         }
       }
 
       //Handle image buttons
+      //Get rid of some repeat code here
+      function showImages() {
+        const images = document.getElementById("images");
+        const button = document.getElementById("image-button");
+        if (button.style.backgroundColor === "aqua") {
+          button.style.backgroundColor = "white";
+          images.style.display = "none";
+        } else {
+          button.style.backgroundColor = "aqua";
+          images.style.display = "grid";
+        }
+      }
+
+      function toggleImage(id) {
+        if (id === "forward") {
+        } else {
+        }
+      }
 
       //Back to map button
       function backToMap() {
@@ -345,7 +383,9 @@
         >
           Description
         </button>
-        <button class="thumbButton" id="image-button">Images</button>
+        <button class="thumbButton" id="image-button" onclick="showImages()">
+          Images
+        </button>
         <button class="thumbButton" onclick="backToMap()">Back to Map</button>
       </div>
       <div id="description">
@@ -394,6 +434,16 @@
             Stories
           </button>
         </div>
+      </div>
+    </div>
+    <div id="images">
+      <div id="image-box">
+        <img src="" />
+      </div>
+      <div id="image-menu">
+        <button id="reverse">Back</button>
+        <button id="close" onclick="showImages()">Close</button>
+        <button id="forward">Forward</button>
       </div>
     </div>
   </body>
