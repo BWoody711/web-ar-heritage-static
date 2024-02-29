@@ -180,10 +180,12 @@
 
       function toggleImage(id) {
         alert(
-          document
-            .getElementById("image-box")
-            .getElementsByTagName("img")
-            .querySelectorAll("[display='inline']")[0].outerHTML
+          Array.from(
+            document
+              .getElementById("image-box")
+              .getElementsByTagName("img")
+              .querySelectorAll("[display='inline']")
+          ).length
         );
         const selected_image = document
           .getElementById("image-box")
