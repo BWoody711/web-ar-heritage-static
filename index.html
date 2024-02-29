@@ -186,7 +186,6 @@
         if (Array.from(images).length > 1) {
           for (let x = 0; x < images.length; x++) {
             if (images[x].style.display !== "none") {
-              // alert(images[x].outerHTML);
               selected_image = images[x].id.split("-")[1];
               break;
             }
@@ -198,6 +197,10 @@
               document.getElementById(
                 "image-" + (selected_image + 1)
               ).style.display = "inline";
+              alert(
+                document.getElementById("image-" + (selected_image + 1))
+                  .outerHTML
+              );
             } else if (id === "reverse" && selected_image > 1) {
               document.getElementById("image-" + selected_image).style.display =
                 "none";
