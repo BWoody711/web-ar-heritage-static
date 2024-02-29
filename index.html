@@ -174,8 +174,29 @@
       }
 
       function toggleImage(id) {
-        if (id === "forward") {
-        } else {
+        const selected_image = document
+          .selectElementById("image-box")
+          .getElementsByTagName("img")
+          .querySelectorAll("[display=inline]")[0].id;
+        if (
+          selected_image.split("-")[1] > 1 &&
+          selected_image.split("-")[1] <
+            Array.from(
+              document
+                .selectElementById("image-box")
+                .getElementsByTagName("img")
+            )
+        ) {
+          document.getElementById(selected_image).style.display = "none";
+          if (id === "forward") {
+            document.getElementById(
+              "image" + (selected_image.split("-")[1] + 1)
+            ).style.display = "inline";
+          } else {
+            document.getElementById(
+              "image" + (selected_image.split("-")[1] + -1)
+            ).style.display = "inline";
+          }
         }
       }
 
@@ -416,8 +437,10 @@
                     img.style.marginBottom = "25vh";
                     if (children > 0) {
                       img.style.display = "none";
+                      img.setAttribute("selected", false);
                     } else {
                       img.style.display = "inline";
+                      img.setAttribute("selected", true);
                     }
                     image_box.appendChild(img);
                   }
