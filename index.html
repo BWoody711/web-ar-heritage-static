@@ -403,15 +403,17 @@
                   ) {
                     children = image_box.getElementsByTagName("img").length;
                     const img = document.createElement("img");
-                    if (children > 0) {
-                      img.style.visibility = hidden;
-                    } else {
-                      img.style.visibility = visible;
-                    }
+
                     //Functionality for front and back side of postcards
                     img.setAttribute("src", building.items[y].files[0].image);
                     img.setAttribute("id", "image-" + x);
                     img.style.zIndex = 4;
+                    if (children > 0) {
+                      img.style.visibility = hidden;
+                    } else {
+                      img.style.visibility = visible;
+                      alert(img.outerHTML);
+                    }
                     image_box.appendChild(img);
                   }
                 }
