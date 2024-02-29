@@ -174,11 +174,16 @@
       }
 
       function toggleImage(id) {
+        alert(
+          document
+            .selectElementById("image-box")
+            .getElementsByTagName("img")
+            .querySelectorAll("[display='inline']").outerHTML
+        );
         const selected_image = document
           .selectElementById("image-box")
           .getElementsByTagName("img")
-          .querySelectorAll("[selected=true]")[0].id;
-        alert(selected_image);
+          .querySelectorAll("[display='inline']")[0].id;
         if (
           selected_image.split("-")[1] > 1 &&
           selected_image.split("-")[1] <
