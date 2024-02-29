@@ -179,42 +179,32 @@
       }
 
       function toggleImage(id) {
-        alert(id);
-        // alert(
-        //   Array.from(
-        //     document
-        //       .getElementById("image-box")
-        //       .getElementsByTagName("img")
-        //       .querySelectorAll("[display='inline']")
-        //   ).length
-        // );
-        alert(
-          Array.from(
-            document.getElementById("image-box").getElementsByTagName("img")
-          ).length
-        );
-        // const selected_image = document
-        //   .getElementById("image-box")
-        //   .getElementsByTagName("img")
-        //   .querySelectorAll("[selected=true]")[0].id;
-        // if (
-        //   selected_image.split("-")[1] > 1 &&
-        //   selected_image.split("-")[1] <
-        //     Array.from(
-        //       document.getElementById("image-box").getElementsByTagName("img")
-        //     )
-        // ) {
-        //   document.getElementById(selected_image).style.display = "none";
-        //   if (id === "forward") {
-        //     document.getElementById(
-        //       "image" + (selected_image.split("-")[1] + 1)
-        //     ).style.display = "inline";
-        //   } else {
-        //     document.getElementById(
-        //       "image" + (selected_image.split("-")[1] + -1)
-        //     ).style.display = "inline";
-        //   }
-        // }
+        const images = document
+          .getElementById("image-box")
+          .getElementsByTagName("img");
+        let selected_image = 0;
+        if (Array.from(images).length > 1) {
+          for (let x = 0; x < images.length; x++) {
+            if (images[x].style.display != "none") {
+              selected_image = images[x].id.split("-")[1];
+              break;
+            }
+          }
+        }
+        if (selected_image > 0) {
+          if (selected_image > 1 && selected_image < images.length) {
+            document.getElementById(selected_image).style.display = "none";
+            if (id === "forward") {
+              document.getElementById(
+                "image" + (selected_image.split("-")[1] + 1)
+              ).style.display = "inline";
+            } else {
+              document.getElementById(
+                "image" + (selected_image.split("-")[1] + -1)
+              ).style.display = "inline";
+            }
+          }
+        }
       }
 
       //Back to map button
