@@ -112,12 +112,12 @@
         width: 100%;
         display: none;
         grid-template-columns: auto;
-        grid-template-rows: 85% 15%;
+        grid-template-rows: 76vh 14vh;
         z-index: 4;
       }
       #image-box {
         width: 100%;
-        height: 100%;
+        max-height: 76vh;
         padding: 5%;
       }
       #image-menu {
@@ -410,6 +410,7 @@
                     img.style.maxWidth = "90vw";
                     img.style.opacity = 0.7;
                     img.style.zIndex = 4;
+                    img.style.marginTop = "5vh";
                     if (children > 0) {
                       img.style.visibility = "hidden";
                     } else {
