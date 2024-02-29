@@ -119,6 +119,8 @@
         width: 100%;
         max-height: 76vh;
         padding: 5%;
+        justify-content: center;
+        align-items: center;
       }
       #image-menu {
         width: 100%;
@@ -412,12 +414,10 @@
                     img.style.zIndex = 4;
                     img.style.marginTop = "5vh";
                     img.style.marginBottom = "5vh";
-                    img.style.alignSelf = "center";
-                    img.style.justifySelf = "center";
                     if (children > 0) {
-                      img.style.visibility = "hidden";
+                      img.style.display = "none";
                     } else {
-                      img.style.visibility = "visible";
+                      img.style.display = "inline";
                     }
                     image_box.appendChild(img);
                   }
