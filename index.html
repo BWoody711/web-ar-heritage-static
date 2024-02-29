@@ -184,13 +184,18 @@
             document
               .getElementById("image-box")
               .getElementsByTagName("img")
-              .querySelectorAll("[display='inline']")
+              .querySelectorAll("[selected=true]")
+          ).length
+        );
+        alert(
+          Array.from(
+            document.getElementById("image-box").getElementsByTagName("img")
           ).length
         );
         const selected_image = document
           .getElementById("image-box")
           .getElementsByTagName("img")
-          .querySelectorAll("[display='inline']")[0].id;
+          .querySelectorAll("[selected=true]")[0].id;
         if (
           selected_image.split("-")[1] > 1 &&
           selected_image.split("-")[1] <
