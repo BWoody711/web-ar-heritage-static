@@ -192,18 +192,18 @@
             }
           }
           if (selected_image > 0) {
-            if (selected_image > 1 && selected_image < images.length) {
+            if (id === "forward" && selected_image < images.length) {
               document.getElementById("image-" + selected_image).style.display =
                 "none";
-              if (id === "forward") {
-                document.getElementById(
-                  "image-" + (selected_image + 1)
-                ).style.display = "inline";
-              } else {
-                document.getElementById(
-                  "image-" + (selected_image - 1)
-                ).style.display = "inline";
-              }
+              document.getElementById(
+                "image-" + (selected_image + 1)
+              ).style.display = "inline";
+            } else if (id === "reverse" && selected_image > 1) {
+              document.getElementById("image-" + selected_image).style.display =
+                "none";
+              document.getElementById(
+                "image-" + (selected_image - 1)
+              ).style.display = "inline";
             }
           }
         }
