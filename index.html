@@ -429,7 +429,9 @@
                 document.getElementById("arch-description-text").innerHTML =
                   building.architectural_description;
                 //Get images
-                const image_box = document.getElementById("image-box");
+                let image_box = document.getElementById("image-box");
+                //Clear previous images
+                image_box.innerHTML = "";
                 let children = 0;
                 //Add something if there are no images associated with the building
                 for (let y = 0; y < building.items.length; y++) {
