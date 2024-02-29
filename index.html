@@ -396,14 +396,12 @@
                 //Get images
                 const image_box = document.getElementById("image-box");
                 let children = 0;
-                alert(JSON.stringify(building.items));
                 for (let y = 0; y < building.items.length; y++) {
                   if (
                     building.items[y].type === "photograph" ||
                     building.items[y].type === "postcard"
                   ) {
                     children = image_box.getElementsByTagName("img").length;
-                    alert(children);
                     const img = document.createElement("img");
                     if (children > 0) {
                       img.style.visibility = hidden;
@@ -414,7 +412,6 @@
                     img.setAttribute("src", building.items[y].files[0].image);
                     img.setAttribute("id", "image-" + x);
                     img.style.zIndex = 4;
-                    alert(img.toString());
                     image_box.appendChild(img);
                   }
                 }
@@ -509,9 +506,7 @@
       </div>
     </div>
     <div id="images">
-      <div id="image-box">
-        <img src="" />
-      </div>
+      <div id="image-box"></div>
       <div id="image-menu">
         <button id="reverse">Back</button>
         <button id="close" onclick="showImages()">Close</button>
