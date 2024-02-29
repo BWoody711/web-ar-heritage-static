@@ -181,21 +181,19 @@
       function toggleImage(id) {
         alert(
           document
-            .selectElementById("image-box")
+            .getElementById("image-box")
             .getElementsByTagName("img")
-            .querySelectorAll("[selected='true']")[0].outerHTML
+            .querySelectorAll("[display='inline']")[0].outerHTML
         );
         const selected_image = document
-          .selectElementById("image-box")
+          .getElementById("image-box")
           .getElementsByTagName("img")
           .querySelectorAll("[display='inline']")[0].id;
         if (
           selected_image.split("-")[1] > 1 &&
           selected_image.split("-")[1] <
             Array.from(
-              document
-                .selectElementById("image-box")
-                .getElementsByTagName("img")
+              document.getElementById("image-box").getElementsByTagName("img")
             )
         ) {
           document.getElementById(selected_image).style.display = "none";
