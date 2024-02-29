@@ -134,6 +134,12 @@
       //Button handlers
       //Description button
       function showDescriptions() {
+        if (
+          document.getElementById("image-button").style.backgroundColor ===
+          "aqua"
+        ) {
+          showImages();
+        }
         const description = document.getElementById("description");
         const button = document.getElementById("desc-button");
         if (button.style.backgroundColor === "aqua") {
@@ -148,6 +154,12 @@
       //Handle image buttons
       //Get rid of some repeat code here
       function showImages() {
+        if (
+          document.getElementById("desc-button").style.backgroundColor ===
+          "aqua"
+        ) {
+          showDescriptions();
+        }
         const images = document.getElementById("images");
         const button = document.getElementById("image-button");
         if (button.style.backgroundColor === "aqua") {
