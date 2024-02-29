@@ -407,8 +407,8 @@
                     //Functionality for front and back side of postcards
                     img.setAttribute("src", building.items[y].files[0].image);
                     img.setAttribute("id", "image-" + y);
-                    img.setAttribute("maxWidth", "90vw");
-                    img.setOpacity(0.7);
+                    img.style.maxWidth = "90vw";
+                    img.style.opacity = 0.7;
                     img.style.zIndex = 4;
                     if (children > 0) {
                       img.style.visibility = "hidden";
