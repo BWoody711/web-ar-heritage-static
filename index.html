@@ -44,6 +44,8 @@
         align-items: center;
         height: 100%;
         z-index: 5;
+        background-color: white;
+        border: none;
       }
       #desc-button {
         background-color: white;
@@ -98,12 +100,15 @@
       }
       #hist-button {
         background-color: aqua;
+        border: none;
       }
       #arch-button {
         background-color: white;
+        border: none;
       }
       #story-button {
         background-color: white;
+        border: none;
       }
       #images {
         position: absolute;
@@ -178,7 +183,7 @@
           document
             .selectElementById("image-box")
             .getElementsByTagName("img")
-            .querySelectorAll("[display='inline']")[0].outerHTML
+            .querySelectorAll("[selected='true']")[0].outerHTML
         );
         const selected_image = document
           .selectElementById("image-box")
