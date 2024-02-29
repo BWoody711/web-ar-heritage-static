@@ -402,8 +402,8 @@
                     building.items[y].type === "photograph" ||
                     building.items[y].type === "postcard"
                   ) {
-                    alert("Ping!");
                     children = image_box.getElementsByTagName("img").length;
+                    alert(children);
                     const img = document.createElement("img");
                     if (children > 0) {
                       img.style.visibility = hidden;
@@ -413,6 +413,7 @@
                     //Functionality for front and back side of postcards
                     img.setAttribute("src", building.items[y].files[0].image);
                     img.setAttribute("id", "image-" + x);
+                    img.style.zIndex = 4;
                     alert(img.toString());
                     image_box.appendChild(img);
                   }
