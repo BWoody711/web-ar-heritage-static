@@ -195,7 +195,7 @@
               document.getElementById("image-" + selected_image).style.display =
                 "none";
               document.getElementById(
-                "image-" + (selected_image + 1)
+                "image-" + (parseInt(selected_image) + 1).toString()
               ).style.display = "inline";
               alert(
                 document.getElementById("image-" + (selected_image + 1))
@@ -205,7 +205,7 @@
               document.getElementById("image-" + selected_image).style.display =
                 "none";
               document.getElementById(
-                "image-" + (selected_image - 1)
+                "image-" + (parseInt(selected_image) - 1).toString()
               ).style.display = "inline";
             }
           }
