@@ -396,11 +396,13 @@
                 //Get images
                 const image_box = document.getElementById("image-box");
                 let children = 0;
+                alert(JSON.stringify(building.items));
                 for (let y = 0; y < building.items.length; y++) {
                   if (
                     building.items[y].type === "photograph" ||
                     building.items[y].type === "postcard"
                   ) {
+                    alert("Ping!");
                     children = image_box.getElementsByTagName("img").length;
                     const img = document.createElement("img");
                     if (children > 0) {
