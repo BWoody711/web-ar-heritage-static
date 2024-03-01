@@ -419,18 +419,16 @@
                     .getElementsByTagName("a-sphere")
                 ).length > 0
               ) {
-                alert(
-                  document
-                    .querySelectorAll(`[color=${highlight_color}]`)
-                    .getElementsByTagName("a-sphere")
-                    .item(0).outerHTML
-                );
                 document
                   .querySelectorAll(`[color=${highlight_color}]`)
                   .getElementsByTagName("a-sphere")
                   .item(0)
                   .setAttribute("color", "white");
               }
+              alert(
+                document.getElementById(id).getElementsByTagName("a-sphere")[0]
+                  .outerHTML
+              );
               document
                 .getElementById(id)
                 .getElementsByTagName("a-sphere")[0]
