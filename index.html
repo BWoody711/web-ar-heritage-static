@@ -19,11 +19,12 @@
       video {
         padding: 0;
         margin: 0;
-        /* width: 100%; */
+        width: 140vw;
         height: 90vh;
         position: fixed;
         top: 0;
         z-index: 2;
+        left: "-20vw";
       }
       body {
         margin: 0;
@@ -408,24 +409,25 @@
               document
                 .getElementById(id)
                 .getElementsByTagName("a-sphere")[0]
-                .getAttribute("color") !== highlight_color
+                .getAttribute("color") != highlight_color
             ) {
               //Deselect currently selected element, if needed
               if (
-                document.querySelectorAll(`[color=${highlight_color}]`)[0]
-                  .parentElement.id !== id
+                document
+                  .querySelectorAll(`[color=${highlight_color}]`)[0]
+                  .parentElement.id.toString() != id.toString()
               ) {
                 document
                   .querySelectorAll(`[color=${highlight_color}]`)[0]
                   .setAttribute("color", "white");
               }
               // setTimeout(() => {
-              //Set new color
+              //Select new element
               document
                 .getElementById(id)
                 .getElementsByTagName("a-sphere")[0]
                 .setAttribute("color", highlight_color);
-              // //Get building information for closest building
+              //Get building information for closest building
               fetchBuildingInfo(id).then((building) => {
                 //Set text popup above the building
                 document
@@ -486,6 +488,8 @@
                 }
               });
               // }, 500);
+            } else {
+              alert("Same element.");
             }
           } else {
             console.log(
