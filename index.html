@@ -435,22 +435,22 @@
               //   .getElementsByTagName("a-sphere")[0]
               //   .setAttribute("color", highlight_color);
               // //Get building information for closest building
-              // fetchBuildingInfo(id).then((building) => {
-              //   //Set text popup above the building
-              //   document
-              //     .getElementById(id)
-              //     .getElementsByTagName("a-text")[0]
-              //     .setAttribute(
-              //       "value",
-              //       "Name: " +
-              //         building.name +
-              //         "\nBuilt:" +
-              //         building.date_of_construction.toString().substring(0, 3) +
-              //         "\nType:" +
-              //         building.building_category.name +
-              //         "\nStyle:" +
-              //         building.architectural_style.name
-              //     );
+              fetchBuildingInfo(id).then((building) => {
+                //   //Set text popup above the building
+                //   document
+                //     .getElementById(id)
+                //     .getElementsByTagName("a-text")[0]
+                //     .setAttribute(
+                //       "value",
+                //       "Name: " +
+                //         building.name +
+                //         "\nBuilt:" +
+                //         building.date_of_construction.toString().substring(0, 3) +
+                //         "\nType:" +
+                //         building.building_category.name +
+                //         "\nStyle:" +
+                //         building.architectural_style.name
+                //     );
                 //Populate lower menus
                 document.getElementById("hist-description-text").innerHTML =
                   building.historical_description;
