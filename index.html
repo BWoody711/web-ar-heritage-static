@@ -401,18 +401,6 @@
           }
           //If buildings are in proximity, highlight the closest one in aqua
           const highlight_color = "aqua";
-          if (
-            Array.from(
-              document
-                .querySelectorAll(`[color=${highlight_color}]`)
-                .getElementsByTagName("a-sphere")
-            ).length > 0
-          ) {
-            document
-              .querySelectorAll(`[color=${highlight_color}]`)
-              .getElementsByTagName("a-sphere")[0]
-              .setAttribute("color", "white");
-          }
           if (id > 0) {
             if (
               document
@@ -425,6 +413,10 @@
                   document.getElementById(id).getElementsByTagName("a-sphere")
                 ).length === 1
               ) {
+                document
+                  .querySelectorAll(`[color=${highlight_color}]`)
+                  .getElementsByTagName("a-sphere")[0]
+                  .setAttribute("color", "white");
                 document
                   .getElementById(id)
                   .getElementsByTagName("a-sphere")[0]
@@ -503,6 +495,10 @@
               "No buildings nearby.";
             document.getElementById("arch-description-text").innerHTML =
               "No buildings nearby.";
+            document
+              .querySelectorAll(`[color=${highlight_color}]`)
+              .getElementsByTagName("a-sphere")[0]
+              .setAttribute("color", "white");
           }
         });
       }, 1000);
