@@ -412,24 +412,27 @@
                 .getElementsByTagName("a-sphere")[0]
                 .getAttribute("color") !== highlight_color
             ) {
-              if (
-                Array.from(
-                  document
-                    .querySelectorAll(`[color=${highlight_color}]`)
-                    .getElementsByTagName("a-sphere")
-                ).length > 0
-              ) {
-                document
-                  .querySelectorAll(`[color=${highlight_color}]`)
-                  .getElementsByTagName("a-sphere")
-                  .item(0)
-                  .setAttribute("color", "white");
-              }
+              // if (
+              //   Array.from(
+              //     document
+              //       .querySelectorAll(`[color=${highlight_color}]`)
+              //       .getElementsByTagName("a-sphere")
+              //   ).length > 0
+              // ) {
+              //   document
+              //     .querySelectorAll(`[color=${highlight_color}]`)
+              //     .getElementsByTagName("a-sphere")[0]
+              //     .setAttribute("color", "white");
+              // }
               if (
                 Array.from(
                   document.getElementById(id).getElementsByTagName("a-sphere")
                 ).length === 1
               ) {
+                alert(
+                  document.getElementById(id).getElementsByTagName("a-sphere")
+                    .outerHTML
+                );
                 document
                   .getElementById(id)
                   .getElementsByTagName("a-sphere")[0]
