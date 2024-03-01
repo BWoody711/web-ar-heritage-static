@@ -389,7 +389,7 @@
           const building_markers = document.getElementsByTagName("a-entity");
           let distance = 999999999;
           let id = 0;
-          let minDistance = 100;
+          let minDistance = 300;
           for (let x = 0; x < Array.from(building_markers).length; x++) {
             distance = camera.object3D.position.distanceTo(
               building_markers[x].object3D.position
