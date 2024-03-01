@@ -410,11 +410,16 @@
                 .getElementsByTagName("a-sphere")[0]
                 .getAttribute("color") !== highlight_color
             ) {
-              let current_selected = document
-                .querySelectorAll(`[color=${highlight_color}]`)
-                .getElementsByTagName("a-sphere")[0];
-              if (current_selected) {
-                current_selected.setAttribute("color", "white");
+              //Deselect currently selected element, if needed
+              if (
+                document
+                  .querySelectorAll(`[color=${highlight_color}]`)
+                  .getElementsByTagName("a-sphere")[0]
+              ) {
+                document
+                  .querySelectorAll(`[color=${highlight_color}]`)
+                  .getElementsByTagName("a-sphere")[0]
+                  .setAttribute("color", "white");
               }
               // setTimeout(() => {
               document
