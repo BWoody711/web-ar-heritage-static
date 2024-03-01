@@ -395,9 +395,12 @@
             distance = camera.object3D.position.distanceTo(
               building_markers[x].object3D.position
             );
+            if (distance < 1000) {
+              alert(distance);
+            }
             if (distance < minDistance) {
               minDistance = distance;
-              id = building_markers[x].id;
+              id = parseInt(building_markers[x].id);
             }
           }
           //If buildings are in proximity, highlight the closest one in aqua
