@@ -401,94 +401,86 @@
           }
           //If buildings are in proximity, highlight the closest one in aqua
           const highlight_color = "aqua";
+          //Check if there is at least one element in range of the device
           if (id > 0) {
+            //Check if that element is a different element from the one currently selected
             if (
               document
                 .getElementById(id)
                 .getElementsByTagName("a-sphere")[0]
                 .getAttribute("color") !== highlight_color
             ) {
-              // if (
-              //   Array.from(
-              //     document.getElementById(id).getElementsByTagName("a-sphere")
-              //   ).length === 1
-              // ) {
-              // let current_selected = document
-              //   .querySelectorAll(`[color=${highlight_color}]`)
-              //   .getElementsByTagName("a-sphere")[0];
-              // if (
-              //   id.split("-")[1].toString() !==
-              //   current_selected.parentElement.id
-              // ) {
-              // current_selected.setAttribute("color", "white");
-              document
-                .getElementById(id)
-                .getElementsByTagName("a-sphere")[0]
-                .setAttribute("color", highlight_color);
-              // //Get building information for closest building
-              fetchBuildingInfo(id).then((building) => {
-                //Set text popup above the building
+              let current_selected = document
+                .querySelectorAll(`[color=${highlight_color}]`)
+                .getElementsByTagName("a-sphere")[0];
+              alert(current_selected.outerHTML);
+              current_selected.setAttribute("color", "white");
+              setTimeout(() => {
                 document
                   .getElementById(id)
-                  .getElementsByTagName("a-text")[0]
-                  .setAttribute(
-                    "value",
-                    (building.name
-                      ? "<b>Name: " + building.name + "</b>"
-                      : "") +
-                      (building.date_of_construction
-                        ? "\nBuilt: " +
-                          building.date_of_construction
-                            .toString()
-                            .substring(0, 3)
-                        : "") +
-                      (building.building_category
-                        ? "\nType: " + building.building_category.name
-                        : "") +
-                      (building.architectural_style
-                        ? "\nStyle: " + building.architectural_style.name
-                        : "")
-                  );
-                //Populate lower menus
-                document.getElementById("hist-description-text").innerHTML =
-                  building.historical_description;
-                document.getElementById("building-name").innerHTML =
-                  building.name + ": Building Profile";
-                document.getElementById("arch-description-text").innerHTML =
-                  building.architectural_description;
-                //Get images
-                let image_box = document.getElementById("image-box");
-                //Clear previous images
-                image_box.innerHTML = "";
-                let children = 0;
-                //Add something if there are no images associated with the building
-                for (let y = 0; y < building.items.length; y++) {
-                  if (
-                    building.items[y].type === "photograph" ||
-                    building.items[y].type === "postcard"
-                  ) {
-                    children = image_box.getElementsByTagName("img").length;
-                    const img = document.createElement("img");
+                  .getElementsByTagName("a-sphere")[0]
+                  .setAttribute("color", highlight_color);
+                // //Get building information for closest building
+                fetchBuildingInfo(id).then((building) => {
+                  //Set text popup above the building
+                  document
+                    .getElementById(id)
+                    .getElementsByTagName("a-text")[0]
+                    .setAttribute(
+                      "value",
+                      (building.name ? "Name: " + building.name : "") +
+                        (building.date_of_construction
+                          ? "\nBuilt: " +
+                            building.date_of_construction
+                              .toString()
+                              .substring(0, 3)
+                          : "") +
+                        (building.building_category
+                          ? "\nType: " + building.building_category.name
+                          : "") +
+                        (building.architectural_style
+                          ? "\nStyle: " + building.architectural_style.name
+                          : "")
+                    );
+                  //Populate lower menus
+                  document.getElementById("hist-description-text").innerHTML =
+                    building.historical_description;
+                  document.getElementById("building-name").innerHTML =
+                    building.name + ": Building Profile";
+                  document.getElementById("arch-description-text").innerHTML =
+                    building.architectural_description;
+                  //Get images
+                  let image_box = document.getElementById("image-box");
+                  //Clear previous images
+                  image_box.innerHTML = "";
+                  let children = 0;
+                  //Add something if there are no images associated with the building
+                  for (let y = 0; y < building.items.length; y++) {
+                    if (
+                      building.items[y].type === "photograph" ||
+                      building.items[y].type === "postcard"
+                    ) {
+                      children = image_box.getElementsByTagName("img").length;
+                      const img = document.createElement("img");
 
-                    //Functionality for front and back side of postcards
-                    img.setAttribute("src", building.items[y].files[0].image);
-                    img.setAttribute("id", "image-" + (y + 1));
-                    img.style.maxWidth = "90vw";
-                    img.style.opacity = 0.7;
-                    img.style.zIndex = 4;
-                    img.style.marginTop = "25vh";
-                    img.style.marginBottom = "25vh";
-                    if (children > 0) {
-                      img.style.display = "none";
-                    } else {
-                      img.style.display = "inline";
+                      //Functionality for front and back side of postcards
+                      img.setAttribute("src", building.items[y].files[0].image);
+                      img.setAttribute("id", "image-" + (y + 1));
+                      img.style.maxWidth = "90vw";
+                      img.style.opacity = 0.7;
+                      img.style.zIndex = 4;
+                      img.style.marginTop = "25vh";
+                      img.style.marginBottom = "25vh";
+                      if (children > 0) {
+                        img.style.display = "none";
+                      } else {
+                        img.style.display = "inline";
+                      }
+                      image_box.appendChild(img);
                     }
-                    image_box.appendChild(img);
                   }
-                }
-              });
-              // }
-              // }
+                });
+              }, 500);
             }
           } else {
             console.log(
