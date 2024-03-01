@@ -269,7 +269,7 @@
               objects = [];
             }
             for (let x = 0; x < buildings.features.length; x++) {
-              const id = buildings.features[x].properties.id;
+              const building_id = buildings.features[x].properties.id;
 
               const entity = document.createElement("a-entity");
               const point = turf.toWgs84(
@@ -279,9 +279,9 @@
                 latitude: point.geometry.coordinates[1],
                 longitude: point.geometry.coordinates[0],
               });
-              objects.push({ id: id });
+              objects.push({ id: building_id });
               // entity.setAttribute("look-at", "[gps-new-camera]");
-              entity.setAttribute("id", id);
+              entity.setAttribute("id", building_id);
               const sphere = document.createElement("a-sphere");
               sphere.setAttribute("radius", 2);
               sphere.setAttribute("color", "white");
@@ -395,14 +395,15 @@
             distance = camera.object3D.position.distanceTo(
               building_markers[x].object3D.position
             );
-            if (distance < 1000) {
-              alert(distance);
-            }
+            // if (distance < 1000) {
+            //   alert(distance);
+            // }
             if (distance < minDistance) {
               minDistance = distance;
               id = parseInt(building_markers[x].id);
             }
           }
+          alert(id);
           //If buildings are in proximity, highlight the closest one in aqua
           const highlight_color = "aqua";
           //Check if there is at least one element in range of the device
