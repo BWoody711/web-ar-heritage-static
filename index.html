@@ -415,15 +415,15 @@
                 .getAttribute("color") != highlight_color
             ) {
               //Deselect currently selected element, if needed
-              if (
-                document
-                  .querySelectorAll(`[color=${highlight_color}]`)[0]
-                  .parentElement.id.toString() != id.toString()
-              ) {
-                document
-                  .querySelectorAll(`[color=${highlight_color}]`)[0]
-                  .setAttribute("color", "white");
-              }
+              // if (
+              //   document
+              //     .querySelectorAll(`[color=${highlight_color}]`)[0]
+              //     .parentElement.id.toString() != id.toString()
+              // ) {
+              //   document
+              //     .querySelectorAll(`[color=${highlight_color}]`)[0]
+              //     .setAttribute("color", "white");
+              // }
               // setTimeout(() => {
               //Select new element
               document
