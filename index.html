@@ -307,6 +307,7 @@
                 z: 0,
               });
               text.setAttribute("value", "");
+              text.setAttribute("align", "center");
               entity.appendChild(text);
               scene.appendChild(entity);
             }
@@ -446,18 +447,19 @@
                     .getElementById(id)
                     .getElementsByTagName("a-text")[0]
                     .setAttribute(
-                      "value",
-                      "test\ntest"
-                      // "Name: " +
-                      //   building.name +
-                      //   "\nBuilt:" +
-                      //   building.date_of_construction
-                      //     .toString()
-                      //     .substring(0, 3) +
-                      //   "\nType:" +
-                      //   building.building_category.name +
-                      //   "\nStyle:" +
-                      //   building.architectural_style.name
+                      (building.name ? "Name: " + building.name : "") +
+                        (building.date_of_construction
+                          ? "\nBuilt:" +
+                            building.date_of_construction
+                              .toString()
+                              .substring(0, 3)
+                          : "") +
+                        (building.building_category
+                          ? "\nType:" + building.building_category.name
+                          : "") +
+                        (building.architectural_style
+                          ? "\nStyle:" + building.architectural_style.name
+                          : "")
                     );
                   //Populate lower menus
                   document.getElementById("hist-description-text").innerHTML =
