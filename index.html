@@ -278,7 +278,7 @@
             for (let x = 0; x < buildings.features.length; x++) {
               const id = buildings.features[x].properties.id;
 
-              const entity = document.createElement("a-cylinder");
+              const entity = document.createElement("a-entity");
               const point = turf.toWgs84(
                 turf.point(buildings.features[x].geometry.coordinates)
               );
@@ -289,14 +289,19 @@
               objects.push({ id: id });
               // entity.setAttribute("look-at", "[gps-new-camera]");
               entity.setAttribute("id", id);
-              entity.setAttribute("radius", 1);
-              entity.setAttribute("height", 0.2);
-              entity.setAttribute("rotation", {
-                x: 270,
-                y: 0,
-                z: 0,
+              const sphere = document.createElement("a-sphere");
+              sphere.setAttribute("radius", 2);
+              sphere.setAttribute("color", "white");
+              entity.appendChild(sphere);
+              const text = document.createElement("a-text");
+              text.setAttribute("look-at", "[gps-new-camera]");
+              text.setAttribute("scale", {
+                x: 100,
+                y: 100,
+                z: 100,
               });
-              entity.setAttribute("color", "white");
+              text.setAttribute("value", "");
+              entity.appendChild(text);
               scene.appendChild(entity);
             }
           })
@@ -383,7 +388,7 @@
         camera.addEventListener("gps-camera-update-position", (e) => {
           //lon, lat
           // alert(JSON.stringify(e.detail.position));
-          const building_markers = document.getElementsByTagName("a-cylinder");
+          const building_markers = document.getElementsByTagName("a-entity");
           // alert(Array.from(building_markers));
           let distance = 999999999;
           let id = 0;
@@ -402,25 +407,45 @@
           if (id > 0) {
             const highlight_color = "aqua";
             if (
-              document.getElementById(id).getAttribute("color") !==
-              highlight_color
+              document
+                .getElementById(id)
+                .getElementsByTagName("a-sphere")[0]
+                .getAttribute("color") !== highlight_color
             ) {
               if (
                 Array.from(
-                  document.querySelectorAll(`[color=${highlight_color}]`)
+                  document
+                    .querySelectorAll(`[color=${highlight_color}]`)
+                    .getElementsByTagName("a-sphere")
                 ).length > 0
               ) {
                 document
                   .querySelectorAll(`[color=${highlight_color}]`)
+                  .getElementsByTagName("a-sphere")
                   .item(0)
                   .setAttribute("color", "white");
               }
               document
                 .getElementById(id)
+                .getElementsByTagName("a-sphere")[0]
                 .setAttribute("color", highlight_color);
               //Get building information for closest building
               fetchBuildingInfo(id).then((building) => {
                 //Set text popup above the building
+                document
+                  .getElementById(id)
+                  .getElementsByTagName("a-text")[0]
+                  .setAttribute(
+                    "value",
+                    "Name: " +
+                      building.name +
+                      "\nBuilt:" +
+                      building.date_of_construction.toString().substring(0, 3) +
+                      "\nType:" +
+                      building.building_category.name +
+                      "\nStyle:" +
+                      building.architectural_style.name
+                  );
                 //Populate lower menus
                 document.getElementById("hist-description-text").innerHTML =
                   building.historical_description;
