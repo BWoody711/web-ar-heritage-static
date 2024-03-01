@@ -20,7 +20,7 @@
         padding: 0;
         margin: 0;
         /* width: 100%; */
-        height: 100vh;
+        height: 90vh;
         position: fixed;
         top: 0;
         z-index: 2;
@@ -389,7 +389,7 @@
           const building_markers = document.getElementsByTagName("a-entity");
           let distance = 999999999;
           let id = 0;
-          let minDistance = 300;
+          let minDistance = 500;
           for (let x = 0; x < Array.from(building_markers).length; x++) {
             distance = camera.object3D.position.distanceTo(
               building_markers[x].object3D.position
@@ -516,7 +516,7 @@
         <a-camera
           look-controls-enabled="false"
           arjs-device-orientation-controls="smoothingFactor: 0.1"
-          gps-new-camera="gpsMinDistance: 5; maxDistance: 100; positionMinAccuracy: 25; alert: true"
+          gps-new-camera="gpsMinDistance: 1; maxDistance: 500; positionMinAccuracy: 50; alert: true"
         ></a-camera>
       </a-scene>
       <div class="thumbMenu">
