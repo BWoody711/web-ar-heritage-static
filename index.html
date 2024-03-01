@@ -406,6 +406,12 @@
           //If buildings are in proximity, highlight the closest one in aqua
           if (id > 0) {
             const highlight_color = "aqua";
+            alert(
+              document
+                .getElementById(id)
+                .getElementsByTagName("a-sphere")[0]
+                .getAttribute("color")
+            );
             if (
               document
                 .getElementById(id)
