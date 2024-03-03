@@ -422,9 +422,7 @@
             ) {
               //Deselect currently selected element, if needed
               console.log(
-                document.querySelectorAll(
-                  `a-sphere[color=${highlight_color}]`
-                )[0]
+                document.querySelectorAll(`a-sphere[color=${highlight_color}]`)
               );
               if (
                 Array.from(
@@ -443,17 +441,17 @@
               // setTimeout(() => {
               //Select new element
               document
-                .getElementById(id.toString())
+                .getElementById(id)
                 .getElementsByTagName("a-sphere")[0]
                 .setAttribute("color", highlight_color);
               document
-                .getElementById(id.toString())
+                .getElementById(id)
                 .getElementsByTagName("a-text")[0].style.visibility = "visible";
               //Get building information for closest building
               fetchBuildingInfo(id).then((building) => {
                 //Set text popup above the building
                 document
-                  .getElementById(id.toSting())
+                  .getElementById(id)
                   .getElementsByTagName("a-text")[0]
                   .setAttribute(
                     "value",
@@ -528,7 +526,7 @@
               .setAttribute("color", "white");
           }
         });
-      }, 2000);
+      }, 4000);
     </script>
     <div>
       <a-scene
