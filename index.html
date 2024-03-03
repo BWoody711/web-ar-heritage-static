@@ -408,7 +408,7 @@
           //Check if there is at least one element in range of the device
           if (id > 0) {
             //Check if that element is a different element from the one currently selected
-            alert(
+            console.log(
               Array.length(
                 document
                   .getElementById(id.toString())
@@ -417,12 +417,12 @@
             );
             if (
               document
-                .getElementById(id)
+                .getElementById(id.toString())
                 .getElementsByTagName("a-sphere")[0]
                 .getAttribute("color") !== highlight_color
             ) {
               //Deselect currently selected element, if needed
-              alert(
+              console.log(
                 document
                   .getElementsByTagName("a-sphere")
                   .querySelectorAll(`[color=${highlight_color}]`)[0]
@@ -445,17 +445,17 @@
               // setTimeout(() => {
               //Select new element
               document
-                .getElementById(id)
+                .getElementById(id.toString())
                 .getElementsByTagName("a-sphere")[0]
                 .setAttribute("color", highlight_color);
               document
-                .getElementById(id)
+                .getElementById(id.toString())
                 .getElementsByTagName("a-text")[0].style.visibility = "visible";
               //Get building information for closest building
               fetchBuildingInfo(id).then((building) => {
                 //Set text popup above the building
                 document
-                  .getElementById(id)
+                  .getElementById(id.toSting())
                   .getElementsByTagName("a-text")[0]
                   .setAttribute(
                     "value",
