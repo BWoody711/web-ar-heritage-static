@@ -410,13 +410,13 @@
             //Check if that element is a different element from the one currently selected
             console.log(
               document
-                .getElementById(id.toString())
+                .getElementById(id)
                 .getElementsByTagName("a-sphere")[0]
                 .getAttribute("color")
             );
             if (
               document
-                .getElementById(id.toString())
+                .getElementById(id)
                 .getElementsByTagName("a-sphere")[0]
                 .getAttribute("color") !== highlight_color
             ) {
