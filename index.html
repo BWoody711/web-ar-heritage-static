@@ -409,11 +409,9 @@
           if (id > 0) {
             //Check if that element is a different element from the one currently selected
             console.log(
-              Array.length(
-                document
-                  .getElementById(id.toString())
-                  .getElementsByTagName("a-sphere")
-              )
+              document
+                .getElementById(id.toString())
+                .getElementsByTagName("a-sphere")
             );
             if (
               document
