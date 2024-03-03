@@ -415,17 +415,25 @@
                 .getAttribute("color") !== highlight_color
             ) {
               //Deselect currently selected element, if needed
+              alert(
+                document
+                  .getElementsByTagName("a-sphere")
+                  .querySelectorAll(`[color=${highlight_color}]`)[0]
+              );
               if (
                 Array.from(
                   document
-                    .querySelectorAll(`[color=${highlight_color}]`)[0]
                     .getElementsByTagName("a-sphere")
+                    .querySelectorAll(`[color=${highlight_color}]`)[0]
                 ).length === 1
               ) {
                 document
-                  .querySelectorAll(`[color=${highlight_color}]`)
                   .getElementsByTagName("a-sphere")[0]
+                  .querySelectorAll(`[color=${highlight_color}]`)
                   .setAttribute("color", "white");
+                document
+                  .querySelectorAll(`[color=${highlight_color}]`)
+                  .getElementsByTagName("a-text")[0].style.visiblity = "hidden";
               }
               // setTimeout(() => {
               //Select new element
@@ -433,6 +441,9 @@
                 .getElementById(id)
                 .getElementsByTagName("a-sphere")[0]
                 .setAttribute("color", highlight_color);
+              document
+                .getElementById(id)
+                .getElementsByTagName("a-text")[0].style.visibility = "visible";
               //Get building information for closest building
               fetchBuildingInfo(id).then((building) => {
                 //Set text popup above the building
