@@ -410,7 +410,9 @@
             //Check if that element is a different element from the one currently selected
             alert(
               Array.length(
-                document.getElementById(id).getElementsByTagName("a-sphere")
+                document
+                  .getElementById(id.toString())
+                  .getElementsByTagName("a-sphere")
               )
             );
             if (
