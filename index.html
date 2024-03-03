@@ -411,7 +411,8 @@
             console.log(
               document
                 .getElementById(id.toString())
-                .getElementsByTagName("a-sphere")
+                .getElementsByTagName("a-sphere")[0]
+                .getAttribute("color")
             );
             if (
               document
@@ -421,24 +422,23 @@
             ) {
               //Deselect currently selected element, if needed
               console.log(
-                document
-                  .getElementsByTagName("a-sphere")
-                  .querySelectorAll(`[color=${highlight_color}]`)[0]
+                document.querySelectorAll(
+                  `a-sphere[color=${highlight_color}]`
+                )[0]
               );
               if (
                 Array.from(
-                  document
-                    .getElementsByTagName("a-sphere")
-                    .querySelectorAll(`[color=${highlight_color}]`)[0]
+                  document.querySelectorAll(
+                    `a-sphere[color=${highlight_color}]`
+                  )
                 ).length === 1
               ) {
                 document
-                  .getElementsByTagName("a-sphere")[0]
-                  .querySelectorAll(`[color=${highlight_color}]`)
+                  .querySelectorAll(`a-sphere[color=${highlight_color}]`)
                   .setAttribute("color", "white");
-                document
-                  .querySelectorAll(`[color=${highlight_color}]`)
-                  .getElementsByTagName("a-text")[0].style.visiblity = "hidden";
+                document.querySelectorAll(
+                  `a-text[color=${highlight_color}]`
+                )[0].style.visiblity = "hidden";
               }
               // setTimeout(() => {
               //Select new element
@@ -524,8 +524,7 @@
             document.getElementById("arch-description-text").innerHTML =
               "No buildings nearby.";
             document
-              .querySelectorAll(`[color=${highlight_color}]`)
-              .getElementsByTagName("a-sphere")[0]
+              .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
               .setAttribute("color", "white");
           }
         });
