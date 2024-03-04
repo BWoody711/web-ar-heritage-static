@@ -421,9 +421,11 @@
                 .getAttribute("color") !== highlight_color
             ) {
               //Deselect currently selected element, if needed
-              console.log(
-                document.querySelectorAll(`a-sphere[color=${highlight_color}]`)
-              );
+              // console.log(
+              //   document.querySelectorAll(
+              //     `a-sphere[color=${highlight_color}]`
+              //   )
+              // );
               if (
                 Array.from(
                   document.querySelectorAll(
@@ -432,11 +434,13 @@
                 ).length === 1
               ) {
                 document
-                  .querySelectorAll(`a-sphere[color=${highlight_color}]`)
+                  .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
                   .setAttribute("color", "white");
-                document.querySelectorAll(
-                  `a-text[color=${highlight_color}]`
-                )[0].style.visiblity = "hidden";
+                document
+                  .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
+                  .parentElement.getElementsByTagName(
+                    "a-text"
+                  )[0].style.visiblity = "hidden";
               }
               // setTimeout(() => {
               //Select new element
@@ -526,7 +530,7 @@
               .setAttribute("color", "white");
           }
         });
-      }, 4000);
+      }, 3000);
     </script>
     <div>
       <a-scene
