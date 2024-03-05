@@ -89,10 +89,10 @@
         width: 90%;
       } */
       #arch-description {
-        visibility: hidden;
+        display: none;
       }
       #story-description {
-        visibility: hidden;
+        display: none;
       }
       .audio-grid {
         display: grid;
@@ -243,9 +243,8 @@
           document.getElementById(
             buttons[x] + "-button"
           ).style.backgroundColor = buttons[x] === button_id ? "aqua" : "white";
-          document.getElementById(
-            buttons[x] + "-description"
-          ).style.visibility = buttons[x] === button_id ? "visible" : "hidden";
+          document.getElementById(buttons[x] + "-description").style.display =
+            buttons[x] === button_id ? "inline" : "none";
         }
       }
 
