@@ -47,6 +47,8 @@
         z-index: 5;
         background-color: white;
         border: none;
+        border-top: 1px;
+        border-color: black;
       }
       #desc-button {
         background-color: white;
@@ -96,8 +98,8 @@
         /* align-items: center; */
         display: grid;
         grid-template-columns: auto auto auto;
-        padding-bottom: 3;
-        padding-top: 3;
+        padding-bottom: 6px;
+        padding-top: 3px;
       }
       #hist-button {
         background-color: aqua;
@@ -107,6 +109,16 @@
       }
       #story-button {
         background-color: white;
+      }
+      .profile-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        z-index: 5;
+        background-color: white;
+        border-width: 1px;
+        border-color: black;
       }
       #images {
         position: absolute;
@@ -131,6 +143,10 @@
         grid-template-columns: 30% 20% 30%;
         padding: 5%;
         gap: 5% 5%;
+      }
+      .image-button {
+        background-color: white;
+        border: none;
       }
     </style>
   </head>
@@ -565,7 +581,7 @@
             <div class="description-box" class="desc-div">
               <div class="audio-grid">
                 <p id="hist-description-text"></p>
-                <div>Audio</div>
+                <div></div>
               </div>
             </div>
           </div>
@@ -582,21 +598,21 @@
         </div>
         <div class="profile-menu">
           <button
-            class="thumbButton"
+            class="profileButton"
             id="hist-button"
             onclick="resetBuildingProfile(this.id)"
           >
             History
           </button>
           <button
-            class="thumbButton"
+            class="profileButton"
             id="arch-button"
             onclick="resetBuildingProfile(this.id)"
           >
             Architecture
           </button>
           <button
-            class="thumbButton"
+            class="profileButton"
             id="story-button"
             onclick="resetBuildingProfile(this.id)"
           >
@@ -608,9 +624,23 @@
     <div id="images">
       <div id="image-box"></div>
       <div id="image-menu">
-        <button id="reverse" onclick="toggleImage(this.id)">Back</button>
-        <button id="close" onclick="showImages()">Close</button>
-        <button id="forward" onclick="toggleImage(this.id)">Forward</button>
+        <button
+          id="reverse"
+          class="image-button"
+          onclick="toggleImage(this.id)"
+        >
+          Back
+        </button>
+        <button id="close" class="image-button" onclick="showImages()">
+          Close
+        </button>
+        <button
+          id="forward"
+          class="image-button"
+          onclick="toggleImage(this.id)"
+        >
+          Forward
+        </button>
       </div>
     </div>
   </body>
