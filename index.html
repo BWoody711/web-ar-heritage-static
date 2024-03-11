@@ -292,6 +292,7 @@
               objects = [];
             }
             for (let x = 0; x < buildings.features.length; x++) {
+              //Set attribute to increase height of bubbles
               const building_id = buildings.features[x].properties.id;
 
               const entity = document.createElement("a-entity");
@@ -335,7 +336,7 @@
 
       //Create new BBOX if user has moved within x metres of the edge of the old one
       function createGeofence() {
-        const bbox_size = 50;
+        const bbox_size = 200;
         const edge_update_distance = bbox_size * 0.8;
         console.log("Updating geofence...");
         const geo_buffer = turf.toMercator(
@@ -413,7 +414,7 @@
           const building_markers = document.getElementsByTagName("a-entity");
           let distance = 999999999;
           let id = 0;
-          let minDistance = 50;
+          let minDistance = 200;
           for (let x = 0; x < Array.from(building_markers).length; x++) {
             distance = camera.object3D.position.distanceTo(
               building_markers[x].object3D.position
@@ -564,7 +565,7 @@
         <a-camera
           look-controls-enabled="false"
           arjs-device-orientation-controls="smoothingFactor: 0.1"
-          gps-new-camera="gpsMinDistance: 5; maxDistance: 50; positionMinAccuracy: 50; alert: true"
+          gps-new-camera="gpsMinDistance: 5; maxDistance: 200; positionMinAccuracy: 50; alert: true"
         ></a-camera>
       </a-scene>
       <div class="thumbMenu">
