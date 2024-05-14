@@ -156,6 +156,21 @@
         background-color: white;
         border: 1px solid black;
       }
+      #poi-box {
+        position: absolute;
+        bottom: 10vh;
+        height: 30vh;
+        width: 88%;
+        margin: 3%;
+        display: none;
+        z-index: 4;
+        background-color: white;
+        /* visibility: hidden; */
+        padding: 3%;
+        overflow-y: scroll;
+        overflow-x: hidden;
+        background-color: white;
+      }
     </style>
   </head>
   <body>
@@ -185,7 +200,12 @@
                 }
               }
               else if (ids[x] === "poi-button") {
-                //Add code for removing POI display here
+                const pois = document.getElementById("pois")
+                const poi_button = document.getElementById("poi-button")
+                if (poi_button.style.backgroundColor === "aqua") {
+                  poi_button.style.backgroundColor = "white";
+                  pois.style.display = "none";
+                }
               }
             }
           }
@@ -205,10 +225,35 @@
             images.style.display = "grid";
           }
           else if (selected_id === "poi-button") {
-            //Code for hiding and showing POI button
+            const pois = document.getElementById("pois")
+            button.style.backgroundColor = "aqua";
+            pois.style.display = "flex";
           }
         }
       }
+
+      //Function here to populate POI box
+      function poiText() {
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const site = urlParams.get('site')
+        const pois = document.getElementById('pois')
+        if (site) {
+          if (site === "bayfield") {
+            pois.innerHTML = "Bayfield POIs"
+          }
+          else if (site === "new_hamburg") {
+            pois.innerHTML = "New Hamburg POIs"
+          }
+          else {
+            pois.innerHTML = 'No POIs available for this site.'
+          }
+        }
+        else {
+          pois.innerHTML = "No site specified."
+        }
+      }
+
       //Description button
       // function showDescriptions() {
       //   if (
@@ -454,6 +499,7 @@
       //When the application loads, creates the geofence and adds an event listener to the camera for position updates
       window.onload = setTimeout(() => {
         geofenceUpdate();
+        poiText();
 
         const camera = document.querySelector("[gps-new-camera]");
 
@@ -700,6 +746,10 @@
         >
           Forward
         </button>
+      </div>
+    </div>
+    <div id="pois">
+      <div id="poi-box">
       </div>
     </div>
   </body>
