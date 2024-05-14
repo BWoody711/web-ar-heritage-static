@@ -161,8 +161,8 @@
   <body>
     <script>
       //Button handlers
-      function toggleSelected(e) {
-        const selected_id = e.target.id
+      function toggleSelected(element) {
+        const selected_id = element.id
         ids = ["image-button", "desc-button", "poi-button"]
         for (let x=0; x<ids.length; x++) {
           //Check for selected buttons that need to be unselected
@@ -622,14 +622,14 @@
         <button
           class="thumbButton"
           id="desc-button"
-          onclick="toggleSelected(e)"
+          onclick="toggleSelected(this)"
         >
           Description
         </button>
-        <button class="thumbButton" id="image-button" onclick="toggleSelected(e)">
+        <button class="thumbButton" id="image-button" onclick="toggleSelected(this)">
           Images
         </button>
-        <button class="thumbButton" id="poi-button" onclick="toggleSelected(e)">
+        <button class="thumbButton" id="poi-button" onclick="toggleSelected(this)">
           Points of Interest
         </button>
       </div>
