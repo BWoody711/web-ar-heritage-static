@@ -161,44 +161,93 @@
   <body>
     <script>
       //Button handlers
-      //Description button
-      function showDescriptions() {
-        if (
-          document.getElementById("image-button").style.backgroundColor ===
-          "aqua"
-        ) {
-          showImages();
+      function toggleSelected(e) {
+        const selected_id = e.target.id
+        ids = ["image-button", "desc-button", "poi-button"]
+        for (let x=0; x<ids.length; x++) {
+          //Check for selected buttons that need to be unselected
+          if (document.getElementById(ids[x]).style.backgroundColor === "aqua") {
+            //Make sure double clicks do nothing
+            if (ids[x] !== selected_id) {
+              if (ids[x] === "image-button") {
+                const images = document.getElementById("images");
+                const image_button = document.getElementById("image-button");
+                if (image_button.style.backgroundColor === "aqua") {
+                  image_button.style.backgroundColor = "white";
+                  images.style.display = "none";
+                }
+              }
+              else if (ids[x] === "desc-button") {
+                const description = document.getElementById("description");
+                const desc_button = document.getElementById("desc-button");
+                if (desc_button.style.backgroundColor === "aqua") {
+                  desc_button.style.backgroundColor = "white";
+                  description.style.display = "none";
+                }
+              }
+              else if (ids[x] === "poi-button") {
+                //Add code for removing POI display here
+              }
+            }
+          }
         }
-        const description = document.getElementById("description");
-        const button = document.getElementById("desc-button");
-        if (button.style.backgroundColor === "aqua") {
-          button.style.backgroundColor = "white";
-          description.style.display = "none";
-        } else {
-          button.style.backgroundColor = "aqua";
-          description.style.display = "grid";
+        //Tell the app what happens when you click the button
+        const button = document.getElementById(selected_id)
+        //Do nothing on double clicks
+        if (button.style.backgroundColor !== "aqua") {
+          if (selected_id === "desc-button") {
+            const description = document.getElementById("description");
+            button.style.backgroundColor = "aqua";
+            description.style.display = "grid";
+          }
+          else if (selected_id === "image-button") {
+            const images = document.getElementById("images");
+            button.style.backgroundColor = "aqua";
+            images.style.display = "grid";
+          }
+          else if (selected_id === "poi-button") {
+            //Code for hiding and showing POI button
+          }
         }
       }
+      //Description button
+      // function showDescriptions() {
+      //   if (
+      //     document.getElementById("image-button").style.backgroundColor ===
+      //     "aqua"
+      //   ) {
+      //     showImages();
+      //   }
+      //   const description = document.getElementById("description");
+      //   const button = document.getElementById("desc-button");
+      //   if (button.style.backgroundColor === "aqua") {
+      //     button.style.backgroundColor = "white";
+      //     description.style.display = "none";
+      //   } else {
+      //     button.style.backgroundColor = "aqua";
+      //     description.style.display = "grid";
+      //   }
+      // }
 
       //Handle image buttons
       //Get rid of some repeat code here
-      function showImages() {
-        if (
-          document.getElementById("desc-button").style.backgroundColor ===
-          "aqua"
-        ) {
-          showDescriptions();
-        }
-        const images = document.getElementById("images");
-        const button = document.getElementById("image-button");
-        if (button.style.backgroundColor === "aqua") {
-          button.style.backgroundColor = "white";
-          images.style.display = "none";
-        } else {
-          button.style.backgroundColor = "aqua";
-          images.style.display = "grid";
-        }
-      }
+      // function showImages() {
+      //   if (
+      //     document.getElementById("desc-button").style.backgroundColor ===
+      //     "aqua"
+      //   ) {
+      //     showDescriptions();
+      //   }
+      //   const images = document.getElementById("images");
+      //   const button = document.getElementById("image-button");
+      //   if (button.style.backgroundColor === "aqua") {
+      //     button.style.backgroundColor = "white";
+      //     images.style.display = "none";
+      //   } else {
+      //     button.style.backgroundColor = "aqua";
+      //     images.style.display = "grid";
+      //   }
+      // }
 
       function toggleImage(id) {
         const images = document
@@ -231,9 +280,9 @@
       }
 
       //Back to map button
-      function backToMap() {
-        window.location.href = "https://atlas.digitalhistory.ca";
-      }
+      // function backToMap() {
+      //   window.location.href = "https://atlas.digitalhistory.ca";
+      // }
 
       //Building Profile Menu
       function resetBuildingProfile(id) {
@@ -335,6 +384,7 @@
       }
 
       //Create new BBOX if user has moved within x metres of the edge of the old one
+      //Change this so BBOX appears in front of user
       function createGeofence() {
         const bbox_size = 200;
         const edge_update_distance = bbox_size * 0.8;
@@ -391,7 +441,7 @@
       //Iterator to check GPS position every n milliseconds
       const geofenceChecker = setInterval(() => {
         geofenceUpdate();
-      }, 10000);
+      }, 3000);
 
       //Function to get building information from the atlas.digitalhistory.ca API.
       async function fetchBuildingInfo(id) {
@@ -572,14 +622,16 @@
         <button
           class="thumbButton"
           id="desc-button"
-          onclick="showDescriptions()"
+          onclick="toggleSelected(e)"
         >
           Description
         </button>
-        <button class="thumbButton" id="image-button" onclick="showImages()">
+        <button class="thumbButton" id="image-button" onclick="toggleSelected(e)">
           Images
         </button>
-        <button class="thumbButton" onclick="backToMap()">Back to Map</button>
+        <button class="thumbButton" id="poi-button" onclick="toggleSelected(e)">
+          Points of Interest
+        </button>
       </div>
       <div id="description">
         <h3 id="building-name">Searching for nearby buildings...</h3>
