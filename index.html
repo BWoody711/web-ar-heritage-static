@@ -236,7 +236,8 @@
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const responseID = urlParams.get('ResponseID')
-        window.location.href = `https://uwaterloo.ca1.qualtrics.com/jfe/form/SV_5j8DIR3GLt2Ee90?ResponseIDEntrance=${responseID}`
+        const site = urlParams.get('Site')
+        window.location.href = `https://uwaterloo.ca1.qualtrics.com/jfe/form/SV_5j8DIR3GLt2Ee90?ResponseIDEntrance=${responseID}&Site=${site}`
       }
 
       //Function here to populate POI box
