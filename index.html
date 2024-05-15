@@ -235,7 +235,7 @@
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         const site = urlParams.get('site')
-        const pois = document.getElementById('pois')
+        const pois = document.getElementById('poi-box')
         if (site) {
           if (site === "bayfield") {
             pois.innerHTML = "Bayfield POIs"
@@ -747,6 +747,10 @@
       </div>
     </div>
     <div id="pois">
+      <div id="poi-box">
+
+      </div>
+      <a href="https://uwaterloo.ca1.qualtrics.com/jfe/form/SV_5j8DIR3GLt2Ee90">Proceed to Exit Survey</a>
     </div>
   </body>
 </html>
