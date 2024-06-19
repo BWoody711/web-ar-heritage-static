@@ -458,7 +458,7 @@
       //Create new BBOX if user has moved within x metres of the edge of the old one
       //Change this so BBOX appears in front of user
       function createGeofence() {
-        const bbox_size = 15;
+        const bbox_size = 50;
         const edge_update_distance = bbox_size * 0.8;
         console.log("Updating geofence...");
         const geo_buffer = turf.toMercator(
@@ -562,7 +562,7 @@
           const building_markers = document.getElementsByTagName("a-entity");
           let distance = 999999999;
           let id = 0;
-          let minDistance = 15;
+          let minDistance = 50;
           for (let x = 0; x < Array.from(building_markers).length; x++) {
             // const bearing = calculateBearing(camera.object3D.position.coords.latitude, camera.object3D.position.coords.longitude, building_markers[x].object3D.position.coords.latitude, building_markers[x].object3D.position.coords.longitude)
 
@@ -717,7 +717,7 @@
         <a-camera
           look-controls-enabled="false"
           arjs-device-orientation-controls="smoothingFactor: 0.1"
-          gps-new-camera="gpsMinDistance: 5; maxDistance: 15; positionMinAccuracy: 20; alert: true"
+          gps-new-camera="gpsMinDistance: 5; maxDistance: 50; positionMinAccuracy: 50; alert: true"
         ></a-camera>
       </a-scene>
       <div class="thumbMenu">
