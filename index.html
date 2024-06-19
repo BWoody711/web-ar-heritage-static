@@ -191,6 +191,10 @@
         margin-left: 3px;
         margin-right: 3px;
       }
+      #poi-heading {
+        margin: 0px;
+        padding: 0px;
+      }
     </style>
   </head>
   <body>
@@ -534,13 +538,13 @@
         camera.addEventListener("gps-camera-update-position", (e) => {
           //lon, lat
 
-          // let heading;
+          let heading;
 
-          // function getHeading(position) {
-          //   if (position.coords.heading) {
-          //     heading = position.coords.heading
-          //   }
-          // }
+          function getHeading(position) {
+            if (position.coords.heading) {
+              heading = position.coords.heading
+            }
+          }
 
           // function calculateBearing(lat1, lon1, lat2, lon2) {
           //     const toRadians = degrees => degrees * Math.PI / 180;
@@ -555,9 +559,16 @@
           //     return bearing;
           // }
 
-          // if ("geolocation" in navigator) {
-          //   navigator.geolocation.getCurrentPosition(getHeading);
-          // }
+          if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(getHeading);
+          }
+
+          if(heading) {
+            alert(heading)
+          }
+          else {
+            alert("No heading found.")
+          }
 
           const building_markers = document.getElementsByTagName("a-entity");
           let distance = 999999999;
@@ -806,7 +817,7 @@
       </div>
     </div>
     <div id="pois">
-      <h3>Points of Interest</h3>
+      <h3 id="poi-heading">Points of Interest</h3>
       <div id="poi-box">
 
       </div>
