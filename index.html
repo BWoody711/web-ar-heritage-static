@@ -487,7 +487,6 @@
             position.coords.longitude,
             position.coords.latitude,
           ]);
-          console.log(gps);
           var in_geofence = turf.booleanPointInPolygon(
             gps,
             turf.toWgs84(geofence_buffer)
@@ -534,11 +533,41 @@
         //Event listener that fires every time the GPS position of the camera updates
         camera.addEventListener("gps-camera-update-position", (e) => {
           //lon, lat
+
+          let heading;
+
+          function getHeading(position) {
+            if (position.coords.heading) {
+              heading = position.coords.heading
+            }
+          }
+
+          function calculateBearing(lat1, lon1, lat2, lon2) {
+              const toRadians = degrees => degrees * Math.PI / 180;
+              const toDegrees = radians => radians * 180 / Math.PI;
+
+              const dLon = toRadians(lon2 - lon1);
+              const y = Math.sin(dLon) * Math.cos(toRadians(lat2));
+              const x = Math.cos(toRadians(lat1)) * Math.sin(toRadians(lat2)) -
+                        Math.sin(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.cos(dLon);
+              const bearing = (toDegrees(Math.atan2(y, x)) + 360) % 360; // Normalize to 0-360 degrees
+
+              return bearing;
+          }
+
+          if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(getHeading);
+          }
+
           const building_markers = document.getElementsByTagName("a-entity");
           let distance = 999999999;
           let id = 0;
           let minDistance = 50;
           for (let x = 0; x < Array.from(building_markers).length; x++) {
+            const bearing = calculateBearing(camera.object3D.position.coords.latitude, camera.object3D.position.coords.longitude, building_markers[x].object3D.position.coords.latitude, building_markers[x].object3D.position.coords.longitude)
+
+            alert(heading, bearing)
+
             distance = camera.object3D.position.distanceTo(
               building_markers[x].object3D.position
             );
