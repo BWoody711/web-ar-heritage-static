@@ -501,6 +501,12 @@
             geofence_buffer = createGeofence();
           }
         }
+        if (position.coords.heading) {
+          heading = position.coords.heading
+        }
+        else {
+          alert("No heading obtained from GPS reading.")
+        }
       }
 
       //Function for getting current GPS coordinates from device
