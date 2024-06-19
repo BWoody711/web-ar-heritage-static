@@ -569,7 +569,7 @@
               // alert(JSON.stringify(camera.object3D.position))
               const bearing = calculateBearing(camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z, building_markers[x].object3D.position.x)
 
-              alert(bearing)
+              alert(bearing, heading)
 
               distance = camera.object3D.position.distanceTo(
                 building_markers[x].object3D.position
