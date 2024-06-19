@@ -560,12 +560,13 @@
           }
 
           if(heading) {
-            alert("Heading obtained successfully.")
+            console.log("Heading obtained successfully.")
             const building_markers = document.getElementsByTagName("a-entity");
             let distance = 999999999;
             let id = 0;
             let minDistance =200;
             for (let x = 0; x < Array.from(building_markers).length; x++) {
+              alert(camera.object3D.position.coords.latitude, camera.object3D.position.coords.longitude)
               // const bearing = calculateBearing(camera.object3D.position.coords.latitude, camera.object3D.position.coords.longitude, building_markers[x].object3D.position.coords.latitude, building_markers[x].object3D.position.coords.longitude)
 
               // alert(bearing)
