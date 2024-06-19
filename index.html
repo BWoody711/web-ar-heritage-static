@@ -569,7 +569,14 @@
               // alert(JSON.stringify(camera.object3D.position))
               const bearing = calculateBearing(camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z, building_markers[x].object3D.position.x)
 
-              alert(`Bearing: ${bearing}. Heading: ${heading}`)
+              let diff = Math.abs(bearing - heading);
+
+              // Adjust if the difference is greater than 180 degrees
+              if (diff > 180) {
+                  diff = 360 - diff;
+              }
+
+              alert(`Bearing: ${bearing}. Heading: ${heading}. Difference: ${diff}`)
 
               distance = camera.object3D.position.distanceTo(
                 building_markers[x].object3D.position
@@ -577,7 +584,7 @@
               // if (distance < 1000) {
               //   alert(distance);
               // }
-              if (distance < minDistance) {
+              if (distance < minDistance && diff < 90) {
                 minDistance = distance;
                 id = parseInt(building_markers[x].id);
               }
