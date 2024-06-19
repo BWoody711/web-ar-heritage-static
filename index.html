@@ -173,11 +173,15 @@
         justify-content: left;
         align-items: flex-start;
       }
+      #exit-button-box {
+        display: flex;
+        justify-content: flex-end;
+        width: 100%;
+      }
       #exit-survey-button {
         display: flex;
         justify-content: center;
         align-items: center;
-        justify-self: right;
         height: 100%;
         z-index: 5;
         background-color: white;
@@ -775,7 +779,9 @@
       <div id="poi-box">
 
       </div>
-      <button id="exit-survey-button" onclick="proceedToExitSurvey()">Proceed to Exit Survey</a>
+      <div id="exit-button-box">
+        <button id="exit-survey-button" onclick="proceedToExitSurvey()">Proceed to Exit Survey</a>
+      </div>
     </div>
   </body>
 </html>
