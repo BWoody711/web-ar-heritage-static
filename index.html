@@ -512,7 +512,7 @@
       //Iterator to check GPS position every n milliseconds
       const geofenceChecker = setInterval(() => {
         geofenceUpdate();
-      }, 1500);
+      }, 2500);
 
       //Function to get building information from the atlas.digitalhistory.ca API.
       async function fetchBuildingInfo(id) {
@@ -706,7 +706,7 @@
               .setAttribute("color", "white");
           }
         });
-      }, 1500);
+      }, 2500);
     </script>
     <div>
       <a-scene
