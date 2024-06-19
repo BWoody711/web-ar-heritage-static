@@ -163,6 +163,8 @@
         width: 88%;
         margin: 3%;
         display: none;
+        grid-template-columns: auto;
+        grid-template-rows: 15% auto 25%;
         z-index: 4;
         background-color: white;
         padding: 3%;
@@ -170,6 +172,17 @@
         overflow-x: hidden;
         justify-content: left;
         align-items: flex-start;
+      }
+      #exit-survey-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        z-index: 5;
+        background-color: white;
+        border: 1px solid black;
+        margin-left: 3px;
+        margin-right: 3px;
       }
     </style>
   </head>
@@ -227,7 +240,7 @@
           else if (selected_id === "poi-button") {
             const pois = document.getElementById("pois")
             button.style.backgroundColor = "aqua";
-            pois.style.display = "flex";
+            pois.style.display = "grid";
           }
         }
       }
@@ -757,12 +770,11 @@
       </div>
     </div>
     <div id="pois">
+      <h5>Points of Interest</h5>
       <div id="poi-box">
 
       </div>
-      <br />
-      <br />
-      <button onclick="proceedToExitSurvey()">Proceed to Exit Survey</a>
+      <button id="exit-survey-button" onclick="proceedToExitSurvey()">Proceed to Exit Survey</a>
     </div>
   </body>
 </html>
