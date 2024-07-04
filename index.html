@@ -272,11 +272,25 @@
         const pois = document.getElementById('poi-box')
         if (site) {
           if (site === "Bayfield") {
-            pois.innerHTML = "Bayfield POIs"
+            pois.innerHTML = "<ul>"
+              + "<li>Which Bayfield hotel burned down in 1947?</li>"
+              + "<li>In the early 1900s, what did John Whiddon make behind his building on Main Street?</li>"
+              + "<li>Which structure was formerly Alf Erwin's furniture and undertaker, and later part of the Bayfield Library?</li>"
+              + "<li>Which architectural style is the Gairdner house built in?</li>"
+              + "<li>Which Bayfield hotel expanded to include Jack Day's carriage shop?</li>"
+              + "<li>Which building used to house a CIBC branch?</li>"
+              + "</ul>"
           }
           else if (site === "New Hamburg") {
-            pois.innerHTML = "New Hamburg POIs"
-          }
+            pois.innerHTML = "<ul>"
+              + "<li>When was the original wooden bridge on Huron Street built?</li>"
+              + "<li>Who built the former Ford garage on Peel Street in 1915?</li>"
+              + "<li>Why did the Queen's Hotel cease operations in 1916?</li>"
+              + "<li>How many Carnegie libraries were built in Canada?</li>"
+              + "<li>What architectural style characterizes the Commercial Hotel?</li>"
+              + "<li>Which shopping block on the south side of Huron Street is built in the Second Empire style?</li>"
+              + "</ul>"
+            }
           else {
             pois.innerHTML = 'No POIs available for this site.'
           }
