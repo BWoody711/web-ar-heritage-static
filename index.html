@@ -457,7 +457,7 @@
             }
           })
           .catch((err) => {
-            alert(err);
+              console.log(err);
           });
       }
 
@@ -576,7 +576,7 @@
                   diff = 360 - diff;
               }
 
-              alert(`ID: ${building_markers[x].id}. Bearing: ${bearing}. Heading: ${heading}. Difference: ${diff}`)
+              // alert(`ID: ${building_markers[x].id}. Bearing: ${bearing}. Heading: ${heading}. Difference: ${diff}`)
 
               distance = camera.object3D.position.distanceTo(
                 building_markers[x].object3D.position
@@ -717,7 +717,7 @@
             }
           }
           else {
-            alert("No heading found in function.")
+            console.log("No heading found in function.")
           }
         });
       }, 1000);
