@@ -568,34 +568,32 @@
         geofenceUpdate();
         poiText();
 
-        function calculateBearing(lat1, lon1, lat2, lon2) {
-            const toRadians = degrees => degrees * Math.PI / 180;
-            const toDegrees = radians => radians * 180 / Math.PI;
-
-            const dLon = toRadians(lon2 - lon1);
-            const y = Math.sin(dLon) * Math.cos(toRadians(lat2));
-            const x = Math.cos(toRadians(lat1)) * Math.sin(toRadians(lat2)) -
-                      Math.sin(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.cos(dLon);
-            const bearing = (toDegrees(Math.atan2(y, x)) + 360) % 360; // Normalize to 0-360 degrees
-
-            return bearing;
-        }
-
-        let running = false;
-
         function updateBuilding() {
           const buildings_array = Array.from(building_markers)
           alert(buildings_array.length)
-          if (!running && buildings_array.length > 0) {
-            // running=true
+          if (buildings_array.length > 0) {
             const building_markers = document.getElementsByTagName("a-entity");
             let distance = 999999999;
             let id = 0;
             let minDistance = 200;
             let diff;
+
+            function calculateBearing(lat1, lon1, lat2, lon2) {
+                const toRadians = degrees => degrees * Math.PI / 180;
+                const toDegrees = radians => radians * 180 / Math.PI;
+
+                const dLon = toRadians(lon2 - lon1);
+                const y = Math.sin(dLon) * Math.cos(toRadians(lat2));
+                const x = Math.cos(toRadians(lat1)) * Math.sin(toRadians(lat2)) -
+                          Math.sin(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.cos(dLon);
+                const bearing = (toDegrees(Math.atan2(y, x)) + 360) % 360; // Normalize to 0-360 degrees
+
+                return bearing;
+            }
             
             for (let x = 0; x < buildings_array.length; x++) {
               // alert(JSON.stringify(camera.object3D.position))
+
               const bearing = calculateBearing(camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z, building_markers[x].object3D.position.x)
               if (heading) {
                 console.log("Direction mode.")
