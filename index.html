@@ -748,7 +748,7 @@
           updateBuilding()
         });
 
-        camera.addEventListenet("deviceorientation", () => {
+        camera.addEventListenet("orientationchange", () => {
           updateBuilding()
         })
       }, 1000);
