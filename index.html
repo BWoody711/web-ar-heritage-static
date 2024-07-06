@@ -589,6 +589,7 @@
             // alert(JSON.stringify(camera.object3D.position))
             const bearing = calculateBearing(camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z, building_markers[x].object3D.position.x)
             if (heading) {
+              console.log("Direction mode.")
               diff = Math.abs(bearing - heading);
             }
             else {
@@ -601,7 +602,7 @@
                 diff = 360 - diff;
             }
 
-            // alert(`ID: ${building_markers[x].id}. Bearing: ${bearing}. Heading: ${heading}. Difference: ${diff}`)
+            console.log(`ID: ${building_markers[x].id}. Bearing: ${bearing}. Heading: ${heading}. Difference: ${diff}`)
 
             distance = camera.object3D.position.distanceTo(
               building_markers[x].object3D.position
