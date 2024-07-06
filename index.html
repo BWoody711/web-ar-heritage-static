@@ -589,7 +589,7 @@
             const building_markers = document.getElementsByTagName("a-entity");
             let distance = 999999999;
             let id = 0;
-            let minDistance =200;
+            let minDistance = 200;
             for (let x = 0; x < Array.from(building_markers).length; x++) {
               // alert(JSON.stringify(camera.object3D.position))
               const bearing = calculateBearing(camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z, building_markers[x].object3D.position.x)
@@ -609,7 +609,7 @@
               // if (distance < 1000) {
               //   alert(distance);
               // }
-              if (distance < minDistance && diff < 90) {
+              if (distance < minDistance && diff < 50) {
                 minDistance = distance;
                 id = parseInt(building_markers[x].id);
               }
@@ -688,7 +688,7 @@
                   document.getElementById("hist-description-text").innerHTML =
                     building.historical_description;
                   document.getElementById("building-name").innerHTML =
-                    building.name + ": Building Profile";
+                    building.name;
                   document.getElementById("arch-description-text").innerHTML =
                     building.architectural_description;
                   //Get images
@@ -731,11 +731,11 @@
                 "No buildings within " + minDistance + " metres of this device."
               );
               document.getElementById("hist-description-text").innerHTML =
-                "No buildings nearby.";
+                "No nearby buildings in front of your device. Try rotating your device.";
               document.getElementById("building-name").innerHTML =
-                "No buildings nearby.";
+                "No nearby buildings in view.";
               document.getElementById("arch-description-text").innerHTML =
-                "No buildings nearby.";
+                "No nearby buildings in front of your device. Try rotating your device.";
               document
                 .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
                 .setAttribute("color", "white");
