@@ -577,7 +577,7 @@
 
       function updateBuilding() {
         if (!running) {
-          running=true
+          // running=true
           const building_markers = document.getElementsByTagName("a-entity");
           let distance = 999999999;
           let id = 0;
@@ -733,7 +733,7 @@
               .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
               .setAttribute("color", "white");
           }
-          running=false;
+          // running=false;
         }
       }
 
