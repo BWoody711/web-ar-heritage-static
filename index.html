@@ -567,7 +567,10 @@
 
         const camera = document.querySelector("[gps-new-camera]");
 
-        function updateBuilding(e) {
+        //Event listener that fires every time the GPS position of the camera updates
+        camera.addEventListener("gps-camera-update-position", (e) => {
+          //lon, lat
+
           function calculateBearing(lat1, lon1, lat2, lon2) {
               const toRadians = degrees => degrees * Math.PI / 180;
               const toDegrees = radians => radians * 180 / Math.PI;
@@ -606,7 +609,7 @@
               // if (distance < 1000) {
               //   alert(distance);
               // }
-              if (distance < minDistance && diff < 150) {
+              if (distance < minDistance && diff < 120) {
                 minDistance = distance;
                 id = parseInt(building_markers[x].id);
               }
@@ -741,11 +744,6 @@
           else {
             console.log("No heading found in function.")
           }
-        }
-
-        //Event listener that fires every time the GPS position of the camera updates
-        camera.addEventListener("gps-camera-update-position", (e) => {
-          updateBuilding()
         });
       }, 1000);
     </script>
