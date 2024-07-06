@@ -743,10 +743,23 @@
           updateBuilding()
         });
 
-        window.addEventListener("deviceorientation", () => {
-          alert("Turned!")
-          updateBuilding()
-        })
+        let initialAlpha = null;
+
+        window.addEventListener('deviceorientation', function(event) {
+            // Store the initial orientation
+            if (initialAlpha === null) {
+                initialAlpha = event.alpha;
+                return;
+            }
+
+            // Calculate the differences in orientation
+            const deltaAlpha = Math.abs(event.alpha - initialAlpha);
+
+            // Check if any of the differences exceed 30 degrees
+            if (deltaAlpha > 30) {
+                alert("Rotated 30+")
+            }
+        });
       }, 2000);
     </script>
     <div>
