@@ -753,23 +753,23 @@
           updateBuilding()
         });
 
-        let initialAlpha = null;
+        // let initialAlpha = null;
 
-        window.addEventListener('deviceorientation', function(event) {
-            // Store the initial orientation
-            if (initialAlpha === null) {
-                initialAlpha = event.alpha;
-                return;
-            }
+        // window.addEventListener('deviceorientation', function(event) {
+        //     // Store the initial orientation
+        //     if (initialAlpha === null) {
+        //         initialAlpha = event.alpha;
+        //         return;
+        //     }
 
-            // Calculate the differences in orientation
-            const deltaAlpha = Math.abs(event.alpha - initialAlpha);
+        //     // Calculate the differences in orientation
+        //     const deltaAlpha = Math.abs(event.alpha - initialAlpha);
 
-            if (deltaAlpha > 120) {
-                updateBuilding()
-            }
-        });
-      }, 3000);
+        //     if (deltaAlpha > 120) {
+        //         updateBuilding()
+        //     }
+        // });
+      }, 1000);
     </script>
     <div>
       <a-scene
