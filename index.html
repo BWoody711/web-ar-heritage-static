@@ -573,8 +573,11 @@
           return bearing;
       }
 
+      let running = false;
+
       function updateBuilding() {
-          alert("Fired!")
+        if (!running) {
+          running=true
           const building_markers = document.getElementsByTagName("a-entity");
           let distance = 999999999;
           let id = 0;
@@ -731,6 +734,8 @@
               .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
               .setAttribute("color", "white");
           }
+          running=false;
+        }
       }
 
 
@@ -758,8 +763,7 @@
             // Calculate the differences in orientation
             const deltaAlpha = Math.abs(event.alpha - initialAlpha);
 
-            // Check if any of the differences exceed 30 degrees
-            if (deltaAlpha > 90) {
+            if (deltaAlpha > 120) {
                 updateBuilding()
             }
         });
