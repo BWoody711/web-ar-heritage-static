@@ -756,8 +756,8 @@
             const deltaAlpha = Math.abs(event.alpha - initialAlpha);
 
             // Check if any of the differences exceed 30 degrees
-            if (deltaAlpha > 30) {
-                alert("Rotated 30+")
+            if (deltaAlpha > 90) {
+                updateBuilding()
             }
         });
       }, 2000);
