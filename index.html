@@ -577,6 +577,7 @@
 
       function updateBuilding() {
         const buildings_array = Array.from(building_markers)
+        alert(buildings_array.length)
         if (!running && buildings_array.length > 0) {
           // running=true
           const building_markers = document.getElementsByTagName("a-entity");
