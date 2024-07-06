@@ -212,6 +212,7 @@
         ids = ["image-button", "desc-button", "poi-button"]
         for (let x=0; x<ids.length; x++) {
           //Check for selected buttons that need to be unselected
+          alert(document.getElementById("desc-button").style.backgroundColor)
           if (document.getElementById(ids[x]).style.backgroundColor === "aqua") {
             alert(ids[x])
             alert("Selected: " + selected_id)
