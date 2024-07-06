@@ -576,14 +576,16 @@
       let running = false;
 
       function updateBuilding() {
-        if (!running) {
+        const buildings_array = Array.from(building_markers)
+        if (!running && buildings_array.length > 0) {
           // running=true
           const building_markers = document.getElementsByTagName("a-entity");
           let distance = 999999999;
           let id = 0;
           let minDistance = 200;
           let diff;
-          for (let x = 0; x < Array.from(building_markers).length; x++) {
+          
+          for (let x = 0; x < buildings_array.length; x++) {
             // alert(JSON.stringify(camera.object3D.position))
             const bearing = calculateBearing(camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z, building_markers[x].object3D.position.x)
             if (heading) {
