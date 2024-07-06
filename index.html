@@ -726,7 +726,7 @@
             }
           }
           else {
-            console.log("No heading found in function.")
+              alert("No heading found in function.")
           }
       }
 
@@ -743,10 +743,10 @@
           updateBuilding()
         });
 
-        window.addEventListener("orientationchange", () => {
-          alert("Turned!")
-          updateBuilding()
-        })
+        // window.addEventListener("orientationchange", () => {
+        //   alert("Turned!")
+        //   updateBuilding()
+        // })
       }, 2000);
     </script>
     <div>
