@@ -49,7 +49,7 @@
         border: 1px solid black;
       }
       #desc-button {
-        background-color: white;
+        background-color: aqua;
       }
       a-scene {
         z-index: 3;
@@ -60,12 +60,11 @@
         height: 30vh;
         width: 88%;
         margin: 3%;
-        display: none;
+        display: grid;
         grid-template-columns: auto;
         grid-template-rows: 15% auto 25%;
         z-index: 4;
         background-color: white;
-        /* visibility: hidden; */
         padding: 3%;
       }
       .description-box {
@@ -744,6 +743,7 @@
         });
 
         window.addEventListener("orientationchange", () => {
+          alert("Turned!")
           updateBuilding()
         })
       }, 1000);
