@@ -210,59 +210,59 @@
       //Button handlers
       function toggleSelected(selected_id) {
         ids = ["image-button", "desc-button", "poi-button"]
-        for (let x=0; x<ids.length; x++) {
-          //Check for selected buttons that need to be unselected
-          alert(document.getElementById("desc-button").style.backgroundColor)
-          if (document.getElementById(ids[x]).style.backgroundColor === "aqua") {
-            alert(ids[x])
-            alert("Selected: " + selected_id)
-            //Make sure double clicks do nothing
-            if (ids[x] !== selected_id) {
-              if (ids[x] === "image-button") {
-                const images = document.getElementById("images");
-                const image_button = document.getElementById("image-button");
-                if (image_button.style.backgroundColor === "aqua") {
-                  image_button.style.backgroundColor = "white";
-                  images.style.display = "none";
+        if (document.getElementById("desc-button").style.backgroundColor) {
+          for (let x=0; x<ids.length; x++) {
+            //Check for selected buttons that need to be unselected
+            
+            if (document.getElementById(ids[x]).style.backgroundColor === "aqua") {
+              //Make sure double clicks do nothing
+              if (ids[x] !== selected_id) {
+                if (ids[x] === "image-button") {
+                  const images = document.getElementById("images");
+                  const image_button = document.getElementById("image-button");
+                  if (image_button.style.backgroundColor === "aqua") {
+                    image_button.style.backgroundColor = "white";
+                    images.style.display = "none";
+                  }
                 }
-              }
-              else if (ids[x] === "desc-button") {
-                const description = document.getElementById("description");
-                const desc_button = document.getElementById("desc-button");
-                if (desc_button.style.backgroundColor === "aqua") {
-                  desc_button.style.backgroundColor = "white";
-                  description.style.display = "none";
+                else if (ids[x] === "desc-button") {
+                  const description = document.getElementById("description");
+                  const desc_button = document.getElementById("desc-button");
+                  if (desc_button.style.backgroundColor === "aqua") {
+                    desc_button.style.backgroundColor = "white";
+                    description.style.display = "none";
+                  }
                 }
-              }
-              else if (ids[x] === "poi-button") {
-                const pois = document.getElementById("pois")
-                const poi_button = document.getElementById("poi-button")
-                if (poi_button.style.backgroundColor === "aqua") {
-                  poi_button.style.backgroundColor = "white";
-                  pois.style.display = "none";
+                else if (ids[x] === "poi-button") {
+                  const pois = document.getElementById("pois")
+                  const poi_button = document.getElementById("poi-button")
+                  if (poi_button.style.backgroundColor === "aqua") {
+                    poi_button.style.backgroundColor = "white";
+                    pois.style.display = "none";
+                  }
                 }
               }
             }
           }
-        }
-        //Tell the app what happens when you click the button
-        const button = document.getElementById(selected_id)
-        //Do nothing on double clicks
-        if (button.style.backgroundColor !== "aqua") {
-          if (selected_id === "desc-button") {
-            const description = document.getElementById("description");
-            button.style.backgroundColor = "aqua";
-            description.style.display = "grid";
-          }
-          else if (selected_id === "image-button") {
-            const images = document.getElementById("images");
-            button.style.backgroundColor = "aqua";
-            images.style.display = "grid";
-          }
-          else if (selected_id === "poi-button") {
-            const pois = document.getElementById("pois")
-            button.style.backgroundColor = "aqua";
-            pois.style.display = "grid";
+          //Tell the app what happens when you click the button
+          const button = document.getElementById(selected_id)
+          //Do nothing on double clicks
+          if (button.style.backgroundColor !== "aqua") {
+            if (selected_id === "desc-button") {
+              const description = document.getElementById("description");
+              button.style.backgroundColor = "aqua";
+              description.style.display = "grid";
+            }
+            else if (selected_id === "image-button") {
+              const images = document.getElementById("images");
+              button.style.backgroundColor = "aqua";
+              images.style.display = "grid";
+            }
+            else if (selected_id === "poi-button") {
+              const pois = document.getElementById("pois")
+              button.style.backgroundColor = "aqua";
+              pois.style.display = "grid";
+            }
           }
         }
       }
