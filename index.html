@@ -213,6 +213,7 @@
         for (let x=0; x<ids.length; x++) {
           //Check for selected buttons that need to be unselected
           if (document.getElementById(ids[x]).style.backgroundColor === "aqua") {
+            alert(ids[x], selected_id)
             //Make sure double clicks do nothing
             if (ids[x] !== selected_id) {
               if (ids[x] === "image-button") {
