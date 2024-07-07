@@ -597,7 +597,7 @@
                   const building_markers = document.getElementsByTagName("a-entity");
                   let distance = 999999999;
                   let id = 0;
-                  let minDistance = 200;
+                  let minDistance = 75;
                   for (let x = 0; x < Array.from(building_markers).length; x++) {
                     // alert(JSON.stringify(camera.object3D.position))
                     const bearing = calculateBearing(camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z, building_markers[x].object3D.position.x)
@@ -781,7 +781,7 @@
             const building_markers = document.getElementsByTagName("a-entity");
             let distance = 999999999;
             let id = 0;
-            let minDistance = 200;
+            let minDistance = 75;
             for (let x = 0; x < Array.from(building_markers).length; x++) {
               // alert(JSON.stringify(camera.object3D.position))
               const bearing = calculateBearing(camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z, building_markers[x].object3D.position.x)
@@ -801,7 +801,7 @@
               // if (distance < 1000) {
               //   alert(distance);
               // }
-              if (distance < minDistance && diff < 120) {
+              if (distance < minDistance && diff < 60) {
                 minDistance = distance;
                 id = parseInt(building_markers[x].id);
               }
