@@ -581,11 +581,11 @@
                     // alert(JSON.stringify(camera.object3D.position))
                     const bearing = calculateBearing(building_markers[x].object3D.position.z, building_markers[x].object3D.position.x, camera.object3D.position.z, camera.object3D.position.x)
 
-                    let heading = event.alpha
+                    let heading = event.alpha + 180
 
-                    // if (heading > 360) {
-                    //   heading = heading - 360
-                    // }
+                    if (heading > 360) {
+                      heading = heading - 360
+                    }
 
                     let diff = Math.abs(bearing - heading);
 
