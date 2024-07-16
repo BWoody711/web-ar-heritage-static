@@ -540,12 +540,8 @@
 
         let initialAlpha = null;
 
-        let running = false;
-
         window.addEventListener('deviceorientation', function(event) {
             // Store the initial alpha orientation
-            if (!running) {
-              running = true;
 
               if (initialAlpha === null) {
                   initialAlpha = event.alpha;
@@ -722,8 +718,6 @@
                   // Reset initial alpha to the new value
                   initialAlpha = event.alpha;
               }
-              running = false;
-            }
         });
 
         const camera = document.querySelector("[gps-new-camera]");
