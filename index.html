@@ -552,7 +552,7 @@
               const deltaAlpha = Math.abs(event.alpha - initialAlpha);
 
               // Check if the difference exceeds 90 degrees
-              if (deltaAlpha > 60) {
+              if (deltaAlpha > 30) {
                   function calculateBearing(lat1, lon1, lat2, lon2) {
                       const toRadians = degrees => degrees * Math.PI / 180;
                       const toDegrees = radians => radians * 180 / Math.PI;
@@ -581,7 +581,13 @@
                     // alert(JSON.stringify(camera.object3D.position))
                     const bearing = calculateBearing(building_markers[x].object3D.position.z, building_markers[x].object3D.position.x, camera.object3D.position.z, camera.object3D.position.x)
 
-                    let diff = Math.abs(bearing - event.alpha);
+                    let heading = event.alpha + 90
+
+                    if (heading > 360) {
+                      heading = heading - 360
+                    }
+
+                    let diff = Math.abs(bearing - heading);
 
                     // Adjust if the difference is greater than 180 degrees
                     if (diff > 180) {
