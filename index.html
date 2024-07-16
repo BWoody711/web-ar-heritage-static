@@ -575,7 +575,7 @@
                   const building_markers = document.getElementsByTagName("a-entity");
                   let distance = 999;
                   let id = 0;
-                  let minDistance = 50;
+                  let minDistance = 150;
                   for (let x = 0; x < Array.from(building_markers).length; x++) {
                     // alert(JSON.stringify(camera.object3D.position))
                     const bearing = calculateBearing(camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z, building_markers[x].object3D.position.x)
