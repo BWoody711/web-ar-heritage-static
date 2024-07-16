@@ -590,6 +590,9 @@
 
                     // alert(`ID: ${building_markers[x].id}. Bearing: ${bearing}. Heading: ${event.alpha}. Difference: ${diff}`)
 
+                    document.getElementById("hist-description-text").innerHTML =
+                      `ID: ${building_markers[x].id}. Bearing: ${bearing}. Heading: ${event.alpha}. Difference: ${diff}`;
+
                     distance = camera.object3D.position.distanceTo(
                       building_markers[x].object3D.position
                     );
@@ -705,8 +708,8 @@
                     console.log(
                       "No buildings within " + minDistance + " metres of this device."
                     );
-                    document.getElementById("hist-description-text").innerHTML =
-                      "No nearby buildings in front of your device. Try rotating your device.";
+                    // document.getElementById("hist-description-text").innerHTML =
+                    //   "No nearby buildings in front of your device. Try rotating your device.";
                     document.getElementById("building-name").innerHTML =
                       "No nearby buildings in view.";
                     document.getElementById("arch-description-text").innerHTML =
