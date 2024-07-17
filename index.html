@@ -386,7 +386,7 @@
           "," +
           bbox.geometry.coordinates[0][2][1].toString();
         const res = await fetch(
-          "https://atlas.digitalhistory.ca/api/buildings/?bbox=" + bbox_string
+          "https://atlas.digitalhistory.ca/api/buildings/?ar=y&bbox=" + bbox_string
         );
         const data = await res.json();
         return data;
