@@ -539,200 +539,204 @@
         poiText();
 
         let initialAlpha = null;
+        let lastMovementTime = Date.now();
+        const threshold = 1;
+        const timeoutDuration = 500;
+        const minTotalRotation = 45;
+        let totalRotation = 0;
+        let heading = null;
 
-        window.addEventListener('deviceorientation', function(event) {
-            // Store the initial alpha orientation
+        function handleDeviceOrientation(event) {
+            // Calculate the difference in alpha orientation
+            const currentAlpha = event.alpha;
 
-              let lastMovementTime = Date.now();
-              const threshold = 1;
-              const timeoutDuration = 500;
-              const minTotalRotation = 30;
-              let totalRotation = 0;
-
-              if (initialAlpha === null) {
-                  initialAlpha = event.alpha;
-                  return;
-              }
-
-              totalRotation += event.alpha
-
-              // Calculate the difference in alpha orientation
-              const deltaAlpha = Math.abs(event.alpha - initialAlpha);
-
+            if (initialAlpha !== null) {
+              const deltaAlpha = Math.abs(currentAlpha - initialAlpha);
+              totalRotation += deltaAlpha
               if (deltaAlpha > threshold) {
                 lastMovementTime = Date.now();
-              } else if (Date.now() - lastMovementTime > timeoutDuration && totalRotation >= minTotalRotation) {
-                  totalRotation = 0; 
-
-                  function calculateBearing(lat1, lon1, lat2, lon2) {
-                      const toRadians = degrees => degrees * Math.PI / 180;
-                      const toDegrees = radians => radians * 180 / Math.PI;
-
-                      const dLon = toRadians(lon2 - lon1);
-                      const y = Math.sin(dLon) * Math.cos(toRadians(lat2));
-                      const x = Math.cos(toRadians(lat1)) * Math.sin(toRadians(lat2)) -
-                                Math.sin(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.cos(dLon);
-                      const bearing = (toDegrees(Math.atan2(y, x)) + 360) % 360; // Normalize to 0-360 degrees
-
-                      return bearing;
-                  }
-
-                  // document.getElementById("hist-description-text").innerHTML =
-                  //   "";
-                  // document.getElementById("building-name").innerHTML =
-                  //   "Searching for nearest building...";
-                  // document.getElementById("arch-description-text").innerHTML =
-                  //   "";
-
-                  const building_markers = document.getElementsByTagName("a-entity");
-                  let distance = 999;
-                  let id = 0;
-                  let minDistance = 100;
-                  for (let x = 0; x < Array.from(building_markers).length; x++) {
-                    // alert(JSON.stringify(camera.object3D.position))
-                    const bearing = calculateBearing(building_markers[x].object3D.position.x, camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z)
-
-                    let heading = event.alpha
-
-                    if (heading > 360) {
-                      heading = heading - 360
-                    }
-
-                    let diff = Math.abs(bearing - heading);
-
-                    // Adjust if the difference is greater than 180 degrees
-                    if (diff > 180) {
-                        diff = 360 - diff;
-                    }
-
-                    document.getElementById("hist-description-text").innerHTML =
-                      `ID: ${building_markers[x].id}. Bearing: ${bearing}. Heading: ${event.alpha}. Difference: ${diff}`;
-
-                    distance = camera.object3D.position.distanceTo(
-                      building_markers[x].object3D.position
-                    );
-                    // if (distance < 1000) {
-                    //   alert(distance);
-                    // }
-                    if (distance < minDistance && diff < 60) {
-                      minDistance = distance;
-                      id = parseInt(building_markers[x].id);
-                    }
-                  }
-                  //If buildings are in proximity, highlight the closest one in aqua
-                  const highlight_color = "aqua";
-                  //Check if there is at least one element in range of the device
-                  if (id > 0) {
-                    //Check if that element is a different element from the one currently selected
-                    if (
-                      document
-                        .getElementById(id)
-                        .getElementsByTagName("a-sphere")[0]
-                        .getAttribute("color") !== highlight_color
-                    ) {
-                      //Deselect currently selected element, if needed
-                      if (
-                        Array.from(
-                          document.querySelectorAll(
-                            `a-sphere[color=${highlight_color}]`
-                          )
-                        ).length === 1
-                      ) {
-                        document
-                          .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
-                          .setAttribute("color", "white");
-                        document
-                          .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
-                          .parentElement.getElementsByTagName(
-                            "a-text"
-                          )[0].style.visiblity = "hidden";
-                      }
-                      //Select new element
-                      document
-                        .getElementById(id)
-                        .getElementsByTagName("a-sphere")[0]
-                        .setAttribute("color", highlight_color);
-                      document
-                        .getElementById(id)
-                        .getElementsByTagName("a-text")[0].style.visibility = "visible";
-                      //Get building information for closest building
-                      //Set text popup above the building
-                      fetchBuildingInfo(id).then((building) => {
-                        document
-                          .getElementById(id)
-                          .getElementsByTagName("a-text")[0]
-                          .setAttribute(
-                            "value",
-                            (building.name ? "Name: " + building.name : "") +
-                              (building.date_of_construction
-                                ? "\nBuilt: " +
-                                  building.date_of_construction
-                                    .toString()
-                                    .substring(0, 4)
-                                : "") +
-                              (building.building_category
-                                ? "\nType: " + building.building_category.name
-                                : "") +
-                              (building.architectural_style
-                                ? "\nStyle: " + building.architectural_style.name
-                                : "")
-                          );
-                        //Populate lower menus
-                        document.getElementById("hist-description-text").innerHTML =
-                          building.historical_description;
-                        document.getElementById("building-name").innerHTML =
-                          building.name;
-                        document.getElementById("arch-description-text").innerHTML =
-                          building.architectural_description;
-                        //Get images
-                        let image_box = document.getElementById("image-box");
-                        //Clear previous images
-                        image_box.innerHTML = "";
-                        let children = 0;
-                        //Add something if there are no images associated with the building
-                        for (let y = 0; y < building.items.length; y++) {
-                          if (
-                            building.items[y].type === "photograph" ||
-                            building.items[y].type === "postcard"
-                          ) {
-                            children = image_box.getElementsByTagName("img").length;
-                            const img = document.createElement("img");
-
-                            //Functionality for front and back side of postcards
-                            img.setAttribute("src", building.items[y].files[0].image);
-                            img.setAttribute("id", "image-" + (y + 1));
-                            img.style.maxWidth = "90vw";
-                            img.style.opacity = 0.7;
-                            img.style.zIndex = 4;
-                            img.style.marginTop = "25vh";
-                            img.style.marginBottom = "25vh";
-                            if (children > 0) {
-                              img.style.display = "none";
-                            } else {
-                              img.style.display = "inline";
-                            }
-                            image_box.appendChild(img);
-                          }
-                        }
-                      });
-                    }
-                    // else {
-                    //   alert("Same element.");
-                    // }
-                  } else {
-                    document.getElementById("hist-description-text").innerHTML =
-                      "No nearby buildings in front of your device. Try rotating your device.";
-                    document.getElementById("building-name").innerHTML =
-                      "No nearby buildings in view.";
-                    document.getElementById("arch-description-text").innerHTML =
-                      "No nearby buildings in front of your device. Try rotating your device.";
-                    document
-                      .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
-                      .setAttribute("color", "white");
-                  }
-                  // Reset initial alpha to the new value
-                  initialAlpha = event.alpha;
+              } else if (Date.now() - lastMovementTime > timeoutDuration) {
+                if (totalRotation > 30) {
+                  heading = currentAlpha;
+                  const rotationStopEvent = new Event('rotationstop');
+                  window.dispatchEvent(rotationStopEvent);
+                  lastMovementTime = Date.now();
+                }
+                totalRotation = 0;
               }
+              // Reset initial alpha to the new value
+            }
+            initialAlpha = currentAlpha;
+        }
+
+        window.addEventListener('deviceorientation', handleDeviceOrientation)
+
+        window.addEventListener('rotationstop', function() {
+            // Store the initial alpha orientation 
+            function calculateBearing(lat1, lon1, lat2, lon2) {
+                const toRadians = degrees => degrees * Math.PI / 180;
+                const toDegrees = radians => radians * 180 / Math.PI;
+
+                const dLon = toRadians(lon2 - lon1);
+                const y = Math.sin(dLon) * Math.cos(toRadians(lat2));
+                const x = Math.cos(toRadians(lat1)) * Math.sin(toRadians(lat2)) -
+                          Math.sin(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.cos(dLon);
+                const bearing = (toDegrees(Math.atan2(y, x)) + 360) % 360; // Normalize to 0-360 degrees
+
+                return bearing;
+            }
+
+            // document.getElementById("hist-description-text").innerHTML =
+            //   "";
+            // document.getElementById("building-name").innerHTML =
+            //   "Searching for nearest building...";
+            // document.getElementById("arch-description-text").innerHTML =
+            //   "";
+
+            const building_markers = document.getElementsByTagName("a-entity");
+            let distance = 999;
+            let id = 0;
+            let minDistance = 100;
+            for (let x = 0; x < Array.from(building_markers).length; x++) {
+              // alert(JSON.stringify(camera.object3D.position))
+              const bearing = calculateBearing(building_markers[x].object3D.position.x, camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z)
+
+              // if (heading > 360) {
+              //   heading = heading - 360
+              // }
+
+              let diff = Math.abs(bearing - heading);
+
+              // Adjust if the difference is greater than 180 degrees
+              if (diff > 180) {
+                  diff = 360 - diff;
+              }
+
+              document.getElementById("hist-description-text").innerHTML =
+                `ID: ${building_markers[x].id}. Bearing: ${bearing}. Heading: ${event.alpha}. Difference: ${diff}`;
+
+              distance = camera.object3D.position.distanceTo(
+                building_markers[x].object3D.position
+              );
+              // if (distance < 1000) {
+              //   alert(distance);
+              // }
+              if (distance < minDistance && diff < 60) {
+                minDistance = distance;
+                id = parseInt(building_markers[x].id);
+              }
+            }
+            //If buildings are in proximity, highlight the closest one in aqua
+            const highlight_color = "aqua";
+            //Check if there is at least one element in range of the device
+            if (id > 0) {
+              //Check if that element is a different element from the one currently selected
+              if (
+                document
+                  .getElementById(id)
+                  .getElementsByTagName("a-sphere")[0]
+                  .getAttribute("color") !== highlight_color
+              ) {
+                //Deselect currently selected element, if needed
+                if (
+                  Array.from(
+                    document.querySelectorAll(
+                      `a-sphere[color=${highlight_color}]`
+                    )
+                  ).length === 1
+                ) {
+                  document
+                    .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
+                    .setAttribute("color", "white");
+                  document
+                    .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
+                    .parentElement.getElementsByTagName(
+                      "a-text"
+                    )[0].style.visiblity = "hidden";
+                }
+                //Select new element
+                document
+                  .getElementById(id)
+                  .getElementsByTagName("a-sphere")[0]
+                  .setAttribute("color", highlight_color);
+                document
+                  .getElementById(id)
+                  .getElementsByTagName("a-text")[0].style.visibility = "visible";
+                //Get building information for closest building
+                //Set text popup above the building
+                fetchBuildingInfo(id).then((building) => {
+                  document
+                    .getElementById(id)
+                    .getElementsByTagName("a-text")[0]
+                    .setAttribute(
+                      "value",
+                      (building.name ? "Name: " + building.name : "") +
+                        (building.date_of_construction
+                          ? "\nBuilt: " +
+                            building.date_of_construction
+                              .toString()
+                              .substring(0, 4)
+                          : "") +
+                        (building.building_category
+                          ? "\nType: " + building.building_category.name
+                          : "") +
+                        (building.architectural_style
+                          ? "\nStyle: " + building.architectural_style.name
+                          : "")
+                    );
+                  //Populate lower menus
+                  document.getElementById("hist-description-text").innerHTML =
+                    building.historical_description;
+                  document.getElementById("building-name").innerHTML =
+                    building.name;
+                  document.getElementById("arch-description-text").innerHTML =
+                    building.architectural_description;
+                  //Get images
+                  let image_box = document.getElementById("image-box");
+                  //Clear previous images
+                  image_box.innerHTML = "";
+                  let children = 0;
+                  //Add something if there are no images associated with the building
+                  for (let y = 0; y < building.items.length; y++) {
+                    if (
+                      building.items[y].type === "photograph" ||
+                      building.items[y].type === "postcard"
+                    ) {
+                      children = image_box.getElementsByTagName("img").length;
+                      const img = document.createElement("img");
+
+                      //Functionality for front and back side of postcards
+                      img.setAttribute("src", building.items[y].files[0].image);
+                      img.setAttribute("id", "image-" + (y + 1));
+                      img.style.maxWidth = "90vw";
+                      img.style.opacity = 0.7;
+                      img.style.zIndex = 4;
+                      img.style.marginTop = "25vh";
+                      img.style.marginBottom = "25vh";
+                      if (children > 0) {
+                        img.style.display = "none";
+                      } else {
+                        img.style.display = "inline";
+                      }
+                      image_box.appendChild(img);
+                    }
+                  }
+                });
+              }
+              // else {
+              //   alert("Same element.");
+              // }
+            } else {
+              document.getElementById("hist-description-text").innerHTML =
+                "No nearby buildings in front of your device. Try rotating your device.";
+              document.getElementById("building-name").innerHTML =
+                "No nearby buildings in view.";
+              document.getElementById("arch-description-text").innerHTML =
+                "No nearby buildings in front of your device. Try rotating your device.";
+              document
+                .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
+                .setAttribute("color", "white");
+            }
         });
 
         const camera = document.querySelector("[gps-new-camera]");
