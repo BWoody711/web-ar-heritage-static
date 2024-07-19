@@ -543,16 +543,27 @@
         window.addEventListener('deviceorientation', function(event) {
             // Store the initial alpha orientation
 
+              let lastMovementTime = Date.now();
+              const threshold = 1;
+              const timeoutDuration = 500;
+              const minTotalRotation = 30;
+              let totalRotation = 0;
+
               if (initialAlpha === null) {
                   initialAlpha = event.alpha;
                   return;
               }
 
+              totalRotation += event.alpha
+
               // Calculate the difference in alpha orientation
               const deltaAlpha = Math.abs(event.alpha - initialAlpha);
 
-              // Check if the difference exceeds 90 degrees
-              if (deltaAlpha > 30) {
+              if (deltaAlpha > threshold) {
+                lastMovementTime = Date.now();
+              } else if (Date.now() - lastMovementTime > timeoutDuration && totalRotation >= minTotalRotation) {
+                  totalRotation = 0; 
+
                   function calculateBearing(lat1, lon1, lat2, lon2) {
                       const toRadians = degrees => degrees * Math.PI / 180;
                       const toDegrees = radians => radians * 180 / Math.PI;
