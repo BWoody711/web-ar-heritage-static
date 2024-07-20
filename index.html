@@ -17,7 +17,7 @@
     <script src="https://unpkg.com/@turf/turf@6/turf.min.js"></script>
     <style>
       #debugMenu {
-        display: hidden;
+        display: none;
         position: fixed;
         top: 2vh;
         right: 2vh;
@@ -243,6 +243,12 @@
           if(debug==="y"){
             document.getElementById('debugMenu').style.display = "grid";
           }
+          else {
+            document.getElementById('debugMenu').style.display = "none";
+        }
+        }
+        else {
+          document.getElementById('debugMenu').style.display = "none";
         }
       }
 
