@@ -588,11 +588,10 @@
 
         function angleDifference(angle1, angle2) {
           let diff = (angle1 - angle2) % 360;
-          if (diff < 0) {
+          if (diff < -180) {
             diff += 360;
-          }
-          if (diff > 180) {
-            diff = 360 - diff;
+          } else if (diff > 180) {
+            diff -= 360;
           }
           return diff;
         }
