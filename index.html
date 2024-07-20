@@ -239,8 +239,10 @@
       const debug = urlParams.get('Debug')
 
       function openDebugMenu() {
-        if (debug==="y"){
-          document.getElementById('debugMenu').style.display = "grid";
+        if (debug) {
+          if(debug==="y"){
+            document.getElementById('debugMenu').style.display = "grid";
+          }
         }
       }
 
@@ -982,7 +984,7 @@
           Images
         </button>
         <button class="thumbButton" id="poi-button" onclick="toggleSelected(this.id)">
-          Points of Interest
+          Scavenger Hunt
         </button>
       </div>
       <div id="description">
