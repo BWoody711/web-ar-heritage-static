@@ -24,7 +24,7 @@
         width: 30%;
         height: 20vh;
         grid-template-columns: auto;
-        grid-template-rows: auto auto auto auto;
+        grid-template-rows: auto auto auto auto auto;
         z-index: 6;
         background-color: white;
         padding: 2px;
@@ -637,7 +637,9 @@
               // }
 
 
-              let diff = 180 - abs(abs(bearing - heading) - 180); 
+              let diff = 180 - abs(abs(bearing - heading) - 180);
+
+              document.getElementById('diff').innerHTML = diff.toString()
 
               // document.getElementById("arch-description-text").innerHTML =
               //   `ID: ${building_markers[x].id}. Bearing: ${bearing}. Heading: ${heading}. Difference: ${diff}`;
@@ -964,6 +966,7 @@
       <div id="debugMenu">
         <p id="rotationEventStatus" style="display: inherit;"></p>
         <p id="degreesRotated" style="display: inherit;"></p>
+        <p id="diff" tyle="display: inherit;"></p>
         <p id="heading" style="display: inherit;"></p>
         <p id="bearing" style="display: inherit;"></p>
       </div>
