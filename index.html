@@ -581,13 +581,13 @@
         function handleDeviceOrientation(event) {
             // Calculate the difference in alpha orientation
             const currentAlpha = event.alpha;
-            document.getElementById('rotationEventStatus').innerHTML = "Rotating"
 
             if (initialAlpha !== null) {
               const deltaAlpha = Math.abs(currentAlpha - initialAlpha);
               totalRotation += deltaAlpha
               document.getElementById('degreesRotated').innerHTML = totalRotation.toString()
               if (deltaAlpha > threshold) {
+                document.getElementById('rotationEventStatus').innerHTML = "Rotating"
                 lastMovementTime = Date.now();
               } else if (Date.now() - lastMovementTime > timeoutDuration) {
                 if (totalRotation > buildingUpdateRotation) {
@@ -962,10 +962,10 @@
         ></a-camera>
       </a-scene>
       <div id="debugMenu">
-        <p id="rotationEventStatus"></p>
-        <p id="degreesRotated"></p>
-        <p id="heading"></p>
-        <p id="bearing"></p>
+        <p id="rotationEventStatus" style="display: inherit;"></p>
+        <p id="degreesRotated" style="display: inherit;"></p>
+        <p id="heading" style="display: inherit;"></p>
+        <p id="bearing" style="display: inherit;"></p>
       </div>
       <div class="thumbMenu">
         <button
