@@ -236,10 +236,15 @@
       const responseID = urlParams.get('ResponseID')
       const site = urlParams.get('Site')
       const debug = urlParams.get('Debug')
-      if (debug==="y"){
-        document.getElementById('debugMenu').style.display = "grid";
+
+      function openDebugMenu() {
+        if (debug==="y"){
+          document.getElementById('debugMenu').style.display = "grid";
+        }
       }
 
+      setTimeout(openDebugMenu, 1000)
+      
       //Button handlers
       function toggleSelected(selected_id) {
         ids = ["image-button", "desc-button", "poi-button"]
