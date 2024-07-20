@@ -581,7 +581,7 @@
 
         let initialAlpha = null;
         let lastMovementTime = Date.now();
-        const threshold = 10;
+        const threshold = 0.5;
         const timeoutDuration = 3000;
         let totalRotation = 0;
         let heading = null;
@@ -605,11 +605,11 @@
               document.getElementById('currentAlpha').innerHTML = currentAlpha.toString()
               const deltaAlpha = angleDifference(currentAlpha, initialAlpha)
               if (deltaAlpha > threshold) {
-                initialAlpha = currentAlpha;
                 document.getElementById('diff').innerHTML = currentAlpha.toString()
                 totalRotation += deltaAlpha
                 document.getElementById('degreesRotated').innerHTML = totalRotation.toString()
                 document.getElementById('rotationEventStatus').innerHTML = "Rotating"
+                initialAlpha = currentAlpha;
                 lastMovementTime = Date.now();
               } else if (Date.now() - lastMovementTime > timeoutDuration) {
                 if (totalRotation > buildingUpdateRotation) {
