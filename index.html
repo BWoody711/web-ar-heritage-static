@@ -591,7 +591,7 @@
             const currentAlpha = event.alpha;
 
             if (initialAlpha !== null) {
-              const deltaAlpha = Math.abs(currentAlpha - initialAlpha);
+              const deltaAlpha = 180 - abs(abs(currentAlpha - initialAlpha) - 180);
               totalRotation += deltaAlpha
               document.getElementById('degreesRotated').innerHTML = totalRotation.toString()
               if (deltaAlpha > threshold) {
