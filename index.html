@@ -24,7 +24,7 @@
         width: 30%;
         height: 20vh;
         grid-template-columns: auto;
-        grid-template-rows: auto auto auto auto auto;
+        grid-template-rows: auto auto auto auto auto auto auto auto auto;
         z-index: 6;
         background-color: white;
         padding: 2px;
@@ -581,7 +581,7 @@
 
         let initialAlpha = null;
         let lastMovementTime = Date.now();
-        const threshold = 2;
+        const threshold = 0.5;
         const timeoutDuration = 500;
         let totalRotation = 0;
         let heading = null;
@@ -601,6 +601,8 @@
             const currentAlpha = event.alpha;
 
             if (initialAlpha !== null) {
+              document.getElementById('previousAlpha').innerHTML = initialAlpha.toString()
+                document.getElementById('currentAlpha').innerHTML = currentAlpha.toString()
               const deltaAlpha = angleDifference(currentAlpha, initialAlpha)
               if (deltaAlpha > threshold) {
                 totalRotation += deltaAlpha
@@ -983,8 +985,12 @@
       </a-scene>
       <div id="debugMenu">
         <p id="rotationEventStatus" style="display: inherit;"></p>
+        <p id="previousAlpha" style="display: inherit;"></p>
+        <p id="currentAlpha" style="display: inherit;"></p>
+        <p id="diff" style="display: inherit;"></p>
         <p id="degreesRotated" style="display: inherit;"></p>
-        <p id="diff" tyle="display: inherit;"></p>
+        <p id="previousAlpha" style="display: inherit;"></p>
+        <p id="currentAlpha" style="display: inherit;"></p>
         <p id="heading" style="display: inherit;"></p>
         <p id="bearing" style="display: inherit;"></p>
       </div>
