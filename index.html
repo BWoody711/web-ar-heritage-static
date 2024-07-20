@@ -581,7 +581,7 @@
 
         let initialAlpha = null;
         let lastMovementTime = Date.now();
-        const threshold = 1;
+        const threshold = 2;
         const timeoutDuration = 500;
         let totalRotation = 0;
         let heading = null;
@@ -603,9 +603,9 @@
 
             if (initialAlpha !== null) {
               const deltaAlpha = angleDifference(currentAlpha, initialAlpha)
-              totalRotation += deltaAlpha
-              document.getElementById('degreesRotated').innerHTML = totalRotation.toString()
               if (deltaAlpha > threshold) {
+                totalRotation += deltaAlpha
+                document.getElementById('degreesRotated').innerHTML = totalRotation.toString()
                 document.getElementById('rotationEventStatus').innerHTML = "Rotating"
                 lastMovementTime = Date.now();
               } else if (Date.now() - lastMovementTime > timeoutDuration) {
