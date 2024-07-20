@@ -605,13 +605,14 @@
               document.getElementById('currentAlpha').innerHTML = currentAlpha.toString()
               const deltaAlpha = angleDifference(currentAlpha, initialAlpha)
               if (deltaAlpha > threshold) {
+                initialAlpha = currentAlpha;
                 document.getElementById('diff').innerHTML = currentAlpha.toString()
                 totalRotation += deltaAlpha
                 document.getElementById('degreesRotated').innerHTML = totalRotation.toString()
                 document.getElementById('rotationEventStatus').innerHTML = "Rotating"
                 lastMovementTime = Date.now();
               } else if (Date.now() - lastMovementTime > timeoutDuration) {
-                if (totalRotation > 500) {
+                if (totalRotation > buildingUpdateRotation) {
                   heading = currentAlpha;
                   document.getElementById("heading").innerHTML = heading.toString()
                   const rotationStopEvent = new Event('rotationstop');
@@ -623,7 +624,6 @@
               }
               // Reset initial alpha to the new value
             }
-            initialAlpha = currentAlpha;
         }
 
         window.addEventListener('deviceorientation', handleDeviceOrientation)
