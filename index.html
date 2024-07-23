@@ -594,11 +594,18 @@
           return diff;
         }
 
+        function getHeading(pos) { 
+            heading = pos.coords.heading; 
+            document.getElementById('heading').innerHTML = pos.coords.heading.toString()
+        }
+
         function handleDeviceOrientation(event) {
             // Calculate the difference in alpha orientation
-            heading = event.alpha;
-            document.getElementById('heading').innerHTML = heading.toString()
-
+            
+            if ("geolocation" in navigator) {
+              navigator.geolocation.getCurrentPosition(getHeading)
+            } 
+            
             // if (initialAlpha !== null) {
             //   document.getElementById('previousAlpha').innerHTML = initialAlpha.toString()
             //   document.getElementById('currentAlpha').innerHTML = currentAlpha.toString()
