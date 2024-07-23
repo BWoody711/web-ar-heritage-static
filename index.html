@@ -643,37 +643,38 @@
                 return (bearing + 360) % 360; // Normalize to 0-360 degrees
             }
 
-            // let distance = 9999;
-            // let minDistance = 100;
-            // let id = 0;
-            // let maxAngle = 90;
+            let distance = 9999;
+            let minDistance = 100;
+            let id = 0;
+            let maxAngle = 90;
 
             const building_markers = document.getElementsByTagName("a-entity");
 
-            alert(building_markers.length)
+            if (heading) {              
+              let bearing
+              let diff
+              let selected_bearing
+              let selected_diff
+              document.getElementById('heading-enabled').innerHTML = "Heading enabled."
+              for (let x = 0; x < Array.from(building_markers).length; x++) {
+                distance = camera.object3D.position.distanceTo(
+                  building_markers[x].object3D.position
+                );
+                bearing = calculateBearing(camera.object3D.position, building_markers[x].object3D.position)
+                // diff = angleDifference(bearing - heading)
+                //Switch this to shortest angle calculation!!
+                // diff = abs(bearing - heading)
+                // document.getElementById('diff').innerHTML = diff.toString()
 
-            // let bearing, diff, selected_bearing, selected_diff
-
-            // if (heading) {
-            //   document.getElementById('heading-enabled').innerHTML = "Heading enabled."
-            //   for (let x = 0; x < Array.from(building_markers).length; x++) {
-            //     distance = camera.object3D.position.distanceTo(
-            //       building_markers[x].object3D.position
-            //     );
-            //     bearing = calculateBearing(camera.object3D.position, building_markers[x].object3D.position)
-            //     // diff = angleDifference(bearing - heading)
-            //     //Switch this to shortest angle calculation!!
-            //     diff = abs(bearing - heading)
-            //     document.getElementById('diff').innerHTML = diff.toString()
-
-            //     if (distance < minDistance && diff < maxAngle) {
-            //       minDistance = distance;
-            //       id = parseInt(building_markers[x].id);
-            //       selected_bearing = bearing
-            //       selected_diff = diff
-            //     }
-            //   }
-            // }
+                // if (distance < minDistance && diff < maxAngle) {
+                //   minDistance = distance;
+                //   id = parseInt(building_markers[x].id);
+                //   selected_bearing = bearing
+                //   selected_diff = diff
+                // }
+              }
+              alert(bearing)
+            }
             // else {
             //   document.getElementById('heading-enabled').innerHTML = "Heading disabled."
             //   for (let x = 0; x < Array.from(building_markers).length; x++) {
@@ -694,8 +695,10 @@
             // //Check if there is at least one element in range of the device
             // if (id > 0) {
             //   //Parse selected building
+            //   // if (heading) {
             //   // document.getElementById('bearing').innerHTML = selected_bearing.toString()
             //   // document.getElementById('diff').innerHTML = selected_diff.toString()
+            //   // }
             //   //Check if that element is a different element from the one currently selected
             //   if (
             //     document
