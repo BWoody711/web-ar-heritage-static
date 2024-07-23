@@ -224,12 +224,10 @@
       //Parameters
       //Get Buildings from API
       const bbox_size = 50;
-      const gpsRefreshInterval = 10;
+      // const gpsRefreshInterval = 2;
 
       //Find Buildings in Scene
-      const buildingUpdateRotation = 30;
-      const minBuildingSearchDistance = bbox_size
-      const maxBuildingSearchAngle = 45
+      // const minBuildingSearchDistance = bbox_size
 
       //Debug mode
       const queryString = window.location.search;
@@ -563,7 +561,7 @@
       //Iterator to check if phone within bounding box every n milliseconds
       const geofenceChecker = setInterval(() => {
         geofenceUpdate();
-      }, gpsRefreshInterval*1000);
+      }, 3*1000);
 
       //Function to get building information from the atlas.digitalhistory.ca API.
       async function fetchBuildingInfo(id) {
@@ -575,7 +573,7 @@
       }
 
       //When the application loads, creates the geofence and adds an event listener to the camera for position updates
-      window.onload = setTimeout((buildingUpdateRotation) => {
+      window.onload = setTimeout(() => {
         geofenceUpdate();
         poiText();
 
@@ -650,7 +648,7 @@
             }
 
             let distance = 9999;
-            let minDistance = minBuildingSearchDistance;
+            let minDistance = 50;
             let id = 0;
 
             const building_markers = document.getElementsByTagName("a-entity");
