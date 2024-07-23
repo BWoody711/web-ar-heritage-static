@@ -24,7 +24,7 @@
         width: 30%;
         height: 20vh;
         grid-template-columns: auto;
-        grid-template-rows: auto auto auto auto auto auto auto auto;
+        grid-template-rows: auto auto auto;
         z-index: 6;
         background-color: white;
         padding: 2px;
@@ -579,11 +579,11 @@
         geofenceUpdate();
         poiText();
 
-        let initialAlpha = null;
+        // let initialAlpha = null;
         let lastMovementTime = Date.now();
-        const threshold = 0.5;
-        const timeoutDuration = 3000;
-        let totalRotation = 0;
+        // const threshold = 0.5;
+        // const timeoutDuration = 3000;
+        // let totalRotation = 0;
         let heading = null;
 
         function angleDifference(angle1, angle2) {
@@ -598,40 +598,44 @@
 
         function handleDeviceOrientation(event) {
             // Calculate the difference in alpha orientation
-            const currentAlpha = event.alpha;
+            heading = event.alpha;
+            document.getElementById('heading').innerHTML = heading.toString()
 
-            if (initialAlpha !== null) {
-              document.getElementById('previousAlpha').innerHTML = initialAlpha.toString()
-              document.getElementById('currentAlpha').innerHTML = currentAlpha.toString()
-              const deltaAlpha = angleDifference(currentAlpha, initialAlpha)
-              if (deltaAlpha > threshold) {
-                document.getElementById('diff').innerHTML = currentAlpha.toString()
-                totalRotation += deltaAlpha
-                document.getElementById('degreesRotated').innerHTML = totalRotation.toString()
-                document.getElementById('rotationEventStatus').innerHTML = "Rotating"
-                initialAlpha = currentAlpha;
-                lastMovementTime = Date.now();
-              } else if (Date.now() - lastMovementTime > timeoutDuration) {
-                if (totalRotation > buildingUpdateRotation) {
-                  heading = currentAlpha;
-                  document.getElementById("heading").innerHTML = heading.toString()
-                  const rotationStopEvent = new Event('rotationstop');
-                  window.dispatchEvent(rotationStopEvent);
-                  lastMovementTime = Date.now();
-                }
-                totalRotation = 0;
-                document.getElementById('rotationEventStatus').innerHTML === "Not Rotating"
-              }
-              // Reset initial alpha to the new value
-            }
-            else {
-              initialAlpha = currentAlpha;
-            }
+            // if (initialAlpha !== null) {
+            //   document.getElementById('previousAlpha').innerHTML = initialAlpha.toString()
+            //   document.getElementById('currentAlpha').innerHTML = currentAlpha.toString()
+            //   const deltaAlpha = angleDifference(currentAlpha, initialAlpha)
+            //   if (deltaAlpha > threshold) {
+            //     document.getElementById('diff').innerHTML = currentAlpha.toString()
+            //     totalRotation += deltaAlpha
+            //     document.getElementById('degreesRotated').innerHTML = totalRotation.toString()
+            //     document.getElementById('rotationEventStatus').innerHTML = "Rotating"
+            //     initialAlpha = currentAlpha;
+            //     lastMovementTime = Date.now();
+            //   } else if (Date.now() - lastMovementTime > timeoutDuration) {
+            //     if (totalRotation > buildingUpdateRotation) {
+            //       heading = currentAlpha;
+            //       document.getElementById("heading").innerHTML = heading.toString()
+            //       const rotationStopEvent = new Event('rotationstop');
+            //       window.dispatchEvent(rotationStopEvent);
+            //       lastMovementTime = Date.now();
+            //     }
+            //     totalRotation = 0;
+            //     document.getElementById('rotationEventStatus').innerHTML === "Not Rotating"
+            //   }
+            //   // Reset initial alpha to the new value
+            // }
+            // else {
+            //   initialAlpha = currentAlpha;
+            // }
         }
 
         window.addEventListener('deviceorientation', handleDeviceOrientation)
 
-        window.addEventListener('rotationstop', function() {
+        const camera = document.querySelector("[gps-new-camera]");
+
+        // window.addEventListener('rotationstop', function() {
+        camera.addEventListener("gps-camera-update-position", () => {
             function calculateBearing(lat1, lon1, lat2, lon2) {
                 const toRadians = degrees => degrees * Math.PI / 180;
                 const toDegrees = radians => radians * 180 / Math.PI;
@@ -645,45 +649,34 @@
                 return bearing;
             }
 
-            
             let distance = 9999;
             let minDistance = minBuildingSearchDistance;
             let id = 0;
 
             const building_markers = document.getElementsByTagName("a-entity");
 
+            let bearing, diff, selected_bearing, selected_diff
+
             for (let x = 0; x < Array.from(building_markers).length; x++) {
-              // alert(JSON.stringify(camera.object3D.position))
-              const bearing = calculateBearing(building_markers[x].object3D.position.x, camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z)
-
-              // if (heading > 360) {
-              //   heading = heading - 360
-              // }
-
-
-              let diff = angleDifference(bearing - heading)
-
-              document.getElementById('diff').innerHTML = diff.toString()
-
-              // document.getElementById("arch-description-text").innerHTML =
-              //   `ID: ${building_markers[x].id}. Bearing: ${bearing}. Heading: ${heading}. Difference: ${diff}`;
-
+              bearing = calculateBearing(building_markers[x].object3D.position.x, camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z)
+              diff = angleDifference(bearing - heading)
               distance = camera.object3D.position.distanceTo(
                 building_markers[x].object3D.position
               );
-              // if (distance < 1000) {
-              //   alert(distance);
-              // }
               if (distance < minDistance && diff < maxAngle) {
                 minDistance = distance;
                 id = parseInt(building_markers[x].id);
-                document.getElementById('bearing').innerHTML = bearing.toString()
+                selected_bearing = bearing
+                selected_diff = diff
               }
             }
             //If buildings are in proximity, highlight the closest one in aqua
             const highlight_color = "aqua";
             //Check if there is at least one element in range of the device
             if (id > 0) {
+              //Parse selected building
+              document.getElementById('bearing').innerHTML = selected_bearing.toString()
+              document.getElementById('diff').innerHTML = selected_diff.toString()
               //Check if that element is a different element from the one currently selected
               if (
                 document
@@ -793,7 +786,7 @@
             }
         });
 
-        const camera = document.querySelector("[gps-new-camera]");
+
 
         //Event listener that fires every time the GPS position of the camera updates
         // camera.addEventListener("gps-camera-update-position", (e) => {
@@ -988,15 +981,9 @@
         ></a-camera>
       </a-scene>
       <div id="debugMenu">
-        <span id="rotationEventStatus" style="display: inherit;"></span>
-        <span id="previousAlpha" style="display: inherit;"></span>
-        <span id="currentAlpha" style="display: inherit;"></span>
-        <span id="diff" style="display: inherit;"></span>
-        <span id="degreesRotated" style="display: inherit;"></span>
-        <span id="previousAlpha" style="display: inherit;"></span>
-        <span id="currentAlpha" style="display: inherit;"></span>
         <span id="heading" style="display: inherit;"></span>
         <span id="bearing" style="display: inherit;"></span>
+        <span id="diff" style="display: inherit;"></span>
       </div>
       <div class="thumbMenu">
         <button
