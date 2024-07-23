@@ -635,9 +635,9 @@
             }
 
             function angleDifference(angle1, angle2) {
-              if (isNaN(angle1) || isNaN(angle2)) {
-                  alert('Heading: ' + angle1.toString() + 'Bearing: ' + angle2.toString())
-              }
+              // if (isNaN(angle1) || isNaN(angle2)) {
+              //     alert('Heading: ' + angle1.toString() + 'Bearing: ' + angle2.toString())
+              // }
 
               let diff = (angle1 - angle2) % 360;
               if (diff < -180) {
@@ -699,12 +699,12 @@
             const highlight_color = "aqua";
             //Check if there is at least one element in range of the device
             if (id > 0) {
-              alert(id)
+              //alert(id)
               //Parse selected building
-              // if (heading) {
-              //   document.getElementById('bearing').innerHTML = 'Bearing: ' + selected_bearing.toString()
-              //   document.getElementById('diff').innerHTML = 'Diff: ' + selected_diff.toString()
-              // }
+              if (heading) {
+                document.getElementById('bearing').innerHTML = 'Bearing: ' + selected_bearing.toString()
+                document.getElementById('diff').innerHTML = 'Diff: ' + selected_diff.toString()
+              }
               //Check if that element is a different element from the one currently selected
               if (
                 document
