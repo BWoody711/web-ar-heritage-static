@@ -672,7 +672,7 @@
                 //document.getElementById('diff').innerHTML = diff.toString()
 
                 if (distance < minDistance && diff < maxAngle) {
-                  // alert("Locked in!")
+                  alert("Locked in!")
                   minDistance = distance;
                   id = parseInt(building_markers[x].id);
                   selected_bearing = bearing
@@ -699,11 +699,13 @@
             const highlight_color = "aqua";
             //Check if there is at least one element in range of the device
             if (id > 0) {
+              alert(id)
               //Parse selected building
               if (heading) {
                 document.getElementById('bearing').innerHTML = 'Bearing: ' + selected_bearing.toString()
                 document.getElementById('diff').innerHTML = 'Diff: ' + selected_diff.toString()
               }
+              /**
               //Check if that element is a different element from the one currently selected
               if (
                 document
@@ -800,6 +802,7 @@
               // else {
               //   alert("Same element.");
               // }
+              **/
             } else {
               document.getElementById("hist-description-text").innerHTML =
                 "No nearby buildings in front of your device. Try rotating your device.";
