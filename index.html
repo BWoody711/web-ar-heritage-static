@@ -635,7 +635,7 @@
 
             function angleDifference(angle1, angle2) {
               if (isNaN(angle1) || isNaN(angle2)) {
-                  alert(angle1, angle2)
+                  alert('Heading: ' + angle1.toString() + 'Bearing: ' + angle2.toString())
               }
 
               let diff = (angle1 - angle2) % 360;
@@ -666,7 +666,7 @@
                   building_markers[x].object3D.position
                 );
                 bearing = calculateBearing(camera.object3D.position, building_markers[x].object3D.position)
-                diff = angleDifference(parseInt(bearing) - parseInt(heading))
+                diff = angleDifference(parseInt(heading), parseInt(bearing))
                 // Switch this to shortest angle calculation!!
                 // diff = Math.abs(bearing - heading)
                 document.getElementById('diff').innerHTML = diff.toString()
