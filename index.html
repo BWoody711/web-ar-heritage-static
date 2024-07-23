@@ -24,7 +24,7 @@
         width: 30%;
         height: 20vh;
         grid-template-columns: auto;
-        grid-template-rows: auto auto auto;
+        grid-template-rows: auto auto auto auto;
         z-index: 6;
         background-color: white;
         padding: 2px;
@@ -541,9 +541,6 @@
             geofence_buffer = createGeofence();
           }
         }
-        // else {
-        //   alert("No heading obtained from GPS reading.")
-        // }
       }
 
       //Function for getting current GPS coordinates from device
@@ -662,17 +659,36 @@
 
             let bearing, diff, selected_bearing, selected_diff
 
-            for (let x = 0; x < Array.from(building_markers).length; x++) {
-              bearing = calculateBearing(building_markers[x].object3D.position.x, camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z)
-              diff = angleDifference(bearing - heading)
-              distance = camera.object3D.position.distanceTo(
-                building_markers[x].object3D.position
-              );
-              if (distance < minDistance && diff < maxAngle) {
-                minDistance = distance;
-                id = parseInt(building_markers[x].id);
-                selected_bearing = bearing
-                selected_diff = diff
+            if (heading) {
+              document.getElementById('heading-enabled').innerHTML = "Heading enabled."
+              for (let x = 0; x < Array.from(building_markers).length; x++) {
+                distance = camera.object3D.position.distanceTo(
+                  building_markers[x].object3D.position
+                );
+                bearing = calculateBearing(building_markers[x].object3D.position.x, camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z)
+                diff = angleDifference(bearing - heading)
+
+                if (distance < minDistance && diff < maxAngle) {
+                  minDistance = distance;
+                  id = parseInt(building_markers[x].id);
+                  selected_bearing = bearing
+                  selected_diff = diff
+                }
+              }
+            }
+            else {
+              document.getElementById('heading-enabled').innerHTML = "Heading disabled."
+              for (let x = 0; x < Array.from(building_markers).length; x++) {
+                distance = camera.object3D.position.distanceTo(
+                  building_markers[x].object3D.position
+                );
+
+                if (distance < minDistance) {
+                  minDistance = distance;
+                  id = parseInt(building_markers[x].id);
+                  selected_bearing = bearing
+                  selected_diff = diff
+                }
               }
             }
             //If buildings are in proximity, highlight the closest one in aqua
@@ -986,6 +1002,7 @@
         ></a-camera>
       </a-scene>
       <div id="debugMenu">
+        <span id="heading-enabled" style="display: inherit;"></span>
         <span id="heading" style="display: inherit;"></span>
         <span id="bearing" style="display: inherit;"></span>
         <span id="diff" style="display: inherit;"></span>
