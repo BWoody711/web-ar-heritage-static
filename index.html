@@ -638,7 +638,8 @@
 
         // window.addEventListener('rotationstop', function() {
         camera.addEventListener("gps-camera-update-position", () => {
-            document.getElementById('event-last-fired').innerHTML = Date.now().toString()
+            document.getElementById('event-last-fired').innerHTML = "Event fired at " + Date.now().toString() + "!"
+
             function calculateBearing(lat1, lon1, lat2, lon2) {
                 const toRadians = degrees => degrees * Math.PI / 180;
                 const toDegrees = radians => radians * 180 / Math.PI;
@@ -653,7 +654,7 @@
             }
 
             let distance = 9999;
-            let minDistance = 200;
+            let minDistance = 100;
             let id = 0;
             let maxAngle = 90;
 
@@ -671,7 +672,10 @@
                 // diff = angleDifference(bearing - heading)
                 diff = abs(bearing - heading)
 
+                alert(diff)
+
                 if (distance < minDistance && diff < maxAngle) {
+                  alert("Ping!")
                   minDistance = distance;
                   id = parseInt(building_markers[x].id);
                   selected_bearing = bearing
@@ -808,6 +812,7 @@
                 .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
                 .setAttribute("color", "white");
             }
+            document.getElementById('event-last-fired').innerHTML = "Event finished."
         });
 
 
