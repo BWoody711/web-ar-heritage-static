@@ -574,7 +574,7 @@
         geofenceUpdate();
         poiText();
 
-        // let initialAlpha = null;
+        let initialAlpha = null;
         let lastMovementTime = Date.now();
         // const threshold = 0.5;
         // const timeoutDuration = 3000;
@@ -596,6 +596,8 @@
             document.getElementById('heading').innerHTML = pos.coords.heading.toString()
         }
 
+        const rotationStopEvent = new Event('rotationstop');
+
         function handleDeviceOrientation(event) {
             // Calculate the difference in alpha orientation
             
@@ -603,41 +605,40 @@
               navigator.geolocation.getCurrentPosition(getHeading)
             } 
             
-            // if (initialAlpha !== null) {
+            if (initialAlpha !== null) {
             //   document.getElementById('previousAlpha').innerHTML = initialAlpha.toString()
             //   document.getElementById('currentAlpha').innerHTML = currentAlpha.toString()
-            //   const deltaAlpha = angleDifference(currentAlpha, initialAlpha)
-            //   if (deltaAlpha > threshold) {
-            //     document.getElementById('diff').innerHTML = currentAlpha.toString()
-            //     totalRotation += deltaAlpha
-            //     document.getElementById('degreesRotated').innerHTML = totalRotation.toString()
-            //     document.getElementById('rotationEventStatus').innerHTML = "Rotating"
-            //     initialAlpha = currentAlpha;
-            //     lastMovementTime = Date.now();
-            //   } else if (Date.now() - lastMovementTime > timeoutDuration) {
-            //     if (totalRotation > buildingUpdateRotation) {
-            //       heading = currentAlpha;
-            //       document.getElementById("heading").innerHTML = heading.toString()
-            //       const rotationStopEvent = new Event('rotationstop');
-            //       window.dispatchEvent(rotationStopEvent);
-            //       lastMovementTime = Date.now();
-            //     }
-            //     totalRotation = 0;
-            //     document.getElementById('rotationEventStatus').innerHTML === "Not Rotating"
-            //   }
-            //   // Reset initial alpha to the new value
-            // }
-            // else {
-            //   initialAlpha = currentAlpha;
-            // }
+              const deltaAlpha = angleDifference(currentAlpha, initialAlpha)
+              if (deltaAlpha > threshold) {
+                totalRotation += deltaAlpha
+                initialAlpha = currentAlpha;
+                lastMovementTime = Date.now();
+              } else if (Date.now() - lastMovementTime > timeoutDuration) {
+                if (totalRotation > buildingUpdateRotation) {
+                  heading = currentAlpha;
+                  window.dispatchEvent(rotationStopEvent);
+                  lastMovementTime = Date.now();
+                }
+                totalRotation = 0;
+                document.getElementById('rotationEventStatus').innerHTML === "Not Rotating"
+              }
+              // Reset initial alpha to the new value
+            }
+            else {
+              initialAlpha = currentAlpha;
+            }
         }
 
         window.addEventListener('deviceorientation', handleDeviceOrientation)
 
         const camera = document.querySelector("[gps-new-camera]");
 
-        // window.addEventListener('rotationstop', function() {
         camera.addEventListener("gps-camera-update-position", () => {
+          window.dispatchEvent(rotationStopEvent);
+        })
+
+        // window.addEventListener('rotationstop', function() {
+        window.addEventListener('rotationstop', () => {
             document.getElementById('event-last-fired').innerHTML = "Event fired at " + Date.now().toString() + "!"
 
             function calculateBearing(cameraPosition, targetPosition) {
