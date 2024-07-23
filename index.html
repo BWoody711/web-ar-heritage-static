@@ -593,30 +593,31 @@
               navigator.geolocation.getCurrentPosition(getHeading)
             }
             // Calculate the difference in alpha orientation   
-            // if (initialAlpha !== null) {
-            //   document.getElementById('previousAlpha').innerHTML = initialAlpha.toString()
-            //   document.getElementById('currentAlpha').innerHTML = currentAlpha.toString()
-            //   if ("geolocation" in navigator) {
-            //     navigator.geolocation.getCurrentPosition(getHeading)
-            //   }
-            //   const deltaAlpha = angleDifference(event.alpha, initialAlpha)
-            //   if (deltaAlpha > 30) {
-            //     totalRotation += deltaAlpha
-            //     initialAlpha = currentAlpha;
-            //     lastMovementTime = Date.now();
-            //   } else if (Date.now() - lastMovementTime > 1000) {
-            //     if (totalRotation > 30) {
-            //       // heading = currentAlpha;
-            //       window.dispatchEvent(rotationStopEvent);
-            //       lastMovementTime = Date.now();
-            //     }
-            //     totalRotation = 0;
-            //   }
-            //   // Reset initial alpha to the new value
-            // }
-            // else {
-            //   initialAlpha = event.alpha;
-            // }
+            if (initialAlpha !== null) {
+              // document.getElementById('previousAlpha').innerHTML = initialAlpha.toString()
+              // document.getElementById('currentAlpha').innerHTML = currentAlpha.toString()
+              if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(getHeading)
+              }
+              const deltaAlpha = angleDifference(event.alpha, initialAlpha)
+              if (deltaAlpha > 30) {
+                totalRotation += deltaAlpha
+                initialAlpha = currentAlpha;
+                lastMovementTime = Date.now();
+              } else if (Date.now() - lastMovementTime > 1000) {
+                if (totalRotation > 30) {
+                  // heading = currentAlpha;
+                  // window.dispatchEvent(rotationStopEvent);
+                  alert("Ping!")
+                  lastMovementTime = Date.now();
+                }
+                totalRotation = 0;
+              }
+              // Reset initial alpha to the new value
+            }
+            else {
+              initialAlpha = event.alpha;
+            }
         }
 
         window.addEventListener('deviceorientation', handleDeviceOrientation)
