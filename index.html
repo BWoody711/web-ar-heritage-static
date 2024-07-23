@@ -671,12 +671,11 @@
                 // diff = Math.abs(bearing - heading)
                 //document.getElementById('diff').innerHTML = diff.toString()
 
-                if (distance < minDistance && diff < maxAngle) {
-                  alert("Locked in!")
+                if (distance < minDistance && parseInt(diff) < maxAngle) {
                   minDistance = distance;
                   id = parseInt(building_markers[x].id);
-                  selected_bearing = bearing
-                  selected_diff = diff
+                  selected_bearing = parseInt(bearing)
+                  selected_diff = parseInt(diff)
                 }
               }
             }
@@ -701,11 +700,10 @@
             if (id > 0) {
               alert(id)
               //Parse selected building
-              if (heading) {
-                document.getElementById('bearing').innerHTML = 'Bearing: ' + selected_bearing.toString()
-                document.getElementById('diff').innerHTML = 'Diff: ' + selected_diff.toString()
-              }
-              /**
+              // if (heading) {
+              //   document.getElementById('bearing').innerHTML = 'Bearing: ' + selected_bearing.toString()
+              //   document.getElementById('diff').innerHTML = 'Diff: ' + selected_diff.toString()
+              // }
               //Check if that element is a different element from the one currently selected
               if (
                 document
@@ -802,7 +800,6 @@
               // else {
               //   alert("Same element.");
               // }
-              **/
             } else {
               document.getElementById("hist-description-text").innerHTML =
                 "No nearby buildings in front of your device. Try rotating your device.";
@@ -815,8 +812,6 @@
                 .setAttribute("color", "white");
             }
         });
-
-
 
         //Event listener that fires every time the GPS position of the camera updates
         // camera.addEventListener("gps-camera-update-position", (e) => {
