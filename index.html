@@ -582,13 +582,18 @@
         let heading = null;
 
         function angleDifference(angle1, angle2) {
-          let diff = (angle1 - angle2) % 360;
-          if (diff < -180) {
-            diff += 360;
-          } else if (diff > 180) {
-            diff -= 360;
-          }
-          return diff;
+            if (isNaN(angle1) || isNaN(angle2)) {
+                alert("Both angle1 and angle2 must be valid numbers");
+            }
+
+            let diff = (angle1 - angle2) % 360;
+            if (diff < -180) {
+                diff += 360;
+            } else if (diff > 180) {
+                diff -= 360;
+            }
+
+            return Math.abs(diff);
         }
 
         function getHeading(pos) { 
