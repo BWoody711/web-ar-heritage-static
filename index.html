@@ -668,7 +668,7 @@
                 distance = camera.object3D.position.distanceTo(
                   building_markers[x].object3D.position
                 );
-                bearing = calculateBearing(building_markers[x].object3D.position.x, camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z)
+                bearing = calculateBearing(building_markers[x].object3D.position.z, building_markers[x].object3D.position.x, camera.object3D.position.z, camera.object3D.position.x)
                 // diff = angleDifference(bearing - heading)
                 diff = abs(bearing - heading)
 
