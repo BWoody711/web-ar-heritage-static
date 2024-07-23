@@ -640,17 +640,11 @@
         camera.addEventListener("gps-camera-update-position", () => {
             document.getElementById('event-last-fired').innerHTML = "Event fired at " + Date.now().toString() + "!"
 
-            function calculateBearing(lat1, lon1, lat2, lon2) {
-                const toRadians = degrees => degrees * Math.PI / 180;
-                const toDegrees = radians => radians * 180 / Math.PI;
-
-                const dLon = toRadians(lon2 - lon1);
-                const y = Math.sin(dLon) * Math.cos(toRadians(lat2));
-                const x = Math.cos(toRadians(lat1)) * Math.sin(toRadians(lat2)) -
-                          Math.sin(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.cos(dLon);
-                const bearing = (toDegrees(Math.atan2(y, x)) + 360) % 360; // Normalize to 0-360 degrees
-
-                return bearing;
+            function calculateBearing(cameraPosition, targetPosition) {
+                const deltaX = targetPosition.x - cameraPosition.x;
+                const deltaZ = targetPosition.z - cameraPosition.z;
+                const bearing = Math.atan2(deltaZ, deltaX) * (180 / Math.PI); // Convert to degrees
+                return (bearing + 360) % 360; // Normalize to 0-360 degrees
             }
 
             let distance = 9999;
@@ -668,14 +662,13 @@
                 distance = camera.object3D.position.distanceTo(
                   building_markers[x].object3D.position
                 );
-                bearing = calculateBearing(building_markers[x].object3D.position.z, building_markers[x].object3D.position.x, camera.object3D.position.z, camera.object3D.position.x)
+                bearing = calculateBearing(camera.object3D.position, building_markers[x].object3D.position)
                 // diff = angleDifference(bearing - heading)
+                //Switch this to shortest angle calculation!!
                 diff = abs(bearing - heading)
-
-                alert(diff)
+                document.getElementById('diff').innerHTML = diff.toString()
 
                 if (distance < minDistance && diff < maxAngle) {
-                  alert("Ping!")
                   minDistance = distance;
                   id = parseInt(building_markers[x].id);
                   selected_bearing = bearing
@@ -703,8 +696,8 @@
             //Check if there is at least one element in range of the device
             if (id > 0) {
               //Parse selected building
-              document.getElementById('bearing').innerHTML = selected_bearing.toString()
-              document.getElementById('diff').innerHTML = selected_diff.toString()
+              // document.getElementById('bearing').innerHTML = selected_bearing.toString()
+              // document.getElementById('diff').innerHTML = selected_diff.toString()
               //Check if that element is a different element from the one currently selected
               if (
                 document
@@ -812,7 +805,7 @@
                 .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
                 .setAttribute("color", "white");
             }
-            document.getElementById('event-last-fired').innerHTML = "Event finished."
+            //document.getElementById('event-last-fired').innerHTML = "Event finished."
         });
 
 
