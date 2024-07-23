@@ -633,9 +633,9 @@
 
         const camera = document.querySelector("[gps-new-camera]");
 
-        camera.addEventListener("gps-camera-update-position", () => {
-          window.dispatchEvent(rotationStopEvent);
-        })
+        // camera.addEventListener("gps-camera-update-position", () => {
+        //   window.dispatchEvent(rotationStopEvent);
+        // })
 
         // window.addEventListener('rotationstop', function() {
         window.addEventListener('rotationstop', () => {
@@ -989,7 +989,7 @@
         //     console.log("No heading found in function.")
         //   }
         // });
-      }, 10000);
+      }, 2000);
     </script>
     <div>
       <a-scene
