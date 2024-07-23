@@ -24,7 +24,7 @@
         width: 30%;
         height: 20vh;
         grid-template-columns: auto;
-        grid-template-rows: auto auto auto auto;
+        grid-template-rows: auto auto auto auto auto;
         z-index: 6;
         background-color: white;
         padding: 2px;
@@ -638,6 +638,7 @@
 
         // window.addEventListener('rotationstop', function() {
         camera.addEventListener("gps-camera-update-position", () => {
+            document.getElementById('event-last-fired').innerHTML = Date.now().toString()
             function calculateBearing(lat1, lon1, lat2, lon2) {
                 const toRadians = degrees => degrees * Math.PI / 180;
                 const toDegrees = radians => radians * 180 / Math.PI;
@@ -667,7 +668,8 @@
                   building_markers[x].object3D.position
                 );
                 bearing = calculateBearing(building_markers[x].object3D.position.x, camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z)
-                diff = angleDifference(bearing - heading)
+                // diff = angleDifference(bearing - heading)
+                diff = abs(bearing - heading)
 
                 if (distance < minDistance && diff < maxAngle) {
                   minDistance = distance;
@@ -1003,6 +1005,7 @@
         ></a-camera>
       </a-scene>
       <div id="debugMenu">
+        <span id="event-last-fired" style="display: inherit;"></span>
         <span id="heading-enabled" style="display: inherit;"></span>
         <span id="heading" style="display: inherit;"></span>
         <span id="bearing" style="display: inherit;"></span>
