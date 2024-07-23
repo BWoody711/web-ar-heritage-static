@@ -662,18 +662,20 @@
                 );
                 bearing = calculateBearing(camera.object3D.position, building_markers[x].object3D.position)
                 // diff = angleDifference(bearing - heading)
-                //Switch this to shortest angle calculation!!
-                // diff = abs(bearing - heading)
-                // document.getElementById('diff').innerHTML = diff.toString()
+                // Switch this to shortest angle calculation!!
+                diff = Math.abs(bearing - heading)
+                document.getElementById('diff').innerHTML = diff.toString()
 
-                // if (distance < minDistance && diff < maxAngle) {
-                //   minDistance = distance;
-                //   id = parseInt(building_markers[x].id);
-                //   selected_bearing = bearing
-                //   selected_diff = diff
-                // }
+                if (distance < minDistance && diff < maxAngle) {
+                  minDistance = distance;
+                  id = parseInt(building_markers[x].id);
+                  selected_bearing = bearing
+                  selected_diff = diff
+                }
               }
-              alert(bearing)
+            }
+            if (selected_diff) {
+              alert(selected_diff)
             }
             // else {
             //   document.getElementById('heading-enabled').innerHTML = "Heading disabled."
