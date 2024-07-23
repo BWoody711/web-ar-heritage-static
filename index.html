@@ -599,22 +599,20 @@
         const rotationStopEvent = new Event('rotationstop');
 
         function handleDeviceOrientation(event) {
-            // Calculate the difference in alpha orientation
-            
-            if ("geolocation" in navigator) {
-              navigator.geolocation.getCurrentPosition(getHeading)
-            }
-            
+            // Calculate the difference in alpha orientation        
             if (initialAlpha !== null) {
             //   document.getElementById('previousAlpha').innerHTML = initialAlpha.toString()
             //   document.getElementById('currentAlpha').innerHTML = currentAlpha.toString()
-              const deltaAlpha = angleDifference(currentAlpha, initialAlpha)
-              if (deltaAlpha > threshold) {
+              if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(getHeading)
+              }
+              const deltaAlpha = angleDifference(event.alpha, initialAlpha)
+              if (deltaAlpha > 30) {
                 totalRotation += deltaAlpha
                 initialAlpha = currentAlpha;
                 lastMovementTime = Date.now();
-              } else if (Date.now() - lastMovementTime > timeoutDuration) {
-                if (totalRotation > buildingUpdateRotation) {
+              } else if (Date.now() - lastMovementTime > 1000) {
+                if (totalRotation > 30) {
                   // heading = currentAlpha;
                   window.dispatchEvent(rotationStopEvent);
                   lastMovementTime = Date.now();
@@ -624,7 +622,7 @@
               // Reset initial alpha to the new value
             }
             else {
-              initialAlpha = currentAlpha;
+              initialAlpha = event.alpha;
             }
         }
 
