@@ -581,21 +581,6 @@
         // let totalRotation = 0;
         let heading = null;
 
-        function angleDifference(angle1, angle2) {
-            if (isNaN(angle1) || isNaN(angle2)) {
-                alert("Both angle1 and angle2 must be valid numbers");
-            }
-
-            let diff = (angle1 - angle2) % 360;
-            if (diff < -180) {
-                diff += 360;
-            } else if (diff > 180) {
-                diff -= 360;
-            }
-
-            return Math.abs(diff);
-        }
-
         function getHeading(pos) { 
             heading = pos.coords.heading; 
             document.getElementById('heading').innerHTML = pos.coords.heading.toString()
@@ -647,6 +632,21 @@
                 const bearing = Math.atan2(deltaZ, deltaX) * (180 / Math.PI); // Convert to degrees
                 return (bearing + 360) % 360; // Normalize to 0-360 degrees
             }
+
+            function angleDifference(angle1, angle2) {
+              if (isNaN(angle1) || isNaN(angle2)) {
+                  alert(angle1, angle2)
+              }
+
+              let diff = (angle1 - angle2) % 360;
+              if (diff < -180) {
+                  diff += 360;
+              } else if (diff > 180) {
+                  diff -= 360;
+              }
+
+              return Math.abs(diff);
+          }
 
             let distance = 9999;
             let minDistance = 100;
