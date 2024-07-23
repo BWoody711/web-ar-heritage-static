@@ -634,28 +634,23 @@
         const camera = document.querySelector("[gps-new-camera]");
 
         camera.addEventListener("gps-camera-update-position", () => {
-          alert("Ping!")
-          window.dispatchEvent(rotationStopEvent);
-        })
-
-        // window.addEventListener('rotationstop', function() {
-        window.addEventListener('rotationstop', () => {
             //document.getElementById('event-last-fired').innerHTML = "Event fired at " + Date.now().toString() + "!"
 
-            alert("Event fired!")
-            // function calculateBearing(cameraPosition, targetPosition) {
-            //     const deltaX = targetPosition.x - cameraPosition.x;
-            //     const deltaZ = targetPosition.z - cameraPosition.z;
-            //     const bearing = Math.atan2(deltaZ, deltaX) * (180 / Math.PI); // Convert to degrees
-            //     return (bearing + 360) % 360; // Normalize to 0-360 degrees
-            // }
+            function calculateBearing(cameraPosition, targetPosition) {
+                const deltaX = targetPosition.x - cameraPosition.x;
+                const deltaZ = targetPosition.z - cameraPosition.z;
+                const bearing = Math.atan2(deltaZ, deltaX) * (180 / Math.PI); // Convert to degrees
+                return (bearing + 360) % 360; // Normalize to 0-360 degrees
+            }
 
             // let distance = 9999;
             // let minDistance = 100;
             // let id = 0;
             // let maxAngle = 90;
 
-            // const building_markers = document.getElementsByTagName("a-entity");
+            const building_markers = document.getElementsByTagName("a-entity");
+
+            alert(building_markers.length)
 
             // let bearing, diff, selected_bearing, selected_diff
 
