@@ -666,7 +666,7 @@
                   building_markers[x].object3D.position
                 );
                 bearing = calculateBearing(camera.object3D.position, building_markers[x].object3D.position)
-                diff = angleDifference(bearing - heading)
+                diff = angleDifference(parseInt(bearing) - parseInt(heading))
                 // Switch this to shortest angle calculation!!
                 // diff = Math.abs(bearing - heading)
                 document.getElementById('diff').innerHTML = diff.toString()
