@@ -583,10 +583,15 @@
 
         let pastHeadings = []
         let headingStable = false
+        let timestamp
 
         function getHeading(pos) { 
             heading = pos.coords.heading;
-            pastHeadings.push(parseInt(pos.coords.heading))
+            if (Date.now() - timestamp > 200) {
+              pastHeadings.push(parseInt(pos.coords.heading))
+              timestamp = Date.now()
+            }
+            
             document.getElementById('heading').innerHTML = 'Heading: ' + pos.coords.heading.toString()
             document.getElementById('pastHeadings').innerHTML = 'Past Headings: ' + pastHeadings.toString()
             if (pastHeadings.length > 5) {
