@@ -587,7 +587,7 @@
 
         function getHeading(pos) { 
             heading = pos.coords.heading;
-            if (Date.now() - timestamp > 200) {
+            if (Date.now() - timestamp > 100) {
               pastHeadings.push(parseInt(pos.coords.heading))
               timestamp = Date.now()
             }
@@ -597,7 +597,7 @@
             if (pastHeadings.length > 5) {
               pastHeadings = pastHeadings.slice(1)
               const array_range = Math.max(...pastHeadings) - Math.min(...pastHeadings)
-              if (array_range < 15) {
+              if (array_range < 10) {
                 // alert("Heading stabilized!")
                 headingStable = true;
                 document.getElementById('headingStability').innerHTML = 'Stable';
@@ -668,15 +668,15 @@
             let minDistance = 100;
             let id = 0;
             let maxAngle = 90;
-            let headingEnabled = false
+            let headingEnabled = true
+            let bearing
+            let diff
             let selected_bearing
             let selected_diff
 
             const building_markers = document.getElementsByTagName("a-entity");
 
             if (heading && headingEnabled) {              
-              let bearing
-              let diff
               document.getElementById('heading-enabled').innerHTML = "Heading enabled."
               for (let x = 0; x < Array.from(building_markers).length; x++) {
                 distance = camera.object3D.position.distanceTo(
