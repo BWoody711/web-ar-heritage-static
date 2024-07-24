@@ -24,7 +24,7 @@
         width: 30%;
         height: 20vh;
         grid-template-columns: auto;
-        grid-template-rows: auto auto auto auto auto;
+        grid-template-rows: auto auto auto auto auto auto;
         z-index: 6;
         background-color: white;
         padding: 2px;
@@ -585,10 +585,11 @@
 
         function getHeading(pos) { 
             heading = pos.coords.heading;
-            pastHeadings.push(heading)
+            pastHeadings.push(parseInt(pos.coords.heading))
             document.getElementById('heading').innerHTML = 'Heading: ' + pos.coords.heading.toString()
+            document.getElementById('pastHeadings').innerHTML = 'Past Headings: ' + pastHeadings.toString()
             if (pastHeadings.length > 5) {
-              pastHeadings.slice(Math.max(arr.length - 5, 1))
+              pastHeadings.slice(1)
               const array_range = Math.max(...pastHeadings) - Math.min(...pastHeadings)
               if (array_range < 15) {
                 alert("Heading stabilized!")
@@ -656,14 +657,14 @@
             let id = 0;
             let maxAngle = 90;
             let headingEnabled = false
+            let selected_bearing
+            let selected_diff
 
             const building_markers = document.getElementsByTagName("a-entity");
 
             if (heading && headingEnabled) {              
               let bearing
               let diff
-              let selected_bearing
-              let selected_diff
               document.getElementById('heading-enabled').innerHTML = "Heading enabled."
               for (let x = 0; x < Array.from(building_markers).length; x++) {
                 distance = camera.object3D.position.distanceTo(
@@ -678,8 +679,8 @@
                 if (distance < minDistance && parseInt(diff) < maxAngle) {
                   minDistance = distance;
                   id = parseInt(building_markers[x].id);
-                  selected_bearing = parseInt(bearing)
-                  selected_diff = parseInt(diff)
+                  // selected_bearing = parseInt(bearing)
+                  // selected_diff = parseInt(diff)
                 }
               }
             }
@@ -689,8 +690,6 @@
                 distance = camera.object3D.position.distanceTo(
                   building_markers[x].object3D.position
                 );
-                // Switch this to shortest angle calculation!!
-                // diff = Math.abs(bearing - heading)
                 //document.getElementById('diff').innerHTML = diff.toString()
 
                 if (distance < minDistance) {
@@ -703,11 +702,9 @@
             const highlight_color = "aqua";
             //Check if there is at least one element in range of the device
             if (id > 0) {
-              alert(id)
               //Parse selected building
-              if (heading) {
+              if (heading && headingEnabled) {
                 if (selected_bearing && selected_diff) {
-                  alert(selected_diff)
                   document.getElementById('bearing').innerHTML = 'Bearing: ' + selected_bearing.toString()
                   document.getElementById('diff').innerHTML = 'Diff: ' + selected_diff.toString()
                 }
@@ -1020,6 +1017,7 @@
         <span id="event-last-fired" style="display: inherit;"></span>
         <span id="heading-enabled" style="display: inherit;"></span>
         <span id="heading" style="display: inherit;"></span>
+        <span id="pastHeadings" style="display: inherit;"></span>
         <span id="bearing" style="display: inherit;"></span>
         <span id="diff" style="display: inherit;"></span>
       </div>
