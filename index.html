@@ -589,7 +589,7 @@
             document.getElementById('heading').innerHTML = 'Heading: ' + pos.coords.heading.toString()
             if (pastHeadings.length > 5) {
               pastHeadings.slice(Math.max(arr.length - 5, 1))
-              const array_range = Math.max(...pastHeadins) - Math.min(...pastHeadings)
+              const array_range = Math.max(...pastHeadings) - Math.min(...pastHeadings)
               if (array_range < 15) {
                 alert("Heading stabilized!")
               }
@@ -655,10 +655,11 @@
             let minDistance = 100;
             let id = 0;
             let maxAngle = 90;
+            let headingEnabled = false
 
             const building_markers = document.getElementsByTagName("a-entity");
 
-            if (heading) {              
+            if (heading && headingEnabled) {              
               let bearing
               let diff
               let selected_bearing
@@ -682,26 +683,27 @@
                 }
               }
             }
-            // else {
-            //   document.getElementById('heading-enabled').innerHTML = "Heading disabled."
-            //   for (let x = 0; x < Array.from(building_markers).length; x++) {
-            //     distance = camera.object3D.position.distanceTo(
-            //       building_markers[x].object3D.position
-            //     );
+            else {
+              document.getElementById('heading-enabled').innerHTML = "Heading disabled."
+              for (let x = 0; x < Array.from(building_markers).length; x++) {
+                distance = camera.object3D.position.distanceTo(
+                  building_markers[x].object3D.position
+                );
+                // Switch this to shortest angle calculation!!
+                // diff = Math.abs(bearing - heading)
+                //document.getElementById('diff').innerHTML = diff.toString()
 
-            //     if (distance < minDistance) {
-            //       minDistance = distance;
-            //       id = parseInt(building_markers[x].id);
-            //       selected_bearing = bearing
-            //       selected_diff = diff
-            //     }
-            //   }
-            // }
+                if (distance < minDistance) {
+                  minDistance = distance;
+                  id = parseInt(building_markers[x].id);
+                }
+              }
+            }
             //If buildings are in proximity, highlight the closest one in aqua
             const highlight_color = "aqua";
             //Check if there is at least one element in range of the device
             if (id > 0) {
-              //alert(id)
+              alert(id)
               //Parse selected building
               if (heading) {
                 if (selected_bearing && selected_diff) {
