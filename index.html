@@ -594,26 +594,18 @@
             }
             // Calculate the difference in alpha orientation   
             if (initialAlpha !== null) {
-              // document.getElementById('previousAlpha').innerHTML = initialAlpha.toString()
-              // document.getElementById('currentAlpha').innerHTML = currentAlpha.toString()
-              if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(getHeading)
-              }
               const deltaAlpha = angleDifference(event.alpha, initialAlpha)
               if (deltaAlpha > 30) {
                 totalRotation += deltaAlpha
-                initialAlpha = currentAlpha;
+                initialAlpha = event.alpha;
                 lastMovementTime = Date.now();
               } else if (Date.now() - lastMovementTime > 1000) {
                 if (totalRotation > 30) {
-                  // heading = currentAlpha;
-                  // window.dispatchEvent(rotationStopEvent);
                   alert("Ping!")
                   lastMovementTime = Date.now();
                 }
                 totalRotation = 0;
               }
-              // Reset initial alpha to the new value
             }
             else {
               initialAlpha = event.alpha;
@@ -702,9 +694,14 @@
               //alert(id)
               //Parse selected building
               if (heading) {
-                alert(selected_bearing, selected_diff)
-                //document.getElementById('bearing').innerHTML = 'Bearing: ' + selected_bearing.toString()
-                //document.getElementById('diff').innerHTML = 'Diff: ' + selected_diff.toString()
+                if (selected_bearing && selected_diff) {
+                  alert(selected_diff)
+                  document.getElementById('bearing').innerHTML = 'Bearing: ' + selected_bearing.toString()
+                  document.getElementById('diff').innerHTML = 'Diff: ' + selected_diff.toString()
+                }
+                else {
+                  alert("No bearing calculated to selected building.")
+                }
               }
               //Check if that element is a different element from the one currently selected
               if (
