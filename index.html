@@ -24,7 +24,7 @@
         width: 30%;
         height: 20vh;
         grid-template-columns: auto;
-        grid-template-rows: auto auto auto auto auto auto;
+        grid-template-rows: auto auto auto auto auto auto auto;
         z-index: 6;
         background-color: white;
         padding: 2px;
@@ -582,6 +582,7 @@
         let heading = null;
 
         let pastHeadings = []
+        let headingStable = false
 
         function getHeading(pos) { 
             heading = pos.coords.heading;
@@ -592,7 +593,13 @@
               pastHeadings.slice(1)
               const array_range = Math.max(...pastHeadings) - Math.min(...pastHeadings)
               if (array_range < 15) {
-                alert("Heading stabilized!")
+                // alert("Heading stabilized!")
+                headingStable = true
+                document.getElementById('headingStability').innerHTML = 'Stable'
+              }
+              else {
+                headingStable = false
+                document.getElementById('headingStability').innerHTML = 'Unstable'
               }
             }
         }
@@ -1018,6 +1025,7 @@
         <span id="heading-enabled" style="display: inherit;"></span>
         <span id="heading" style="display: inherit;"></span>
         <span id="pastHeadings" style="display: inherit;"></span>
+        <span id="headingStability" style="display: inherit;"></span>
         <span id="bearing" style="display: inherit;"></span>
         <span id="diff" style="display: inherit;"></span>
       </div>
