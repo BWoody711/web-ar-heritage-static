@@ -590,7 +590,7 @@
             document.getElementById('heading').innerHTML = 'Heading: ' + pos.coords.heading.toString()
             document.getElementById('pastHeadings').innerHTML = 'Past Headings: ' + pastHeadings.toString()
             if (pastHeadings.length > 5) {
-              pastHeadings.slice(1)
+              pastHeadings = pastHeadings.slice(1)
               const array_range = Math.max(...pastHeadings) - Math.min(...pastHeadings)
               if (array_range < 15) {
                 // alert("Heading stabilized!")
