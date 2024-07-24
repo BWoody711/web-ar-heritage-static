@@ -588,8 +588,10 @@
         function getHeading(pos) { 
             heading = pos.coords.heading;
             if (Date.now() - timestamp > 100) {
-              pastHeadings.push(parseInt(pos.coords.heading))
-              timestamp = Date.now()
+              if (!isNaN(pos.coords.heading)) {
+                pastHeadings.push(parseInt(pos.coords.heading))
+                timestamp = Date.now()
+              }
             }
             
             document.getElementById('heading').innerHTML = 'Heading: ' + pos.coords.heading.toString()
@@ -667,7 +669,7 @@
             let distance = 9999;
             let minDistance = 100;
             let id = 0;
-            let maxAngle = 90;
+            let maxAngle = 45;
             let headingEnabled = true
             let bearing
             let diff
