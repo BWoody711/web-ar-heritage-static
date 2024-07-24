@@ -588,7 +588,7 @@
         function getHeading(pos) { 
             heading = pos.coords.heading;
             if (Date.now() - timestamp > 100) {
-              if (!isNaN(pos.coords.heading)) {
+              if (!isNaN(parseInt(pos.coords.heading))) {
                 pastHeadings.push(parseInt(pos.coords.heading))
                 timestamp = Date.now()
               }
@@ -670,7 +670,7 @@
             let distance = 9999;
             let minDistance = 100;
             let id = 0;
-            let maxAngle = 45;
+            let maxAngle = 75;
             let headingEnabled = true
             let bearing
             let diff
