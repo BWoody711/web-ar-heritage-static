@@ -598,6 +598,7 @@
             document.getElementById('pastHeadings').innerHTML = 'Past Headings: ' + pastHeadings.toString()
             if (pastHeadings.length > 5) {
               pastHeadings = pastHeadings.slice(1)
+              //Revise to do in terms of angle differences
               const array_range = Math.max(...pastHeadings) - Math.min(...pastHeadings)
               if (array_range < 10) {
                 // alert("Heading stabilized!")
@@ -684,7 +685,7 @@
                 distance = camera.object3D.position.distanceTo(
                   building_markers[x].object3D.position
                 );
-                bearing = calculateBearing(camera.object3D.position, building_markers[x].object3D.position)
+                bearing = calculateBearing(building_markers[x].object3D.position, camera.object3D.position)
                 diff = angleDifference(parseInt(heading), parseInt(bearing))
                 // Switch this to shortest angle calculation!!
                 // diff = Math.abs(bearing - heading)
@@ -722,9 +723,9 @@
                   document.getElementById('bearing').innerHTML = 'Bearing: ' + selected_bearing.toString()
                   document.getElementById('diff').innerHTML = 'Diff: ' + selected_diff.toString()
                 }
-                else {
-                  alert("No bearing calculated to selected building.")
-                }
+                // else {
+                //   alert("No bearing calculated to selected building.")
+                // }
               }
               //Check if that element is a different element from the one currently selected
               if (
