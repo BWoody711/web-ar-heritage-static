@@ -581,9 +581,19 @@
         // let totalRotation = 0;
         let heading = null;
 
+        let pastHeadings = []
+
         function getHeading(pos) { 
-            heading = pos.coords.heading; 
+            heading = pos.coords.heading;
+            pastHeadings.push(heading)
             document.getElementById('heading').innerHTML = 'Heading: ' + pos.coords.heading.toString()
+            if (pastHeadings.length > 5) {
+              pastHeadings.slice(Math.max(arr.length - 5, 1))
+              const array_range = Math.max(...pastHeadins) - Math.min(...pastHeadings)
+              if (array_range < 15) {
+                alert("Heading stabilized!")
+              }
+            }
         }
 
         // const rotationStopEvent = new Event('rotationstop');
@@ -593,23 +603,23 @@
               navigator.geolocation.getCurrentPosition(getHeading)
             }
             // Calculate the difference in alpha orientation   
-            if (initialAlpha !== null) {
-              const deltaAlpha = angleDifference(event.alpha, initialAlpha)
-              if (deltaAlpha > 30) {
-                totalRotation += deltaAlpha
-                initialAlpha = event.alpha;
-                lastMovementTime = Date.now();
-              } else if (Date.now() - lastMovementTime > 1000) {
-                if (totalRotation > 30) {
-                  alert("Ping!")
-                  lastMovementTime = Date.now();
-                }
-                totalRotation = 0;
-              }
-            }
-            else {
-              initialAlpha = event.alpha;
-            }
+            // if (initialAlpha !== null) {
+            //   const deltaAlpha = angleDifference(event.alpha, initialAlpha)
+            //   if (deltaAlpha > 30) {
+            //     totalRotation += deltaAlpha
+            //     initialAlpha = event.alpha;
+            //     lastMovementTime = Date.now();
+            //   } else if (Date.now() - lastMovementTime > 1000) {
+            //     if (totalRotation > 30) {
+            //       alert("Ping!")
+            //       lastMovementTime = Date.now();
+            //     }
+            //     totalRotation = 0;
+            //   }
+            // }
+            // else {
+            //   initialAlpha = event.alpha;
+            // }
         }
 
         window.addEventListener('deviceorientation', handleDeviceOrientation)
