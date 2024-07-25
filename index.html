@@ -668,9 +668,9 @@
           }
 
             let distance = 9999;
-            let minDistance = 50;
+            let minDistance = 100;
             let id = 0;
-            let maxAngle = 65;
+            let maxAngle = 75;
             let headingEnabled = true
             let bearing
             let diff
@@ -1025,7 +1025,7 @@
         <a-camera
           look-controls-enabled="false"
           arjs-device-orientation-controls="smoothingFactor: 0.1"
-          gps-new-camera="gpsMinDistance: 5; maxDistance: 75; positionMinAccuracy: 25; alert: true"
+          gps-new-camera="gpsMinDistance: 3; maxDistance: 100; positionMinAccuracy: 25; alert: true"
         ></a-camera>
       </a-scene>
       <div id="debugMenu">
