@@ -313,7 +313,7 @@
       //Proceed to exit survey button
       function proceedToExitSurvey() {
         if (confirm("Are you sure you would like to proceed to the exit survey?")) {
-          window.location.href = `https://uwaterloo.ca1.qualtrics.com/jfe/form/SV_5j8DIR3GLt2Ee90?ResponseIDEntrance=${responseID}&Site=${site}`
+          window.location.href = `https://uwaterloo.ca1.qualtrics.com/jfe/form/SV_8wSGsDwBi5ljeh8?ResponseIDEntrance=${responseID}&Site=${site}`
         }
       }
 
@@ -671,7 +671,7 @@
             let minDistance = 100;
             let id = 0;
             let maxAngle = 75;
-            let headingEnabled = true
+            let headingEnabled = false
             let bearing
             let diff
             let selected_bearing
@@ -1049,7 +1049,7 @@
           Images
         </button>
         <button class="thumbButton" id="poi-button" onclick="toggleSelected(this.id)">
-          Scavenger Hunt
+          Exit Survey
         </button>
       </div>
       <div id="description">
@@ -1123,10 +1123,7 @@
       </div>
     </div>
     <div id="pois">
-      <h3 id="poi-heading">Scavenger Hunt</h3>
-      <div id="poi-box">
-
-      </div>
+      <h3 id="poi-heading">Exit Survey</h3>
       <div id="exit-button-box">
         <button id="exit-survey-button" onclick="proceedToExitSurvey()">Proceed to Exit Survey</a>
       </div>
