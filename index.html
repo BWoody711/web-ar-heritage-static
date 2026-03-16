@@ -78,7 +78,6 @@
         grid-template-rows: 15% auto 25%;
         z-index: 4;
         background-color: white;
-        /* visibility: hidden; */
         padding: 3%;
       }
       .description-box {
@@ -93,14 +92,6 @@
         margin: 0px;
         padding: 0px;
       }
-      /* #hist-description {
-        visibility: hidden;
-      } */
-      /* .desc-div {
-        position: absolute;
-        top: 15%;
-        width: 90%;
-      } */
       #arch-description {
         display: none;
       }
@@ -115,7 +106,6 @@
         width: 75%;
         margin-right: 12.5%;
         margin-left: 12.5%;
-        /* align-items: center; */
         display: grid;
         grid-template-columns: auto auto;
         padding-bottom: 6px;
@@ -191,7 +181,6 @@
         height: 100%;
         display: flex;
         justify-content: center;
-        
       }
       #exit-survey-button {
         display: flex;
@@ -218,147 +207,256 @@
         list-style-position: inside;
         padding-left: 0;
       }
+
+      /* iOS permission overlay */
+      #permission-overlay {
+        display: none;
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.85);
+        z-index: 999;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
+      }
+      #permission-overlay p {
+        font-size: 16px;
+        margin-bottom: 20px;
+      }
+      #permission-button {
+        padding: 14px 28px;
+        font-size: 18px;
+        background: aqua;
+        color: black;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
+
+    <!-- iOS orientation permission overlay -->
+    <div id="permission-overlay">
+      <p>This app needs access to your device's compass for accurate building detection.</p>
+      <button id="permission-button" onclick="requestOrientationPermission()">Enable Compass</button>
+    </div>
+
     <script>
-      //Parameters
-      //Get Buildings from API
+      // ─── Parameters ───────────────────────────────────────────────────────────
       const bbox_size = 100;
-      // const gpsRefreshInterval = 2;
 
-      //Find Buildings in Scene
-      // const minBuildingSearchDistance = bbox_size
-
-      //Debug mode
       const queryString = window.location.search;
       const urlParams = new URLSearchParams(queryString);
-      const responseID = urlParams.get('ResponseID')
-      const site = urlParams.get('Site')
-      const debug = urlParams.get('Debug')
+      const responseID = urlParams.get('ResponseID');
+      const site = urlParams.get('Site');
+      const debug = urlParams.get('Debug');
 
       function openDebugMenu() {
-        if (debug) {
-          if(debug==="y"){
-            document.getElementById('debugMenu').style.display = "grid";
+        document.getElementById('debugMenu').style.display =
+          (debug === "y") ? "grid" : "none";
+      }
+      setTimeout(openDebugMenu, 1000);
+
+      // ─── Heading State ────────────────────────────────────────────────────────
+      // heading is always set from the magnetometer (compass), not GPS movement.
+      // This works reliably while stationary on both iOS and Android.
+      let heading = null;
+      let headingSource = "none"; // "webkit" | "absolute" | "relative"
+
+      // Circular buffer of recent headings for smoothing
+      const HEADING_BUFFER_SIZE = 8;
+      let pastHeadings = [];
+
+      /**
+       * Circular mean of an array of angles (degrees).
+       * Correctly handles wrap-around at 0°/360°.
+       */
+      function circularMean(angles) {
+        if (angles.length === 0) return null;
+        const toRad = a => a * Math.PI / 180;
+        const toDeg = r => r * 180 / Math.PI;
+        const sinSum = angles.reduce((s, a) => s + Math.sin(toRad(a)), 0);
+        const cosSum = angles.reduce((s, a) => s + Math.cos(toRad(a)), 0);
+        return (toDeg(Math.atan2(sinSum, cosSum)) + 360) % 360;
+      }
+
+      /**
+       * Circular range: max angular spread in a set of angles.
+       * Used to check heading stability.
+       */
+      function circularRange(angles) {
+        if (angles.length < 2) return 0;
+        let maxDiff = 0;
+        for (let i = 0; i < angles.length; i++) {
+          for (let j = i + 1; j < angles.length; j++) {
+            const diff = angleDifference(angles[i], angles[j]);
+            if (diff > maxDiff) maxDiff = diff;
           }
-          else {
-            document.getElementById('debugMenu').style.display = "none";
         }
+        return maxDiff;
+      }
+
+      /**
+       * Smallest signed absolute difference between two angles (degrees).
+       */
+      function angleDifference(a1, a2) {
+        let diff = (a1 - a2) % 360;
+        if (diff < -180) diff += 360;
+        else if (diff > 180) diff -= 360;
+        return Math.abs(diff);
+      }
+
+      /**
+       * Central handler: receives a raw compass heading in degrees (0–360, CW from N).
+       * Smooths via circular mean and updates the global `heading` variable.
+       */
+      function updateHeading(rawHeading) {
+        if (rawHeading === null || rawHeading === undefined || isNaN(rawHeading)) return;
+
+        pastHeadings.push(rawHeading);
+        if (pastHeadings.length > HEADING_BUFFER_SIZE) {
+          pastHeadings = pastHeadings.slice(pastHeadings.length - HEADING_BUFFER_SIZE);
         }
-        else {
-          document.getElementById('debugMenu').style.display = "none";
+
+        heading = circularMean(pastHeadings);
+
+        // Debug output
+        const stable = circularRange(pastHeadings) < 15;
+        document.getElementById('heading').innerHTML = 'Heading: ' + heading.toFixed(1) + '° [' + headingSource + ']';
+        document.getElementById('pastHeadings').innerHTML = 'Buffer: ' + pastHeadings.map(h => Math.round(h)).join(', ');
+        document.getElementById('headingStability').innerHTML = stable ? 'Stable' : 'Unstable';
+      }
+
+      /**
+       * Device orientation handler — the primary source of heading.
+       *
+       * Priority:
+       *   1. event.webkitCompassHeading  (iOS Safari — always absolute, 0=North)
+       *   2. event.alpha with absolute=true  (Android Chrome — needs (360 - alpha))
+       *   3. event.alpha relative (fallback; less reliable but better than nothing)
+       */
+      function handleDeviceOrientation(event) {
+        if (typeof event.webkitCompassHeading === 'number' &&
+            !isNaN(event.webkitCompassHeading)) {
+          // iOS: webkitCompassHeading is clockwise from true north
+          headingSource = "webkit";
+          updateHeading(event.webkitCompassHeading);
+        } else if (event.absolute === true && event.alpha !== null) {
+          // Android absolute orientation: alpha is CCW from north, so invert
+          headingSource = "absolute";
+          updateHeading((360 - event.alpha) % 360);
+        } else if (event.alpha !== null && event.alpha !== undefined) {
+          // Relative fallback — less reliable but still better than GPS heading
+          headingSource = "relative";
+          updateHeading((360 - event.alpha) % 360);
         }
       }
 
-      setTimeout(openDebugMenu, 1000)
-      
-      //Button handlers
+      /**
+       * Request iOS 13+ DeviceOrientation permission and attach listeners.
+       * Must be called from a user gesture (button tap) on iOS.
+       * On Android / desktop the permission API doesn't exist, so listeners
+       * are attached directly.
+       */
+      async function requestOrientationPermission() {
+        document.getElementById('permission-overlay').style.display = 'none';
+
+        if (typeof DeviceOrientationEvent !== 'undefined' &&
+            typeof DeviceOrientationEvent.requestPermission === 'function') {
+          // iOS 13+
+          try {
+            const permission = await DeviceOrientationEvent.requestPermission();
+            if (permission === 'granted') {
+              attachOrientationListeners();
+            } else {
+              console.warn('Device orientation permission denied.');
+            }
+          } catch (e) {
+            console.error('Error requesting orientation permission:', e);
+          }
+        } else {
+          // Android / non-iOS: no permission needed
+          attachOrientationListeners();
+        }
+      }
+
+      function attachOrientationListeners() {
+        // Prefer deviceorientationabsolute (guaranteed Earth-frame on Android)
+        if ('ondeviceorientationabsolute' in window) {
+          window.addEventListener('deviceorientationabsolute', handleDeviceOrientation, true);
+        }
+        // Also attach standard event as fallback / for iOS webkitCompassHeading
+        window.addEventListener('deviceorientation', handleDeviceOrientation, true);
+      }
+
+      /**
+       * On page load, decide whether to show the iOS permission overlay
+       * or go straight to attaching listeners (Android/desktop).
+       */
+      function initOrientation() {
+        if (typeof DeviceOrientationEvent !== 'undefined' &&
+            typeof DeviceOrientationEvent.requestPermission === 'function') {
+          // iOS 13+ — must prompt user first
+          document.getElementById('permission-overlay').style.display = 'flex';
+        } else {
+          // Android or desktop — attach immediately
+          attachOrientationListeners();
+        }
+      }
+
+      // ─── Button Handlers ──────────────────────────────────────────────────────
       function toggleSelected(selected_id) {
-        ids = ["image-button", "desc-button", "poi-button"]
-        for (let x=0; x<ids.length; x++) {
-          //Check for selected buttons that need to be unselected
+        const ids = ["image-button", "desc-button", "poi-button"];
+        for (let x = 0; x < ids.length; x++) {
           if (document.getElementById(ids[x]).style.backgroundColor === "aqua") {
-            //Make sure double clicks do nothing
             if (ids[x] !== selected_id) {
               if (ids[x] === "image-button") {
-                const images = document.getElementById("images");
-                const image_button = document.getElementById("image-button");
-                if (image_button.style.backgroundColor === "aqua") {
-                  image_button.style.backgroundColor = "white";
-                  images.style.display = "none";
-                }
-              }
-              else if (ids[x] === "desc-button") {
-                const description = document.getElementById("description");
-                const desc_button = document.getElementById("desc-button");
-                if (desc_button.style.backgroundColor === "aqua") {
-                  desc_button.style.backgroundColor = "white";
-                  description.style.display = "none";
-                }
-              }
-              else if (ids[x] === "poi-button") {
-                const pois = document.getElementById("pois")
-                const poi_button = document.getElementById("poi-button")
-                if (poi_button.style.backgroundColor === "aqua") {
-                  poi_button.style.backgroundColor = "white";
-                  pois.style.display = "none";
-                }
+                document.getElementById("image-button").style.backgroundColor = "white";
+                document.getElementById("images").style.display = "none";
+              } else if (ids[x] === "desc-button") {
+                document.getElementById("desc-button").style.backgroundColor = "white";
+                document.getElementById("description").style.display = "none";
+              } else if (ids[x] === "poi-button") {
+                document.getElementById("poi-button").style.backgroundColor = "white";
+                document.getElementById("pois").style.display = "none";
               }
             }
           }
         }
-
-        //Tell the app what happens when you click the button
-        const button = document.getElementById(selected_id)
-        //Do nothing on double clicks
+        const button = document.getElementById(selected_id);
         if (button.style.backgroundColor !== "aqua") {
           if (selected_id === "desc-button") {
-            const description = document.getElementById("description");
             button.style.backgroundColor = "aqua";
-            description.style.display = "grid";
-          }
-          else if (selected_id === "image-button") {
-            const images = document.getElementById("images");
+            document.getElementById("description").style.display = "grid";
+          } else if (selected_id === "image-button") {
             button.style.backgroundColor = "aqua";
-            images.style.display = "grid";
-          }
-          else if (selected_id === "poi-button") {
-            const pois = document.getElementById("pois")
+            document.getElementById("images").style.display = "grid";
+          } else if (selected_id === "poi-button") {
             button.style.backgroundColor = "aqua";
-            pois.style.display = "grid";
+            document.getElementById("pois").style.display = "grid";
           }
         }
       }
 
-      //Proceed to exit survey button
       function proceedToExitSurvey() {
         if (confirm("Are you sure you would like to proceed to the exit survey?")) {
-          window.location.href = `https://uwaterloo.ca1.qualtrics.com/jfe/form/SV_8wSGsDwBi5ljeh8?ResponseIDEntrance=${responseID}&Site=${site}`
+          window.location.href =
+            `https://uwaterloo.ca1.qualtrics.com/jfe/form/SV_8wSGsDwBi5ljeh8?ResponseIDEntrance=${responseID}&Site=${site}`;
         }
       }
 
-      //Function here to populate POI box
       function poiText() {
-        const queryString = window.location.search;
-        const urlParams = new URLSearchParams(queryString);
-        const site = urlParams.get('Site')
-        // const pois = document.getElementById('poi-box')
-        // if (site) {
-        //   if (site === "Bayfield") {
-        //     pois.innerHTML = "<ul>"
-        //       + "<li>Which Bayfield hotel burned down in 1947?</li>"
-        //       + "<li>In the early 1900s, what did John Whiddon make behind his building on Main Street?</li>"
-        //       + "<li>Which structure was formerly Alf Erwin's furniture and undertaker, and later part of the Bayfield Library?</li>"
-        //       + "<li>Which architectural style is the Gairdner house built in?</li>"
-        //       + "<li>Which Bayfield hotel expanded to include Jack Day's carriage shop?</li>"
-        //       + "<li>Which building used to house a CIBC branch?</li>"
-        //       + "</ul>"
-        //   }
-        //   else if (site === "New Hamburg") {
-        //     pois.innerHTML = "<ul>"
-        //       + "<li>When was the original wooden bridge on Huron Street built?</li>"
-        //       + "<li>Who built the former Ford garage on Peel Street in 1915?</li>"
-        //       + "<li>Why did the Queen's Hotel cease operations in 1916?</li>"
-        //       + "<li>How many Carnegie libraries were built in Canada?</li>"
-        //       + "<li>What architectural style characterizes the Commercial Hotel?</li>"
-        //       + "<li>Which shopping block on the south side of Huron Street is built in the Second Empire style?</li>"
-        //       + "</ul>"
-        //     }
-        //   else {
-        //     pois.innerHTML = 'No POIs available for this site.'
-        //   }
-        // }
-        // else {
-        //   pois.innerHTML = "No site specified."
-        // }
+        // POI text population (unchanged from original)
       }
 
-      //Toggle image
       function toggleImage(id) {
-        const images = document
-          .getElementById("image-box")
-          .getElementsByTagName("img");
+        const images = document.getElementById("image-box").getElementsByTagName("img");
         let selected_image = 0;
         if (Array.from(images).length > 1) {
           for (let x = 0; x < images.length; x++) {
@@ -369,654 +467,281 @@
           }
           if (selected_image > 0) {
             if (id === "forward" && selected_image < images.length) {
-              document.getElementById("image-" + selected_image).style.display =
-                "none";
-              document.getElementById(
-                "image-" + (parseInt(selected_image) + 1).toString()
-              ).style.display = "inline";
+              document.getElementById("image-" + selected_image).style.display = "none";
+              document.getElementById("image-" + (parseInt(selected_image) + 1).toString()).style.display = "inline";
             } else if (id === "reverse" && selected_image > 1) {
-              document.getElementById("image-" + selected_image).style.display =
-                "none";
-              document.getElementById(
-                "image-" + (parseInt(selected_image) - 1).toString()
-              ).style.display = "inline";
+              document.getElementById("image-" + selected_image).style.display = "none";
+              document.getElementById("image-" + (parseInt(selected_image) - 1).toString()).style.display = "inline";
             }
           }
         }
       }
 
-      //Back to map button
-      // function backToMap() {
-      //   window.location.href = "https://atlas.digitalhistory.ca";
-      // }
-
-      //Building Profile Menu
       function resetBuildingProfile(id) {
         const button_id = id.split("-")[0];
         const buttons = ["hist", "arch", "story"];
         for (let x = 0; x < buttons.length; x++) {
-          document.getElementById(
-            buttons[x] + "-button"
-          ).style.backgroundColor = buttons[x] === button_id ? "aqua" : "white";
+          document.getElementById(buttons[x] + "-button").style.backgroundColor =
+            buttons[x] === button_id ? "aqua" : "white";
           document.getElementById(buttons[x] + "-description").style.display =
             buttons[x] === button_id ? "inline" : "none";
         }
       }
 
-      let geofence_buffer = turf.polygon([
-        [
-          [0, 0],
-          [0, 0.1],
-          [0.1, 0.1],
-          [0.1, 0],
-          [0, 0],
-        ],
-      ]);
-
+      // ─── Geofence & Building Loading ──────────────────────────────────────────
+      let geofence_buffer = turf.polygon([[[0,0],[0,0.1],[0.1,0.1],[0.1,0],[0,0]]]);
       let gps = turf.point([-1, -1]);
-
-      let buildings = [];
+      let objects = [];
 
       async function getBuildings(bbox) {
-        const bbox_string =
-          bbox.geometry.coordinates[0][0][0].toString() +
-          "," +
-          bbox.geometry.coordinates[0][0][1].toString() +
-          "," +
-          bbox.geometry.coordinates[0][1][0].toString() +
-          "," +
-          bbox.geometry.coordinates[0][2][1].toString();
+        const c = bbox.geometry.coordinates[0];
+        const bbox_string = c[0][0] + "," + c[0][1] + "," + c[1][0] + "," + c[2][1];
         const res = await fetch(
           "https://atlas.digitalhistory.ca/api/buildings/?ar=y&bbox=" + bbox_string
         );
-        const data = await res.json();
-        return data;
+        return await res.json();
       }
 
-      let objects = [];
-
-      //Function for adding buildings to the AR scene on bbox update
       function parseBuildings(bbox) {
-        getBuildings(bbox)
-          .then((buildings) => {
-            let scene = document.querySelector("a-scene");
-            //Clear previous buildings in scene
-            if (objects.length > 0) {
-              for (let y = 0; y < objects.length; y++) {
-                document.getElementById(objects[y].id).outerHTML = "";
-              }
-              objects = [];
+        getBuildings(bbox).then((buildings) => {
+          let scene = document.querySelector("a-scene");
+          if (objects.length > 0) {
+            for (let y = 0; y < objects.length; y++) {
+              const el = document.getElementById(objects[y].id);
+              if (el) el.outerHTML = "";
             }
-            //Add new buildings to scene
-            for (let x = 0; x < buildings.features.length; x++) {
-              //Set attribute to increase height of bubbles
-              const building_id = buildings.features[x].properties.id;
-
-              const entity = document.createElement("a-entity");
-              const point = turf.toWgs84(
-                turf.point(buildings.features[x].geometry.coordinates)
-              );
-              entity.setAttribute("gps-new-entity-place", {
-                latitude: point.geometry.coordinates[1],
-                longitude: point.geometry.coordinates[0],
-              });
-              objects.push({ id: building_id });
-              // entity.setAttribute("look-at", "[gps-new-camera]");
-              entity.setAttribute("id", building_id);
-              const sphere = document.createElement("a-sphere");
-              sphere.setAttribute("radius", 2);
-              sphere.setAttribute("color", "white");
-              entity.appendChild(sphere);
-              const text = document.createElement("a-text");
-              text.setAttribute("color", "white");
-              text.setAttribute("look-at", "[gps-new-camera]");
-              text.setAttribute("scale", {
-                x: 4,
-                y: 4,
-                z: 4,
-              });
-              text.setAttribute("position", {
-                x: 0,
-                y: 5,
-                z: -0.5,
-              });
-              text.setAttribute("value", "");
-              text.setAttribute("align", "center");
-              entity.appendChild(text);
-              // const plane = document.createElement("a-plane");
-              // plane.setAttribute("color", "white");
-              // plane.setAttribute("look-at", "[gps-new-camera]");
-              // plane.setAttribute("width", 6);
-              // plane.setAttribute("height", 4);
-              // plane.setAttribute("opacity", 0.7);
-              // plane.setAttribute("position", {
-              //   x: 0,
-              //   y: 0,
-              //   z: -0.01,
-              // });
-              // entity.appendChild(plane);
-              scene.appendChild(entity);
-            }
-          })
-          .catch((err) => {
-              console.log(err);
-          });
+            objects = [];
+          }
+          for (let x = 0; x < buildings.features.length; x++) {
+            const building_id = buildings.features[x].properties.id;
+            const entity = document.createElement("a-entity");
+            const point = turf.toWgs84(turf.point(buildings.features[x].geometry.coordinates));
+            entity.setAttribute("gps-new-entity-place", {
+              latitude: point.geometry.coordinates[1],
+              longitude: point.geometry.coordinates[0],
+            });
+            objects.push({ id: building_id });
+            entity.setAttribute("id", building_id);
+            const sphere = document.createElement("a-sphere");
+            sphere.setAttribute("radius", 2);
+            sphere.setAttribute("color", "white");
+            entity.appendChild(sphere);
+            const text = document.createElement("a-text");
+            text.setAttribute("color", "white");
+            text.setAttribute("look-at", "[gps-new-camera]");
+            text.setAttribute("scale", { x: 4, y: 4, z: 4 });
+            text.setAttribute("position", { x: 0, y: 5, z: -0.5 });
+            text.setAttribute("value", "");
+            text.setAttribute("align", "center");
+            entity.appendChild(text);
+            scene.appendChild(entity);
+          }
+        }).catch(err => console.log(err));
       }
 
-      //Create new BBOX if user has moved within x metres of the edge of the old one
-      //Change this so BBOX appears in front of user
       function createGeofence() {
         const edge_update_distance = bbox_size * 0.8;
         console.log("Updating geofence...");
         const geo_buffer = turf.toMercator(
-          turf.bboxPolygon(
-            turf.bbox(
-              turf.buffer(gps, bbox_size - edge_update_distance, {
-                units: "meters",
-              })
-            )
-          )
+          turf.bboxPolygon(turf.bbox(turf.buffer(gps, bbox_size - edge_update_distance, { units: "meters" })))
         );
         const building_bbox = turf.toMercator(
-          turf.bboxPolygon(
-            turf.bbox(turf.buffer(gps, bbox_size, { units: "meters" }))
-          )
+          turf.bboxPolygon(turf.bbox(turf.buffer(gps, bbox_size, { units: "meters" })))
         );
         parseBuildings(building_bbox);
         return geo_buffer;
       }
 
-      //Check if the user has come within x metres of the edge of the bounding box
       function checkGeofence(position) {
         console.log("Checking geofence...");
         if (position.coords.latitude && position.coords.longitude) {
-          gps = turf.point([
-            position.coords.longitude,
-            position.coords.latitude,
-          ]);
-          var in_geofence = turf.booleanPointInPolygon(
-            gps,
-            turf.toWgs84(geofence_buffer)
-          );
+          gps = turf.point([position.coords.longitude, position.coords.latitude]);
+          const in_geofence = turf.booleanPointInPolygon(gps, turf.toWgs84(geofence_buffer));
           if (!in_geofence) {
             geofence_buffer = createGeofence();
           }
         }
       }
 
-      //Function for getting current GPS coordinates from device
       function geofenceUpdate() {
         if ("geolocation" in navigator) {
           navigator.geolocation.getCurrentPosition(checkGeofence);
         } else {
           clearInterval(geofenceChecker);
-          console.log(
-            "GPS is not enabled or configured properly on your device."
-          );
+          console.log("GPS is not enabled or configured properly on your device.");
         }
       }
 
-      //Iterator to check if phone within bounding box every n milliseconds
-      const geofenceChecker = setInterval(() => {
-        geofenceUpdate();
-      }, 3*1000);
+      const geofenceChecker = setInterval(() => { geofenceUpdate(); }, 3 * 1000);
 
-      //Function to get building information from the atlas.digitalhistory.ca API.
       async function fetchBuildingInfo(id) {
-        const res = await fetch(
-          `https://atlas.digitalhistory.ca/api/building/${id}/`
-        );
-        const building = await res.json();
-        return building;
+        const res = await fetch(`https://atlas.digitalhistory.ca/api/building/${id}/`);
+        return await res.json();
       }
 
-      //When the application loads, creates the geofence and adds an event listener to the camera for position updates
+      // ─── Main Init ────────────────────────────────────────────────────────────
       window.onload = setTimeout(() => {
         geofenceUpdate();
         poiText();
-
-        let initialAlpha = null;
-        let lastMovementTime = Date.now();
-        // const threshold = 0.5;
-        // const timeoutDuration = 3000;
-        // let totalRotation = 0;
-        let heading = null;
-
-        let pastHeadings = []
-        let headingStable = false
-        let timestamp = Date.now()
-
-        function getHeading(pos) { 
-            heading = pos.coords.heading;
-            if (Date.now() - timestamp > 100) {
-              if (!isNaN(parseInt(pos.coords.heading))) {
-                pastHeadings.push(parseInt(pos.coords.heading))
-                timestamp = Date.now()
-              }
-            }
-            
-            document.getElementById('heading').innerHTML = 'Heading: ' + pos.coords.heading.toString()
-            document.getElementById('pastHeadings').innerHTML = 'Past Headings: ' + pastHeadings.toString()
-            if (pastHeadings.length > 5) {
-              pastHeadings = pastHeadings.slice(1)
-              //Revise to do in terms of angle differences
-              const array_range = Math.max(...pastHeadings) - Math.min(...pastHeadings)
-              if (array_range < 10) {
-                // alert("Heading stabilized!")
-                headingStable = true;
-                document.getElementById('headingStability').innerHTML = 'Stable';
-              }
-              else {
-                headingStable = false;
-                document.getElementById('headingStability').innerHTML = 'Unstable';
-              }
-            }
-        }
-
-        // const rotationStopEvent = new Event('rotationstop');
-
-        function handleDeviceOrientation(event) {
-            if ("geolocation" in navigator) {
-              navigator.geolocation.getCurrentPosition(getHeading)
-            }
-            // Calculate the difference in alpha orientation   
-            // if (initialAlpha !== null) {
-            //   const deltaAlpha = angleDifference(event.alpha, initialAlpha)
-            //   if (deltaAlpha > 30) {
-            //     totalRotation += deltaAlpha
-            //     initialAlpha = event.alpha;
-            //     lastMovementTime = Date.now();
-            //   } else if (Date.now() - lastMovementTime > 1000) {
-            //     if (totalRotation > 30) {
-            //       alert("Ping!")
-            //       lastMovementTime = Date.now();
-            //     }
-            //     totalRotation = 0;
-            //   }
-            // }
-            // else {
-            //   initialAlpha = event.alpha;
-            // }
-        }
-
-        window.addEventListener('deviceorientation', handleDeviceOrientation)
+        initOrientation();
 
         const camera = document.querySelector("[gps-new-camera]");
 
         camera.addEventListener("gps-camera-update-position", () => {
-            //document.getElementById('event-last-fired').innerHTML = "Event fired at " + Date.now().toString() + "!"
 
-            function calculateBearing(cameraPosition, targetPosition) {
-                const deltaX = targetPosition.x - cameraPosition.x;
-                const deltaZ = targetPosition.z - cameraPosition.z;
-                const bearing = Math.atan2(deltaZ, deltaX) * (180 / Math.PI); // Convert to degrees
-                return (bearing + 360) % 360; // Normalize to 0-360 degrees
-            }
-
-            function angleDifference(angle1, angle2) {
-              // if (isNaN(angle1) || isNaN(angle2)) {
-              //     alert('Heading: ' + angle1.toString() + 'Bearing: ' + angle2.toString())
-              // }
-
-              let diff = (angle1 - angle2) % 360;
-              if (diff < -180) {
-                  diff += 360;
-              } else if (diff > 180) {
-                  diff -= 360;
-              }
-
-              return Math.abs(diff);
+          /**
+           * Calculate compass bearing from the A-Frame camera to a target entity.
+           *
+           * Fix: A-Frame's coordinate system has -Z pointing forward (north),
+           * so the correct atan2 argument order is (deltaX, -deltaZ),
+           * NOT (deltaZ, deltaX) as in the original code.
+           */
+          function calculateBearing(cameraPosition, targetPosition) {
+            const deltaX = targetPosition.x - cameraPosition.x;
+            const deltaZ = targetPosition.z - cameraPosition.z;
+            // atan2(deltaX, -deltaZ) maps A-Frame world space to compass bearing
+            const bearing = Math.atan2(deltaX, -deltaZ) * (180 / Math.PI);
+            return (bearing + 360) % 360;
           }
 
-            let distance = 9999;
-            let minDistance = 100;
-            let id = 0;
-            let maxAngle = 360;
-            let headingEnabled = true
-            let bearing
-            let diff
-            let selected_bearing
-            let selected_diff
+          let distance = 9999;
+          let minDistance = 100;
+          let id = 0;
 
-            const building_markers = document.getElementsByTagName("a-entity");
+          // Start with a 60° cone; widen to 120° if nothing found in cone.
+          // This gracefully handles momentary compass noise without
+          // falling all the way back to direction-blind distance selection.
+          const ANGLE_NARROW = 60;
+          const ANGLE_WIDE   = 120;
 
-            if (heading && headingEnabled) {              
-              document.getElementById('heading-enabled').innerHTML = "Heading enabled."
-              for (let x = 0; x < Array.from(building_markers).length; x++) {
-                distance = camera.object3D.position.distanceTo(
-                  building_markers[x].object3D.position
-                );
-                bearing = calculateBearing(building_markers[x].object3D.position, camera.object3D.position)
-                diff = angleDifference(parseInt(heading), parseInt(bearing))
-                // Switch this to shortest angle calculation!!
-                // diff = Math.abs(bearing - heading)
-                //document.getElementById('diff').innerHTML = diff.toString()
+          let selectedBearing = null;
+          let selectedDiff    = null;
 
-                if (distance < minDistance && parseInt(diff) < maxAngle) {
+          const building_markers = document.getElementsByTagName("a-entity");
+          const markersArray = Array.from(building_markers);
+
+          if (heading !== null) {
+            document.getElementById('heading-enabled').innerHTML = "Heading enabled [" + headingSource + "]";
+
+            // Pass 1: narrow 60° cone
+            for (let x = 0; x < markersArray.length; x++) {
+              distance = camera.object3D.position.distanceTo(markersArray[x].object3D.position);
+              const bearing = calculateBearing(camera.object3D.position, markersArray[x].object3D.position);
+              const diff = angleDifference(heading, bearing);
+
+              if (distance < minDistance && diff < ANGLE_NARROW) {
+                minDistance = distance;
+                id = parseInt(markersArray[x].id);
+                selectedBearing = Math.round(bearing);
+                selectedDiff    = Math.round(diff);
+              }
+            }
+
+            // Pass 2: widen to 120° if nothing found in the narrow cone
+            if (id === 0) {
+              minDistance = 100;
+              for (let x = 0; x < markersArray.length; x++) {
+                distance = camera.object3D.position.distanceTo(markersArray[x].object3D.position);
+                const bearing = calculateBearing(camera.object3D.position, markersArray[x].object3D.position);
+                const diff = angleDifference(heading, bearing);
+
+                if (distance < minDistance && diff < ANGLE_WIDE) {
                   minDistance = distance;
-                  id = parseInt(building_markers[x].id);
-                  selected_bearing = parseInt(bearing)
-                  selected_diff = parseInt(diff)
+                  id = parseInt(markersArray[x].id);
+                  selectedBearing = Math.round(bearing);
+                  selectedDiff    = Math.round(diff);
                 }
               }
             }
-            else {
-              document.getElementById('heading-enabled').innerHTML = "Heading disabled."
-              for (let x = 0; x < Array.from(building_markers).length; x++) {
-                distance = camera.object3D.position.distanceTo(
-                  building_markers[x].object3D.position
-                );
-                //document.getElementById('diff').innerHTML = diff.toString()
 
-                if (distance < minDistance) {
-                  minDistance = distance;
-                  id = parseInt(building_markers[x].id);
-                }
+          } else {
+            // No heading available yet — fall back to pure distance
+            document.getElementById('heading-enabled').innerHTML = "Heading unavailable — using distance only";
+            for (let x = 0; x < markersArray.length; x++) {
+              distance = camera.object3D.position.distanceTo(markersArray[x].object3D.position);
+              if (distance < minDistance) {
+                minDistance = distance;
+                id = parseInt(markersArray[x].id);
               }
             }
-            //If buildings are in proximity, highlight the closest one in aqua
-            const highlight_color = "aqua";
-            //Check if there is at least one element in range of the device
-            if (id > 0) {
-              //Parse selected building
-              if (heading && headingEnabled) {
-                if (selected_bearing && selected_diff) {
-                  document.getElementById('bearing').innerHTML = 'Bearing: ' + selected_bearing.toString()
-                  document.getElementById('diff').innerHTML = 'Diff: ' + selected_diff.toString()
-                }
-                // else {
-                //   alert("No bearing calculated to selected building.")
-                // }
-              }
-              //Check if that element is a different element from the one currently selected
-              if (
-                document
-                  .getElementById(id)
-                  .getElementsByTagName("a-sphere")[0]
-                  .getAttribute("color") !== highlight_color
-              ) {
-                //Deselect currently selected element, if needed
-                if (
-                  Array.from(
-                    document.querySelectorAll(
-                      `a-sphere[color=${highlight_color}]`
-                    )
-                  ).length === 1
-                ) {
-                  document
-                    .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
-                    .setAttribute("color", "white");
-                  document
-                    .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
-                    .parentElement.getElementsByTagName(
-                      "a-text"
-                    )[0].style.visiblity = "hidden";
-                }
-                //Select new element
-                document
-                  .getElementById(id)
-                  .getElementsByTagName("a-sphere")[0]
-                  .setAttribute("color", highlight_color);
-                document
-                  .getElementById(id)
-                  .getElementsByTagName("a-text")[0].style.visibility = "visible";
-                //Get building information for closest building
-                //Set text popup above the building
-                fetchBuildingInfo(id).then((building) => {
-                  document
-                    .getElementById(id)
-                    .getElementsByTagName("a-text")[0]
-                    .setAttribute(
-                      "value",
-                      (building.name ? "Name: " + building.name : "") +
-                        (building.date_of_construction
-                          ? "\nBuilt: " +
-                            building.date_of_construction
-                              .toString()
-                              .substring(0, 4)
-                          : "") +
-                        (building.building_category
-                          ? "\nType: " + building.building_category.name
-                          : "") +
-                        (building.architectural_style
-                          ? "\nStyle: " + building.architectural_style.name
-                          : "")
-                    );
-                  //Populate lower menus
-                  document.getElementById("hist-description-text").innerHTML =
-                    building.historical_description;
-                  document.getElementById("building-name").innerHTML =
-                    building.name;
-                  document.getElementById("arch-description-text").innerHTML =
-                    building.architectural_description;
-                  //Get images
-                  let image_box = document.getElementById("image-box");
-                  //Clear previous images
-                  image_box.innerHTML = "";
-                  let children = 0;
-                  //Add something if there are no images associated with the building
-                  for (let y = 0; y < building.items.length; y++) {
-                    if (
-                      building.items[y].type === "photograph" ||
-                      building.items[y].type === "postcard"
-                    ) {
-                      children = image_box.getElementsByTagName("img").length;
-                      const img = document.createElement("img");
+          }
 
-                      //Functionality for front and back side of postcards
-                      img.setAttribute("src", building.items[y].files[0].image);
-                      img.setAttribute("id", "image-" + (y + 1));
-                      img.style.maxWidth = "90vw";
-                      img.style.opacity = 0.7;
-                      img.style.zIndex = 4;
-                      img.style.marginTop = "25vh";
-                      img.style.marginBottom = "25vh";
-                      if (children > 0) {
-                        img.style.display = "none";
-                      } else {
-                        img.style.display = "inline";
-                      }
-                      image_box.appendChild(img);
-                    }
+          if (selectedBearing !== null) {
+            document.getElementById('bearing').innerHTML = 'Bearing: ' + selectedBearing;
+            document.getElementById('diff').innerHTML    = 'Diff: ' + selectedDiff;
+          }
+
+          const highlight_color = "aqua";
+
+          if (id > 0) {
+            if (
+              document.getElementById(id)
+                .getElementsByTagName("a-sphere")[0]
+                .getAttribute("color") !== highlight_color
+            ) {
+              // Deselect previously highlighted building
+              const highlighted = document.querySelectorAll(`a-sphere[color=${highlight_color}]`);
+              if (highlighted.length === 1) {
+                highlighted[0].setAttribute("color", "white");
+                highlighted[0].parentElement.getElementsByTagName("a-text")[0].style.visibility = "hidden";
+              }
+              // Highlight new building
+              document.getElementById(id).getElementsByTagName("a-sphere")[0].setAttribute("color", highlight_color);
+              document.getElementById(id).getElementsByTagName("a-text")[0].style.visibility = "visible";
+
+              fetchBuildingInfo(id).then((building) => {
+                document.getElementById(id).getElementsByTagName("a-text")[0].setAttribute(
+                  "value",
+                  (building.name ? "Name: " + building.name : "") +
+                  (building.date_of_construction
+                    ? "\nBuilt: " + building.date_of_construction.toString().substring(0, 4)
+                    : "") +
+                  (building.building_category
+                    ? "\nType: " + building.building_category.name
+                    : "") +
+                  (building.architectural_style
+                    ? "\nStyle: " + building.architectural_style.name
+                    : "")
+                );
+                document.getElementById("hist-description-text").innerHTML = building.historical_description;
+                document.getElementById("building-name").innerHTML = building.name;
+                document.getElementById("arch-description-text").innerHTML = building.architectural_description;
+
+                let image_box = document.getElementById("image-box");
+                image_box.innerHTML = "";
+                let children = 0;
+                for (let y = 0; y < building.items.length; y++) {
+                  if (building.items[y].type === "photograph" || building.items[y].type === "postcard") {
+                    children = image_box.getElementsByTagName("img").length;
+                    const img = document.createElement("img");
+                    img.setAttribute("src", building.items[y].files[0].image);
+                    img.setAttribute("id", "image-" + (y + 1));
+                    img.style.maxWidth = "90vw";
+                    img.style.opacity = 0.7;
+                    img.style.zIndex = 4;
+                    img.style.marginTop = "25vh";
+                    img.style.marginBottom = "25vh";
+                    img.style.display = children > 0 ? "none" : "inline";
+                    image_box.appendChild(img);
                   }
-                });
-              }
-              // else {
-              //   alert("Same element.");
-              // }
-            } else {
-              document.getElementById("hist-description-text").innerHTML =
-                "No nearby buildings in front of your device. Try rotating your device.";
-              document.getElementById("building-name").innerHTML =
-                "No nearby buildings in view.";
-              document.getElementById("arch-description-text").innerHTML =
-                "No nearby buildings in front of your device. Try rotating your device.";
-              document
-                .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
-                .setAttribute("color", "white");
+                }
+              });
             }
+          } else {
+            const noBuilding = "No nearby buildings in front of your device. Try rotating your device.";
+            document.getElementById("hist-description-text").innerHTML = noBuilding;
+            document.getElementById("building-name").innerHTML = "No nearby buildings in view.";
+            document.getElementById("arch-description-text").innerHTML = noBuilding;
+            const highlighted = document.querySelectorAll(`a-sphere[color=${highlight_color}]`);
+            if (highlighted.length > 0) {
+              highlighted[0].setAttribute("color", "white");
+            }
+          }
         });
 
-        //Event listener that fires every time the GPS position of the camera updates
-        // camera.addEventListener("gps-camera-update-position", (e) => {
-        //   //lon, lat
-
-        //   function calculateBearing(lat1, lon1, lat2, lon2) {
-        //       const toRadians = degrees => degrees * Math.PI / 180;
-        //       const toDegrees = radians => radians * 180 / Math.PI;
-
-        //       const dLon = toRadians(lon2 - lon1);
-        //       const y = Math.sin(dLon) * Math.cos(toRadians(lat2));
-        //       const x = Math.cos(toRadians(lat1)) * Math.sin(toRadians(lat2)) -
-        //                 Math.sin(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.cos(dLon);
-        //       const bearing = (toDegrees(Math.atan2(y, x)) + 360) % 360; // Normalize to 0-360 degrees
-
-        //       return bearing;
-        //   }
-
-        //   if(heading) {
-        //     console.log("Heading obtained successfully.")
-        //     const building_markers = document.getElementsByTagName("a-entity");
-        //     let distance = 999999999;
-        //     let id = 0;
-        //     let minDistance = 75;
-        //     for (let x = 0; x < Array.from(building_markers).length; x++) {
-        //       // alert(JSON.stringify(camera.object3D.position))
-        //       const bearing = calculateBearing(camera.object3D.position.z, camera.object3D.position.x, building_markers[x].object3D.position.z, building_markers[x].object3D.position.x)
-
-        //       let diff = Math.abs(bearing - heading);
-
-        //       // Adjust if the difference is greater than 180 degrees
-        //       if (diff > 180) {
-        //           diff = 360 - diff;
-        //       }
-
-        //       // alert(`ID: ${building_markers[x].id}. Bearing: ${bearing}. Heading: ${heading}. Difference: ${diff}`)
-
-        //       distance = camera.object3D.position.distanceTo(
-        //         building_markers[x].object3D.position
-        //       );
-        //       // if (distance < 1000) {
-        //       //   alert(distance);
-        //       // }
-        //       if (distance < minDistance && diff < 60) {
-        //         minDistance = distance;
-        //         id = parseInt(building_markers[x].id);
-        //       }
-        //     }
-        //     //If buildings are in proximity, highlight the closest one in aqua
-        //     const highlight_color = "aqua";
-        //     //Check if there is at least one element in range of the device
-        //     if (id > 0) {
-        //       //Check if that element is a different element from the one currently selected
-        //       console.log(
-        //         document
-        //           .getElementById(id)
-        //           .getElementsByTagName("a-sphere")[0]
-        //           .getAttribute("color")
-        //       );
-        //       if (
-        //         document
-        //           .getElementById(id)
-        //           .getElementsByTagName("a-sphere")[0]
-        //           .getAttribute("color") !== highlight_color
-        //       ) {
-        //         //Deselect currently selected element, if needed
-        //         // console.log(
-        //         //   document.querySelectorAll(
-        //         //     `a-sphere[color=${highlight_color}]`
-        //         //   )
-        //         // );
-        //         if (
-        //           Array.from(
-        //             document.querySelectorAll(
-        //               `a-sphere[color=${highlight_color}]`
-        //             )
-        //           ).length === 1
-        //         ) {
-        //           document
-        //             .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
-        //             .setAttribute("color", "white");
-        //           document
-        //             .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
-        //             .parentElement.getElementsByTagName(
-        //               "a-text"
-        //             )[0].style.visiblity = "hidden";
-        //         }
-        //         // setTimeout(() => {
-        //         //Select new element
-        //         document
-        //           .getElementById(id)
-        //           .getElementsByTagName("a-sphere")[0]
-        //           .setAttribute("color", highlight_color);
-        //         document
-        //           .getElementById(id)
-        //           .getElementsByTagName("a-text")[0].style.visibility = "visible";
-        //         //Get building information for closest building
-        //         fetchBuildingInfo(id).then((building) => {
-        //           //Set text popup above the building
-        //           document
-        //             .getElementById(id)
-        //             .getElementsByTagName("a-text")[0]
-        //             .setAttribute(
-        //               "value",
-        //               (building.name ? "Name: " + building.name : "") +
-        //                 (building.date_of_construction
-        //                   ? "\nBuilt: " +
-        //                     building.date_of_construction
-        //                       .toString()
-        //                       .substring(0, 4)
-        //                   : "") +
-        //                 (building.building_category
-        //                   ? "\nType: " + building.building_category.name
-        //                   : "") +
-        //                 (building.architectural_style
-        //                   ? "\nStyle: " + building.architectural_style.name
-        //                   : "")
-        //             );
-        //           //Populate lower menus
-        //           document.getElementById("hist-description-text").innerHTML =
-        //             building.historical_description;
-        //           document.getElementById("building-name").innerHTML =
-        //             building.name;
-        //           document.getElementById("arch-description-text").innerHTML =
-        //             building.architectural_description;
-        //           //Get images
-        //           let image_box = document.getElementById("image-box");
-        //           //Clear previous images
-        //           image_box.innerHTML = "";
-        //           let children = 0;
-        //           //Add something if there are no images associated with the building
-        //           for (let y = 0; y < building.items.length; y++) {
-        //             if (
-        //               building.items[y].type === "photograph" ||
-        //               building.items[y].type === "postcard"
-        //             ) {
-        //               children = image_box.getElementsByTagName("img").length;
-        //               const img = document.createElement("img");
-
-        //               //Functionality for front and back side of postcards
-        //               img.setAttribute("src", building.items[y].files[0].image);
-        //               img.setAttribute("id", "image-" + (y + 1));
-        //               img.style.maxWidth = "90vw";
-        //               img.style.opacity = 0.7;
-        //               img.style.zIndex = 4;
-        //               img.style.marginTop = "25vh";
-        //               img.style.marginBottom = "25vh";
-        //               if (children > 0) {
-        //                 img.style.display = "none";
-        //               } else {
-        //                 img.style.display = "inline";
-        //               }
-        //               image_box.appendChild(img);
-        //             }
-        //           }
-        //         });
-        //       }
-        //       // else {
-        //       //   alert("Same element.");
-        //       // }
-        //     } else {
-        //       console.log(
-        //         "No buildings within " + minDistance + " metres of this device."
-        //       );
-        //       document.getElementById("hist-description-text").innerHTML =
-        //         "No nearby buildings in front of your device. Try rotating your device.";
-        //       document.getElementById("building-name").innerHTML =
-        //         "No nearby buildings in view.";
-        //       document.getElementById("arch-description-text").innerHTML =
-        //         "No nearby buildings in front of your device. Try rotating your device.";
-        //       document
-        //         .querySelectorAll(`a-sphere[color=${highlight_color}]`)[0]
-        //         .setAttribute("color", "white");
-        //     }
-        //   }
-        //   else {
-        //     console.log("No heading found in function.")
-        //   }
-        // });
       }, 2000);
     </script>
+
     <div>
       <a-scene
         vr-mode-ui="enabled: false"
@@ -1029,6 +754,7 @@
           gps-new-camera="gpsMinDistance: 3; maxDistance: 100; positionMinAccuracy: 25; alert: true"
         ></a-camera>
       </a-scene>
+
       <div id="debugMenu">
         <span id="event-last-fired" style="display: inherit;"></span>
         <span id="heading-enabled" style="display: inherit;"></span>
@@ -1038,26 +764,17 @@
         <span id="bearing" style="display: inherit;"></span>
         <span id="diff" style="display: inherit;"></span>
       </div>
+
       <div class="thumbMenu">
-        <button
-          class="thumbButton"
-          id="desc-button"
-          onclick="toggleSelected(this.id)"
-        >
-          Description
-        </button>
-        <button class="thumbButton" id="image-button" onclick="toggleSelected(this.id)">
-          Images
-        </button>
-        <button class="thumbButton" id="poi-button" onclick="toggleSelected(this.id)">
-          Exit Survey
-        </button>
+        <button class="thumbButton" id="desc-button" onclick="toggleSelected(this.id)">Description</button>
+        <button class="thumbButton" id="image-button" onclick="toggleSelected(this.id)">Images</button>
+        <button class="thumbButton" id="poi-button" onclick="toggleSelected(this.id)">Exit Survey</button>
       </div>
+
       <div id="description">
         <h3 id="building-name">Loading nearby buildings...</h3>
         <div class="description-box">
           <div id="hist-description">
-            <!-- <h5>Historical Description</h5> -->
             <div class="description-box">
               <div class="audio-grid">
                 <p id="hist-description-text"></p>
@@ -1066,68 +783,34 @@
             </div>
           </div>
           <div id="arch-description">
-            <!-- <h5>Architectural Description</h5> -->
             <div class="audio-grid">
               <p id="arch-description-text"></p>
               <div></div>
             </div>
           </div>
-          <!-- <div id="story-description">
-            <h5>Comments</h5>
-          </div> -->
         </div>
         <div class="profile-menu">
-          <button
-            class="profile-button"
-            id="hist-button"
-            onclick="resetBuildingProfile(this.id)"
-          >
-            History
-          </button>
-          <button
-            class="profile-button"
-            id="arch-button"
-            onclick="resetBuildingProfile(this.id)"
-          >
-            Architecture
-          </button>
-          <!-- <button
-            class="profile-button"
-            id="story-button"
-            onclick="resetBuildingProfile(this.id)"
-          >
-            Stories
-          </button> -->
+          <button class="profile-button" id="hist-button" onclick="resetBuildingProfile(this.id)">History</button>
+          <button class="profile-button" id="arch-button" onclick="resetBuildingProfile(this.id)">Architecture</button>
         </div>
       </div>
     </div>
+
     <div id="images">
       <div id="image-box"></div>
       <div id="image-menu">
-        <button
-          id="reverse"
-          class="image-button"
-          onclick="toggleImage(this.id)"
-        >
-          Back
-        </button>
-        <button id="close" class="image-button" onclick="toggleSelected(this.id)">
-          Close
-        </button>
-        <button
-          id="forward"
-          class="image-button"
-          onclick="toggleImage(this.id)"
-        >
-          Forward
-        </button>
+        <button id="reverse" class="image-button" onclick="toggleImage(this.id)">Back</button>
+        <button id="close" class="image-button" onclick="toggleSelected(this.id)">Close</button>
+        <button id="forward" class="image-button" onclick="toggleImage(this.id)">Forward</button>
       </div>
     </div>
+
     <div id="pois">
       <h3 id="poi-heading">Exit Survey</h3>
       <div id="exit-button-box">
-        <button id="exit-survey-button" onclick="proceedToExitSurvey()">Proceed to Exit Survey</a>
+        <button id="exit-survey-button" onclick="proceedToExitSurvey()">Proceed to Exit Survey</button>
       </div>
     </div>
+
   </body>
 </html>
